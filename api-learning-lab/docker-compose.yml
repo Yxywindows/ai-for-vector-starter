@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: api-learning-lab-postgres
+    environment:
+      POSTGRES_DB: api_learning
+      POSTGRES_USER: learning_user
+      POSTGRES_PASSWORD: learning_pass
+    ports:
+      - "5400:5432"
+    volumes:
+      - api_learning_pgdata:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U learning_user -d api_learning"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: api-learning-lab-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+volumes:
+  api_learning_pgdata:

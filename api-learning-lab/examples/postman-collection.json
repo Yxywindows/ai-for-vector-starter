@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "API Learning Lab",
+    "description": "Practice collection for path params, query params, headers, request bodies, multipart upload and CRUD against the API Learning Lab.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8000" },
+    { "key": "datasetId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/health"
+      }
+    },
+    {
+      "name": "Path Parameter - Get Dataset By Id",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/datasets/{{datasetId}}"
+      }
+    },
+    {
+      "name": "Query Parameter - List Datasets (filter, paginate, sort)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/datasets?page=1&pageSize=10&keyword=sea&type=ocean-observation&year=2023&status=published&sortBy=price&sortOrder=asc",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "datasets"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "10" },
+            { "key": "keyword", "value": "sea" },
+            { "key": "type", "value": "ocean-observation" },
+            { "key": "year", "value": "2023" },
+            { "key": "status", "value": "published" },
+            { "key": "sortBy", "value": "price" },
+            { "key": "sortOrder", "value": "asc" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Request Body - Create Dataset (POST)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer test-token" },
+          { "key": "X-Organization-ID", "value": "org-42" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": "{{baseUrl}}/api/datasets",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Example Dataset Created via Postman\",\n  \"description\": \"Created from the Postman collection\",\n  \"resourceType\": \"weather\",\n  \"publishYear\": 2026,\n  \"metadata\": {\"station\": \"POSTMAN-EXAMPLE-01\", \"elevation_m\": 12, \"variable\": \"temperature\"},\n  \"tags\": [\"weather\", \"example\"]\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "Update - PUT Path + Body Together",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer test-token" },
+          { "key": "X-Organization-ID", "value": "org-42" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": "{{baseUrl}}/api/datasets/{{datasetId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"published\",\n  \"price\": 25.00\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "Delete - DELETE Path Only",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer test-token" },
+          { "key": "X-Organization-ID", "value": "org-42" }
+        ],
+        "url": "{{baseUrl}}/api/datasets/{{datasetId}}"
+      }
+    },
+    {
+      "name": "Header Example - Write Without Auth (expect 401/422)",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/datasets/{{datasetId}}"
+      }
+    },
+    {
+      "name": "Multipart - Upload File to Dataset",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/datasets/2/files",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "file", "type": "file", "src": [] },
+            { "key": "fileType", "type": "text", "value": "text/csv" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Multipart - List Files For Dataset",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/datasets/2/files"
+      }
+    }
+  ]
+}
