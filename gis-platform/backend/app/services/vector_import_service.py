@@ -1,23 +1,26 @@
 """Read a vector file with pyogrio/geopandas and land it in gis_data.
 
 Everything blocking (GDAL reads, the bulk INSERT) runs on a worker thread.
-The table is created first and the layer row second; if the layer row fails
-the table is dropped, so a failed import leaves nothing behind.
+The table is created first and the layer row second. The bulk write, its
+PK/index DDL, and layer registration are all treated as one failure domain:
+a failure anywhere in that span drops the table, so a failed import leaves
+nothing behind regardless of which step it failed in.
 """
 
 from __future__ import annotations
 
 import logging
+import re
 import shutil
 import uuid
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 import anyio
 import geopandas as gpd
 from fastapi import UploadFile
-from sqlalchemy import text
+from sqlalchemy import Engine, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
@@ -37,6 +40,26 @@ SUPPORTED_SUFFIXES = {".geojson", ".json", ".gpkg", ".zip", ".shp", ".gml", ".km
 GEOMETRY_COLUMN = "geometry"
 ID_COLUMN = "fid"
 
+_DRIVE_LETTER = re.compile(r"^[A-Za-z]:")
+
+
+def _is_unsafe_zip_member(member: str) -> bool:
+    """True if extracting `member` could land outside the destination directory.
+
+    A zip is routinely built on one OS and extracted on another, so a member
+    name must be judged as both a POSIX and a Windows path regardless of
+    which platform this happens to run on. `Path(member).is_absolute()`
+    alone is not enough: on Windows it is False for a POSIX-absolute name
+    like "/etc/passwd" (no drive letter reads as *drive-relative*, not
+    absolute, to `pathlib.Path`/`PureWindowsPath`), so a host-only check
+    would silently wave it through. Normalising separators and checking for
+    a leading "/" or a drive-letter prefix catches both flavours on any host.
+    """
+    normalized = member.replace("\\", "/")
+    if normalized.startswith("/") or _DRIVE_LETTER.match(normalized):
+        return True
+    return ".." in PurePosixPath(normalized).parts
+
 
 def _resolve_dataset_path(path: Path) -> Path:
     """Unzip a shapefile/gpkg bundle and return the actual dataset to open."""
@@ -46,7 +69,7 @@ def _resolve_dataset_path(path: Path) -> Path:
     extract_dir.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(path) as archive:
         for member in archive.namelist():
-            if Path(member).is_absolute() or ".." in Path(member).parts:
+            if _is_unsafe_zip_member(member):
                 raise UpstreamDataError(
                     "Archive contains an unsafe path", details={"entry": member}
                 )
@@ -61,8 +84,35 @@ def _resolve_dataset_path(path: Path) -> Path:
     )
 
 
+def _create_indexes(engine: Engine, schema: str, table_name: str) -> None:
+    """Add the primary key and geometry index after the bulk write.
+
+    `to_postgis` manages its own transaction and has already committed by
+    the time this runs, so a failure here still leaves a real, populated
+    table behind -- the caller must drop it on failure exactly as it would
+    for a failure inside the bulk write itself.
+    """
+    qualified_name = qualified(schema, table_name)
+    with engine.begin() as conn:
+        conn.execute(text(f"ALTER TABLE {qualified_name} ADD PRIMARY KEY ({quote(ID_COLUMN)})"))
+        conn.execute(
+            text(
+                f"CREATE INDEX {quote('ix_' + table_name + '_geom')} "
+                f"ON {qualified_name} USING GIST ({quote(GEOMETRY_COLUMN)})"
+            )
+        )
+
+
 def _read_and_write(path: Path, table_name: str) -> dict[str, Any]:
-    """Blocking half of the import. Runs on a worker thread."""
+    """Blocking half of the import. Runs on a worker thread.
+
+    From the moment `to_postgis` returns, `table_name` is a durably
+    committed table in `gis_data` -- that commit happens on the separate
+    sync connection and is entirely independent of the request-scoped
+    async session. `import_vector_file` treats this whole function, plus
+    everything after it, as one failure domain that must drop the table
+    on any exception.
+    """
     dataset = _resolve_dataset_path(path)
     try:
         frame = gpd.read_file(dataset, engine="pyogrio")
@@ -90,15 +140,7 @@ def _read_and_write(path: Path, table_name: str) -> dict[str, Any]:
         index=True,
         index_label=ID_COLUMN,
     )
-    qualified_name = qualified(settings.import_schema, table_name)
-    with engine.begin() as conn:
-        conn.execute(text(f"ALTER TABLE {qualified_name} ADD PRIMARY KEY ({quote(ID_COLUMN)})"))
-        conn.execute(
-            text(
-                f"CREATE INDEX {quote('ix_' + table_name + '_geom')} "
-                f"ON {qualified_name} USING GIST ({quote(GEOMETRY_COLUMN)})"
-            )
-        )
+    _create_indexes(engine, settings.import_schema, table_name)
     return {
         "feature_count": len(frame),
         "geometry_type": str(frame.geom_type.iloc[0]).upper(),
@@ -127,40 +169,49 @@ async def import_vector_file(
         )
 
     work_dir = settings.upload_tmp_dir / uuid.uuid4().hex
+    table_name = slugify_table_name(original_name)
     try:
         saved = await save_upload(upload, work_dir, settings.upload_max_bytes)
-        table_name = slugify_table_name(original_name)
-        stats = await anyio.to_thread.run_sync(_read_and_write, saved, table_name)
+        # One guard spans both windows in which `table_name` can end up as a
+        # real, committed table with nothing left to undo it: the bulk
+        # `to_postgis` write and its PK/index DDL inside `_read_and_write`
+        # (committed on the separate sync connection), and layer
+        # registration below (committed by the request-scoped session).
+        # A failure anywhere in this block drops the table unconditionally;
+        # `DROP TABLE IF EXISTS` is a no-op if the write never got that far.
+        try:
+            stats = await anyio.to_thread.run_sync(_read_and_write, saved, table_name)
+
+            source = PostgisSource(
+                schema_name=settings.import_schema,
+                table_name=table_name,
+                geometry_column=GEOMETRY_COLUMN,
+                id_column=ID_COLUMN,
+                srid=4326,
+            )
+            layer = await layer_service.create_layer(
+                session,
+                project_id,
+                LayerCreate(
+                    name=layer_name or Path(original_name).stem, kind="vector", source=source
+                ),
+            )
+            metadata = await catalog_repository.geometry_metadata(session, source)
+            return await layer_repository.update(
+                session,
+                layer,
+                srid=4326,
+                geometry_type=(
+                    str(metadata["geometry_type"]) if metadata else stats["geometry_type"]
+                ),
+                extent=stats["extent"],
+                feature_count=stats["feature_count"],
+            )
+        except Exception:
+            logger.exception(
+                "Vector import failed; dropping table %s if it was created", table_name
+            )
+            await anyio.to_thread.run_sync(_drop_table, table_name)
+            raise
     finally:
         shutil.rmtree(work_dir, ignore_errors=True)
-
-    source = PostgisSource(
-        schema_name=settings.import_schema,
-        table_name=table_name,
-        geometry_column=GEOMETRY_COLUMN,
-        id_column=ID_COLUMN,
-        srid=4326,
-    )
-    try:
-        layer = await layer_service.create_layer(
-            session,
-            project_id,
-            LayerCreate(name=layer_name or Path(original_name).stem, kind="vector", source=source),
-        )
-        metadata = await catalog_repository.geometry_metadata(session, source)
-        layer = await layer_repository.update(
-            session,
-            layer,
-            srid=4326,
-            geometry_type=(str(metadata["geometry_type"]) if metadata else stats["geometry_type"]),
-            extent=stats["extent"],
-            feature_count=stats["feature_count"],
-        )
-        return layer
-    except Exception:
-        # The table was written on a separate SYNC connection and already
-        # committed, so the request-scoped rollback cannot undo it. Drop it
-        # explicitly or a failed import leaves an orphan table behind.
-        logger.exception("Layer registration failed; dropping imported table %s", table_name)
-        await anyio.to_thread.run_sync(_drop_table, table_name)
-        raise
