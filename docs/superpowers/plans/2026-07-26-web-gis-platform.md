@@ -24,6 +24,7 @@ These apply to **every** task. Do not restate them per task; do not violate them
 - **CRS:** the wire is always **EPSG:4326** (GeoJSON, bbox params, extents). Vector tiles are **EPSG:3857**. Storage SRID is whatever the table declares; conversion happens in SQL at the boundary. Never assume 4326 storage.
 - **Dynamic SQL:** a SQL identifier that came from user input may only reach a query after passing `validate_identifier()` **and** being confirmed to exist in the catalog. Values are always bind parameters. There are no exceptions to this rule.
 - **Blocking I/O:** rasterio, geopandas, and pyogrio calls are blocking and must run via `anyio.to_thread.run_sync`. Never call them directly on the event loop.
+- **PROJ data (verified hazard on this machine):** a system-wide `PROJ_LIB` left behind by another GDAL/PROJ install makes **every rasterio CRS lookup fail** with `proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 6 is expected`. Measured blast radius: `rasterio` and `rio-tiler` break; `pyproj`/`geopandas` are unaffected (they prefer their own bundled data). The remedy must run **before rasterio is first imported** — setting the variable afterwards does not help, because PROJ has already built its context. Task 7 installs the shim (`app/core/geo_env.py`, invoked from `app/__init__.py`); nothing before Task 7 imports rasterio, so earlier tasks are unaffected.
 - **Python version floors** (`pyproject.toml` uses floors; exact versions are frozen into `requirements.lock.txt` after install): `fastapi>=0.139`, `uvicorn[standard]>=0.51`, `pydantic>=2.13`, `pydantic-settings>=2.7`, `sqlalchemy>=2.0.36`, `alembic>=1.14`, `asyncpg>=0.30`, `psycopg[binary]>=3.2`, `geoalchemy2>=0.16`, `geopandas>=1.0`, `pyogrio>=0.10`, `shapely>=2.0`, `rasterio>=1.4`, `rio-tiler>=7.0`, `rio-cogeo>=5.3`, `psutil>=6.1`, `python-multipart>=0.0.20`. Dev: `pytest>=8.3`, `pytest-asyncio>=0.25`, `httpx>=0.28`, `ruff>=0.8`, `mypy>=1.14`.
 - **Node version floors** (`package.json`): `ol@^10.3.0`, `react@^19.2.0`, `react-dom@^19.2.0`, `zustand@^5.0.0`, `@tanstack/react-query@^5.62.0`. Dev: `typescript@^5.7.0`, `vite@^8.1.0`, `@vitejs/plugin-react@^6.0.0`, `vitest@^3.0.0`, `jsdom@^25.0.0`, `@testing-library/react@^16.1.0`, `@testing-library/user-event@^14.5.0`, `eslint@^9.17.0`, `typescript-eslint@^8.18.0`, `prettier@^3.4.0`.
 - **Test database:** the backend suite runs against `gis_platform_test`, never the dev database. From Task 2 onward **every** `pytest` invocation is prefixed with the test URL. Define it once and reuse it verbatim:
@@ -3760,19 +3761,128 @@ git commit -m "feat: import GeoJSON, GeoPackage and zipped Shapefiles into PostG
 ## Task 7: Raster Import with COG Conversion
 
 **Files:**
+- Create: `gis-platform/backend/app/core/geo_env.py`
+- Modify: `gis-platform/backend/app/__init__.py`
 - Create: `gis-platform/backend/app/services/raster_import_service.py`
 - Modify: `gis-platform/backend/app/api/v1/routes/imports.py`
-- Test: `gis-platform/backend/tests/test_raster_import.py`
+- Test: `gis-platform/backend/tests/test_geo_env.py`, `gis-platform/backend/tests/test_raster_import.py`
 - Create: `gis-platform/backend/tests/fixtures/raster.py`
 - Modify: `gis-platform/backend/tests/conftest.py`
 
 **Interfaces:**
 - Consumes: `save_upload` (Task 6); `layer_service.create_layer` (Task 4); `RasterFileSource`, `RasterStyle` (Task 3); `Settings.raster_dir` (Task 1).
 - Produces:
+  - `app.core.geo_env.configure_proj() -> Path | None` — points `PROJ_LIB`/`PROJ_DATA` at rasterio's bundled `proj_data` and returns the path used (or `None` if the bundle is absent). Invoked from `app/__init__.py` so it runs before any `app.*` module imports rasterio.
   - `app.services.raster_import_service.import_raster_file(session, project_id, upload, layer_name) -> Layer` — validates with rasterio, converts to COG when needed, stores under `settings.raster_dir`, creates the layer with `RasterFileSource` and a `RasterStyle` whose `rescale` is seeded from band statistics.
   - `app.services.raster_import_service.resolve_raster_path(source: RasterFileSource) -> Path` — resolves `source.path` **inside** `settings.raster_dir` and raises `InvalidRequestError` on escape. **Task 12 uses this.**
   - Endpoint `POST /projects/{project_id}/layers/import-raster` (multipart: `file`, optional `name`).
   - Test fixture `sample_geotiff(tmp_path) -> Path` in `tests/fixtures/raster.py` — a 64×64 uint8 single-band GeoTIFF in EPSG:4326 covering `[100, 30, 101, 31]`.
+
+- [ ] **Step 0a: Write the failing PROJ shim test**
+
+`gis-platform/backend/tests/test_geo_env.py`:
+
+```python
+import os
+import sysconfig
+from pathlib import Path
+
+from app.core.geo_env import configure_proj
+
+
+def test_points_proj_at_the_bundled_rasterio_database() -> None:
+    bundle = configure_proj()
+    expected = Path(sysconfig.get_paths()["purelib"]) / "rasterio" / "proj_data"
+    assert bundle == expected
+    assert (bundle / "proj.db").is_file()
+    assert os.environ["PROJ_LIB"] == str(expected)
+    assert os.environ["PROJ_DATA"] == str(expected)
+
+
+def test_is_idempotent() -> None:
+    first = configure_proj()
+    assert configure_proj() == first
+
+
+def test_rasterio_can_resolve_epsg_codes_after_configuration() -> None:
+    """The regression this shim exists for: a stale system PROJ_LIB makes
+    every rasterio CRS lookup raise CRSError."""
+    from rasterio.warp import transform_bounds
+
+    minx, miny, maxx, maxy = transform_bounds("EPSG:4326", "EPSG:3857", 100, 30, 101, 31)
+    assert 11_000_000 < minx < 11_300_000
+    assert 3_400_000 < miny < 3_600_000
+    assert maxx > minx
+    assert maxy > miny
+```
+
+- [ ] **Step 0b: Run it and confirm it fails**
+
+Run: `pytest tests/test_geo_env.py -v`
+Expected: FAIL — `ModuleNotFoundError: No module named 'app.core.geo_env'`.
+
+- [ ] **Step 0c: Implement the shim and invoke it from the package root**
+
+`gis-platform/backend/app/core/geo_env.py`:
+
+```python
+"""Make rasterio use the PROJ database shipped inside its own wheel.
+
+A system-wide ``PROJ_LIB`` left behind by an unrelated GDAL/PROJ install --
+PostgreSQL's bundled PostGIS is the usual culprit on Windows -- silently
+wins over the wheel's own data directory. Every rasterio CRS lookup then
+fails with "proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a
+number >= 6 is expected", which surfaces as an unhelpful CRSError deep
+inside raster import or tiling.
+
+This must run *before* rasterio is first imported: PROJ reads the variable
+while building its context, so setting it afterwards has no effect. That is
+why ``app/__init__.py`` calls it at package-import time rather than the
+FastAPI lifespan, which runs far too late.
+
+``pyproj`` (and therefore geopandas) is unaffected either way -- it resolves
+its own bundled data independently -- so this narrows to rasterio and
+rio-tiler.
+"""
+
+from __future__ import annotations
+
+import os
+import sysconfig
+from pathlib import Path
+
+
+def configure_proj() -> Path | None:
+    """Point PROJ at rasterio's bundled database. Returns the path, or None."""
+    bundle = Path(sysconfig.get_paths()["purelib"]) / "rasterio" / "proj_data"
+    if not (bundle / "proj.db").is_file():
+        return None
+    os.environ["PROJ_LIB"] = str(bundle)
+    os.environ["PROJ_DATA"] = str(bundle)
+    return bundle
+```
+
+`gis-platform/backend/app/__init__.py` — replace its (empty) contents with:
+
+```python
+"""GIS platform backend.
+
+The PROJ shim runs at package import, before any module can pull in
+rasterio. See app/core/geo_env.py for why the ordering matters.
+"""
+
+from app.core.geo_env import configure_proj
+
+configure_proj()
+```
+
+- [ ] **Step 0d: Run it and confirm it passes**
+
+Run: `pytest tests/test_geo_env.py -v`
+Expected: 3 passed.
+
+Then confirm the shim did not disturb anything already built: `pytest`
+Expected: every test from Tasks 1–6 still passes.
 
 - [ ] **Step 1: Add the raster test fixture**
 
