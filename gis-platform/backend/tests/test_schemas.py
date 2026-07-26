@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from app.schemas.layer import LayerCreate, LayerRead
+from app.schemas.layer import LayerCreate, LayerRead, LayerUpdate
 from app.schemas.source import MvtSource, PostgisSource, parse_source
 from app.schemas.style import (
     CategorizedRenderer,
@@ -125,3 +125,70 @@ def test_layer_read_serialises_camel_case_from_orm_attributes() -> None:
     assert dumped["featureCount"] == 42
     assert dumped["geometryType"] == "MULTILINESTRING"
     assert "z_index" not in dumped
+
+
+def test_layer_read_coerces_empty_orm_style_to_none() -> None:
+    """The ORM's `style` column defaults to `{}` (`app/models/layer.py`'s
+    `default=dict`), not `None`, for any layer whose style was never
+    explicitly set. `LayerRead` must resolve that the same way
+    `parse_style` does -- `{}` means "no style saved yet" -- instead of
+    failing discriminated-union validation with `union_tag_not_found`.
+    """
+
+    class FakeLayer:
+        id = "8b1b0e0e-0000-4000-8000-000000000000"
+        project_id = "8b1b0e0e-0000-4000-8000-000000000001"
+        name = "Roads"
+        kind = "vector"
+        source = {  # noqa: RUF012 -- plain test double, not a dataclass
+            "type": "postgis",
+            "schemaName": "gis_data",
+            "tableName": "roads",
+            "geometryColumn": "geometry",
+            "idColumn": "fid",
+            "srid": 4326,
+        }
+        style = {}  # noqa: RUF012 -- plain test double, not a dataclass
+        visible = True
+        opacity = 1.0
+        z_index = 0
+        extent = None
+        feature_count = None
+        srid = 4326
+        geometry_type = "MULTILINESTRING"
+
+    layer = LayerRead.model_validate(FakeLayer())
+    assert layer.style is None
+
+
+def test_layer_read_still_parses_a_real_style_from_orm_attributes() -> None:
+    class FakeLayer:
+        id = "8b1b0e0e-0000-4000-8000-000000000000"
+        project_id = "8b1b0e0e-0000-4000-8000-000000000001"
+        name = "Roads"
+        kind = "vector"
+        source = {  # noqa: RUF012 -- plain test double, not a dataclass
+            "type": "postgis",
+            "schemaName": "gis_data",
+            "tableName": "roads",
+            "geometryColumn": "geometry",
+            "idColumn": "fid",
+            "srid": 4326,
+        }
+        style = {"kind": "vector"}  # noqa: RUF012 -- plain test double, not a dataclass
+        visible = True
+        opacity = 1.0
+        z_index = 0
+        extent = None
+        feature_count = None
+        srid = 4326
+        geometry_type = "MULTILINESTRING"
+
+    layer = LayerRead.model_validate(FakeLayer())
+    assert isinstance(layer.style, VectorStyle)
+    assert layer.style.kind == "vector"
+
+
+def test_layer_update_coerces_empty_style_to_none() -> None:
+    payload = LayerUpdate.model_validate({"style": {}})
+    assert payload.style is None

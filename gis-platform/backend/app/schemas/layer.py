@@ -1,15 +1,26 @@
 from __future__ import annotations
 
 import uuid
-from typing import Literal
+from typing import Any, Literal
 
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator, model_validator
 
 from app.schemas.base import APIModel
 from app.schemas.source import LayerSource
-from app.schemas.style import StyleSpec, default_style_for
+from app.schemas.style import StyleSpec, default_style_for, parse_style
 
 LayerKind = Literal["vector", "raster", "vector_tile", "basemap"]
+
+
+def _coerce_style(value: Any) -> Any:
+    """Route a raw JSONB `style` dict through `parse_style` before union
+    validation, so `{}` ("no style saved yet") maps to `None` here exactly
+    like it does everywhere else `style` is read, instead of failing
+    discriminated-union validation with `union_tag_not_found`.
+    """
+    if isinstance(value, dict):
+        return parse_style(value)
+    return value
 
 
 class LayerCreate(APIModel):
@@ -33,6 +44,8 @@ class LayerUpdate(APIModel):
     visible: bool | None = None
     opacity: float | None = Field(default=None, ge=0.0, le=1.0)
 
+    _coerce_style = field_validator("style", mode="before")(_coerce_style)
+
 
 class LayerRead(APIModel):
     id: uuid.UUID
@@ -48,3 +61,5 @@ class LayerRead(APIModel):
     feature_count: int | None
     srid: int | None
     geometry_type: str | None
+
+    _coerce_style = field_validator("style", mode="before")(_coerce_style)
