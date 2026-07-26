@@ -1918,7 +1918,7 @@ async def test_delete_project_removes_it(client: AsyncClient) -> None:
     assert (await client.get(f"/api/v1/projects/{created['id']}")).status_code == 404
 ```
 
-Note: `test_list_projects_reports_layer_count` deliberately posts an **invalid** `kind` so the layer is rejected and the count stays 0 — it asserts the summary shape, not layer creation. Layer creation is covered next.
+Note: `test_list_projects_reports_layer_count` asserts the created layer is actually counted (`layerCount == 1`), and `test_list_projects_reports_zero_for_an_empty_project` covers the zero case separately. The pair matters because a summary that silently reports 0 would look identical to a summary computed from a broken aggregate.
 
 - [ ] **Step 2: Write the failing layer API test**
 
