@@ -23,6 +23,7 @@ These apply to **every** task. Do not restate them per task; do not violate them
 - **Error envelope:** every non-2xx response from application code is `{"error": {"code": str, "message": str, "details": object | null}}`. `code` is a stable snake_case string.
 - **CRS:** the wire is always **EPSG:4326** (GeoJSON, bbox params, extents). Vector tiles are **EPSG:3857**. Storage SRID is whatever the table declares; conversion happens in SQL at the boundary. Never assume 4326 storage.
 - **Dynamic SQL:** a SQL identifier that came from user input may only reach a query after passing `validate_identifier()` **and** being confirmed to exist in the catalog. Values are always bind parameters. There are no exceptions to this rule.
+- **Transactions — one request, one transaction, committed at the boundary (revised during Task 5):** services **never** call `session.commit()`. The request-scoped unit of work in `app/db/session.py` commits once on success and rolls back on exception, and every route depends on it through the shared alias `SessionDep = Annotated[AsyncSession, Depends(get_session, scope="function")]`. The `scope="function"` argument is load-bearing, not decoration: without it FastAPI tears the dependency down *after* the response is sent, so a failing commit is swallowed and the client receives a `2xx` describing data that was rolled back. Always take `session: SessionDep` in a route; never `Depends(get_session)` directly. Services use `flush()` / `refresh()` when they need generated values. This replaces the per-service commits shown in some later task code blocks — if a code block in this plan calls `await session.commit()` in a service, that call is obsolete; drop it and let the request boundary commit.
 - **Blocking I/O:** rasterio, geopandas, and pyogrio calls are blocking and must run via `anyio.to_thread.run_sync`. Never call them directly on the event loop.
 - **PROJ data (verified hazard on this machine):** a system-wide `PROJ_LIB` left behind by another GDAL/PROJ install makes **every rasterio CRS lookup fail** with `proj.db contains DATABASE.LAYOUT.VERSION.MINOR = 2 whereas a number >= 6 is expected`. Measured blast radius: `rasterio` and `rio-tiler` break; `pyproj`/`geopandas` are unaffected (they prefer their own bundled data). The remedy must run **before rasterio is first imported** — setting the variable afterwards does not help, because PROJ has already built its context. Task 7 installs the shim (`app/core/geo_env.py`, invoked from `app/__init__.py`); nothing before Task 7 imports rasterio, so earlier tasks are unaffected.
 - **Python version floors** (`pyproject.toml` uses floors; exact versions are frozen into `requirements.lock.txt` after install): `fastapi>=0.139`, `uvicorn[standard]>=0.51`, `pydantic>=2.13`, `pydantic-settings>=2.7`, `sqlalchemy>=2.0.36`, `alembic>=1.14`, `asyncpg>=0.30`, `psycopg[binary]>=3.2`, `geoalchemy2>=0.16`, `geopandas>=1.0`, `pyogrio>=0.10`, `shapely>=2.0`, `rasterio>=1.4`, `rio-tiler>=7.0`, `rio-cogeo>=5.3`, `psutil>=6.1`, `python-multipart>=0.0.20`. Dev: `pytest>=8.3`, `pytest-asyncio>=0.25`, `httpx>=0.28`, `ruff>=0.8`, `mypy>=1.14`.
@@ -3698,10 +3699,11 @@ async def import_vector_file(
             extent=stats["extent"],
             feature_count=stats["feature_count"],
         )
-        await session.commit()
-        await session.refresh(layer)
         return layer
     except Exception:
+        # The table was written on a separate SYNC connection and already
+        # committed, so the request-scoped rollback cannot undo it. Drop it
+        # explicitly or a failed import leaves an orphan table behind.
         logger.exception("Layer registration failed; dropping imported table %s", table_name)
         await anyio.to_thread.run_sync(_drop_table, table_name)
         raise
@@ -4183,10 +4185,9 @@ async def import_raster_file(
         layer = await layer_repository.update(
             session, layer, srid=4326, extent=info["extent"], geometry_type=None
         )
-        await session.commit()
-        await session.refresh(layer)
         return layer
     except Exception:
+        # The COG is already on disk and no database rollback removes it.
         target.unlink(missing_ok=True)
         raise
 ```
@@ -6981,7 +6982,6 @@ async def create_feature(
             "Insert violates a table constraint",
             details={"reason": str(exc.orig)[:300] if exc.orig else None},
         ) from exc
-    await session.commit()
     return Feature(id=row["fid"], geometry=row["geometry"], properties=row["properties"])
 
 
@@ -7012,7 +7012,6 @@ async def update_feature(
             f"Feature {feature_id} not found",
             details={"layerId": str(layer_id), "featureId": feature_id},
         )
-    await session.commit()
     return Feature(id=row["fid"], geometry=row["geometry"], properties=row["properties"])
 
 
@@ -7026,8 +7025,9 @@ async def delete_feature(
             f"Feature {feature_id} not found",
             details={"layerId": str(layer_id), "featureId": feature_id},
         )
-    await session.commit()
 ```
+
+**On the `await session.rollback()` calls in the error paths above:** they predate the request-scoped unit of work and are now redundant — raising any exception makes the request boundary roll back. Evaluate whether to keep them. Keeping one is defensible only where the session must be usable *after* the error (it is not here — every path raises immediately); otherwise a service reaching into transaction state contradicts the transaction constraint. Whichever you choose, say why in your report.
 
 - [ ] **Step 6: Add the routes**
 
