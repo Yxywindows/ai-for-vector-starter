@@ -85,3 +85,6 @@ async def client(db_session: AsyncSession) -> AsyncIterator[AsyncClient]:
     async with AsyncClient(transport=transport, base_url="http://test") as http_client:
         yield http_client
     app.dependency_overrides.clear()
+
+
+from tests.fixtures.spatial import seeded_spatial_table  # noqa: E402, F401
