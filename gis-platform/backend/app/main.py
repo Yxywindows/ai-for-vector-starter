@@ -9,6 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.router import api_router
+from app.api.v1.routes import health
 from app.core.config import Settings, get_settings
 from app.core.errors import register_exception_handlers
 from app.core.logging import configure_logging
@@ -41,6 +42,11 @@ def create_app() -> FastAPI:
     )
     register_exception_handlers(app)
     app.include_router(api_router, prefix=settings.api_prefix)
+    # Unversioned probe endpoint: container orchestrators and load balancers
+    # need a health check path that stays stable across an eventual
+    # /api/v2, so it is mounted bare in addition to the versioned one.
+    # Same handler, no prefix — this is wiring only.
+    app.include_router(health.router)
     return app
 
 

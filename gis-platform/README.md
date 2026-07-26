@@ -26,8 +26,16 @@ npm run dev -- --port 1317
 ```
 
 With the backend running, `curl http://localhost:1316/api/v1/health` returns
-`{"status":"ok","environment":"development"}`, and
+`{"status":"ok","environment":"development"}` (also reachable unversioned at
+`/health` for container/load-balancer probes), and
 `http://localhost:1316/docs` renders the interactive OpenAPI page.
+
+`pyproject.toml` pins dependency floors only; for a reproducible install run
+`pip install -r requirements.lock.txt && pip install -e . --no-deps` instead
+of `pip install -e ".[dev]"` to get the exact versions this module was built
+and tested against — regenerate the lock file after changing dependencies
+with `pip freeze | grep -v -E "^-e |gis[_-]platform[_-]backend" > requirements.lock.txt`
+(with the venv active and `.[dev]` installed).
 
 ## Directory structure
 
@@ -36,6 +44,7 @@ gis-platform/
 ├── README.md
 ├── backend/
 │   ├── pyproject.toml
+│   ├── requirements.lock.txt        # exact versions frozen from pip install -e ".[dev]"
 │   ├── .env.example
 │   ├── app/
 │   │   ├── __init__.py
