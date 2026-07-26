@@ -48,8 +48,6 @@ async def create_layer(session: AsyncSession, project_id: uuid.UUID, payload: La
         opacity=payload.opacity,
         z_index=await layer_repository.next_z_index(session, project_id),
     )
-    await session.commit()
-    await session.refresh(layer)
     return layer
 
 
@@ -71,15 +69,12 @@ async def update_layer(session: AsyncSession, layer_id: uuid.UUID, payload: Laye
         fields["opacity"] = payload.opacity
 
     layer = await layer_repository.update(session, layer, **fields)
-    await session.commit()
-    await session.refresh(layer)
     return layer
 
 
 async def delete_layer(session: AsyncSession, layer_id: uuid.UUID) -> None:
     layer = await get_layer_or_404(session, layer_id)
     await layer_repository.delete(session, layer)
-    await session.commit()
 
 
 async def reorder(
@@ -97,5 +92,4 @@ async def reorder(
             },
         )
     await layer_repository.set_z_indexes(session, project_id, layer_ids)
-    await session.commit()
     return await layer_repository.list_for_project(session, project_id)

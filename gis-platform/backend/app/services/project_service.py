@@ -23,8 +23,6 @@ async def create_project(session: AsyncSession, payload: ProjectCreate) -> Proje
     project = await project_repository.create(
         session, name=payload.name, view=payload.view.model_dump(by_alias=True)
     )
-    await session.commit()
-    await session.refresh(project)
     return project
 
 
@@ -46,12 +44,9 @@ async def update_project(
     if payload.view is not None:
         fields["view"] = payload.view.model_dump(by_alias=True)
     project = await project_repository.update(session, project, **fields)
-    await session.commit()
-    await session.refresh(project)
     return project
 
 
 async def delete_project(session: AsyncSession, project_id: uuid.UUID) -> None:
     project = await get_or_404(session, project_id)
     await project_repository.delete(session, project)
-    await session.commit()

@@ -1,5 +1,10 @@
+import pytest
 from httpx import AsyncClient
+from sqlalchemy import select, text
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.layer import Layer
+from app.repositories import catalog_repository
 from app.schemas.source import PostgisSource
 
 
@@ -81,6 +86,10 @@ async def test_register_rejects_an_unknown_geometry_column(
         },
     )
     assert response.status_code == 404
+    body = response.json()
+    assert body["error"]["code"] == "not_found"
+    # Proves verify_source's column check actually ran, not just its table check.
+    assert body["error"]["details"]["missing"] == ["shape"]
 
 
 async def test_register_rejects_an_injection_shaped_name(client: AsyncClient) -> None:
@@ -98,3 +107,87 @@ async def test_register_rejects_an_injection_shaped_name(client: AsyncClient) ->
     assert response.status_code == 422
     # And the platform tables are still there.
     assert (await client.get("/api/v1/projects")).status_code == 200
+
+
+async def test_register_rejects_a_table_with_unknown_srid(
+    client: AsyncClient, db_session: AsyncSession
+) -> None:
+    """A column declared plain `geometry(Point)`, with no SRID, is common for
+    externally-owned tables this endpoint exists to register — PostGIS
+    reports that as SRID 0 ("unknown"), which isn't a real projection and
+    can't be transformed to EPSG:4326. `register_table` must reject it with
+    a clear 422 instead of raising a raw error inside `ST_Transform` (for a
+    non-empty table) or silently persisting an SRID Pydantic would otherwise
+    reject on the very next read."""
+    await db_session.execute(text("DROP TABLE IF EXISTS gis_data.no_srid_table"))
+    await db_session.execute(
+        text(
+            "CREATE TABLE gis_data.no_srid_table (fid serial PRIMARY KEY, geometry geometry(Point))"
+        )
+    )
+    await db_session.flush()
+
+    project_id = (await client.post("/api/v1/projects", json={"name": "P"})).json()["id"]
+    response = await client.post(
+        f"/api/v1/projects/{project_id}/layers/from-postgis",
+        json={
+            "schemaName": "gis_data",
+            "tableName": "no_srid_table",
+            "geometryColumn": "geometry",
+            "idColumn": "fid",
+            "name": "NoSrid",
+        },
+    )
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "invalid_request"
+
+    remaining = (await db_session.execute(select(Layer))).scalars().all()
+    assert remaining == []
+
+
+async def test_register_table_is_atomic_when_extent_computation_fails(
+    client: AsyncClient,
+    seeded_spatial_table: PostgisSource,
+    db_session: AsyncSession,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`register_table` creates the layer row, then fills in its computed
+    stats (extent, feature count). Before this fix, `layer_service.create_layer`
+    committed on its own, so a failure after that point (a dropped connection,
+    a bad geometry, anything) left a persisted layer with no SRID and no
+    extent — unusable, and invisible as broken until something tried to read
+    it. `compute_extent_4326` is the natural seam to fail after the layer
+    row exists but before the request finishes."""
+
+    async def _boom(*_args: object, **_kwargs: object) -> None:
+        raise RuntimeError("computing extent failed")
+
+    monkeypatch.setattr(catalog_repository, "compute_extent_4326", _boom)
+
+    project_id = (await client.post("/api/v1/projects", json={"name": "P"})).json()["id"]
+
+    with pytest.raises(RuntimeError, match="computing extent failed"):
+        await client.post(
+            f"/api/v1/projects/{project_id}/layers/from-postgis",
+            json={
+                "schemaName": "gis_data",
+                "tableName": "test_cities",
+                "geometryColumn": "geometry",
+                "idColumn": "fid",
+                "name": "Cities",
+            },
+        )
+
+    # The `client` fixture's session override intentionally never commits —
+    # the outer per-test transaction rollback is the whole isolation
+    # mechanism (see conftest.py) — so unlike a real request it does not
+    # roll back on failure either; that is `get_session`'s job in
+    # production, and it never runs here because the override replaces it
+    # wholesale. Roll back explicitly to observe what a real request
+    # boundary would have left behind: if `register_table` is properly
+    # atomic, this undoes the entire failed request, including the layer
+    # row created before the extent computation blew up.
+    await db_session.rollback()
+
+    remaining = (await db_session.execute(select(Layer))).scalars().all()
+    assert remaining == []

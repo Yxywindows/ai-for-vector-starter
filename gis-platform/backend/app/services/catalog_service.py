@@ -4,7 +4,7 @@ import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.errors import NotFoundError
+from app.core.errors import InvalidRequestError, NotFoundError
 from app.models.layer import Layer
 from app.repositories import catalog_repository, layer_repository
 from app.schemas.catalog import GeometryTableInfo, RegisterTableRequest
@@ -69,16 +69,42 @@ async def register_table(
             },
         )
 
-    source = probe.model_copy(update={"srid": int(metadata["srid"])})
-    extent = await catalog_repository.compute_extent_4326(session, source)
-    feature_count = await catalog_repository.count_rows(session, source)
+    srid = int(metadata["srid"])
+    if srid < 1:
+        raise InvalidRequestError(
+            f"Table {request.schema_name}.{request.table_name} has an unknown SRID "
+            f"({srid}); declare one before registering it.",
+            details={
+                "schemaName": request.schema_name,
+                "tableName": request.table_name,
+                "geometryColumn": request.geometry_column,
+            },
+        )
 
+    # Rebuild rather than `probe.model_copy(update=...)`: model_copy does not
+    # re-validate, and PostgisSource.srid requires >= 1 (Field(ge=1)) — the
+    # copy would silently carry an SRID Pydantic itself would have rejected.
+    source = PostgisSource(
+        schema_name=request.schema_name,
+        table_name=request.table_name,
+        geometry_column=request.geometry_column,
+        id_column=request.id_column,
+        srid=srid,
+    )
+
+    # Create the layer row first, then fill in its computed stats. If the
+    # extent/count queries fail after this point, the whole request rolls
+    # back as one unit (see `get_session`) — no half-registered layer.
     layer = await layer_service.create_layer(
         session,
         project_id,
         LayerCreate(name=request.name, kind="vector", source=source),
     )
-    layer = await layer_repository.update(
+
+    extent = await catalog_repository.compute_extent_4326(session, source)
+    feature_count = await catalog_repository.count_rows(session, source)
+
+    return await layer_repository.update(
         session,
         layer,
         srid=source.srid,
@@ -86,6 +112,3 @@ async def register_table(
         extent=extent,
         feature_count=feature_count,
     )
-    await session.commit()
-    await session.refresh(layer)
-    return layer

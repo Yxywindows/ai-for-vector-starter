@@ -20,6 +20,19 @@ SessionLocal = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSe
 
 
 async def get_session() -> AsyncIterator[AsyncSession]:
-    """FastAPI dependency. One session per request; commit is the service's job."""
+    """FastAPI dependency and the request's unit of work.
+
+    One session per request. Services flush/refresh for visibility within
+    the request but never commit — this is the only place that does, so a
+    request that writes to more than one table (e.g. registering a PostGIS
+    table creates a layer row, then updates it with extent/count) commits
+    or rolls back as a single unit. A failure partway through leaves
+    nothing behind instead of a half-written row.
+    """
     async with SessionLocal() as session:
-        yield session
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
