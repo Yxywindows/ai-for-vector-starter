@@ -8,7 +8,7 @@ rolled back, so tests never see each other's rows.
 
 from __future__ import annotations
 
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Iterator
 
 import pytest
 import pytest_asyncio
@@ -87,4 +87,20 @@ async def client(db_session: AsyncSession) -> AsyncIterator[AsyncClient]:
     app.dependency_overrides.clear()
 
 
+@pytest.fixture(autouse=True)
+def _clean_raster_dir() -> Iterator[None]:
+    """Imported COGs land under `settings.raster_dir`, outside the database
+    transaction that per-test rollback otherwise handles -- without this,
+    every raster-import test would leave a file behind permanently. Only
+    files created *during* the test are removed; anything already present
+    (e.g. from a previous, non-test run of the app) is left alone."""
+    raster_dir = get_settings().raster_dir
+    before = set(raster_dir.glob("*")) if raster_dir.exists() else set()
+    yield
+    if raster_dir.exists():
+        for path in set(raster_dir.glob("*")) - before:
+            path.unlink(missing_ok=True)
+
+
+from tests.fixtures.raster import sample_geotiff, sample_geotiff_no_crs  # noqa: E402, F401
 from tests.fixtures.spatial import seeded_spatial_table  # noqa: E402, F401
