@@ -102,5 +102,10 @@ def _clean_raster_dir() -> Iterator[None]:
             path.unlink(missing_ok=True)
 
 
-from tests.fixtures.raster import sample_geotiff, sample_geotiff_no_crs  # noqa: E402, F401
+from tests.fixtures.raster import (  # noqa: E402, F401
+    sample_geotiff,
+    sample_geotiff_all_nodata,
+    sample_geotiff_no_crs,
+    sample_geotiff_not_a_cog,
+)
 from tests.fixtures.spatial import seeded_spatial_table  # noqa: E402, F401

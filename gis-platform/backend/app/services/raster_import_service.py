@@ -12,12 +12,14 @@ from __future__ import annotations
 import logging
 import shutil
 import uuid
+import warnings
 from pathlib import Path
 from typing import Any
 
 import anyio
 import rasterio
 from fastapi import UploadFile
+from rasterio.errors import RasterioDeprecationWarning
 from rasterio.warp import transform_bounds
 from rio_cogeo.cogeo import cog_translate, cog_validate
 from rio_cogeo.profiles import cog_profiles
@@ -68,10 +70,29 @@ def _inspect_and_normalise(saved: Path, target: Path) -> dict[str, Any]:
             )
             band_count = int(dataset.count)
             nodata = None if dataset.nodata is None else float(dataset.nodata)
-            # `Dataset.statistics()` is deprecated in favour of `.stats()`,
-            # which also reads every band in one call instead of one open
-            # `statistics()` call per band.
-            stats = dataset.stats(indexes=dataset.indexes, approx=True)
+            # Deliberately `.statistics()`, not the newer `.stats()`: both
+            # call the same GDAL function, but `.stats()` discards GDAL's
+            # return code, so a band GDAL cannot compute statistics for
+            # (e.g. all pixels equal nodata) comes back as a *successful*
+            # Statistics(min=0, max=0, ...) instead of raising -- verified
+            # empirically against an all-nodata fixture. `.statistics()`
+            # wraps the same failure in a catchable `StatisticsError`,
+            # which the `except Exception` below turns into the same
+            # `UpstreamDataError` the CRS check above raises, so a raster
+            # that cannot be scaled fails exactly like one that cannot be
+            # placed on a map, instead of succeeding with a bogus rescale
+            # range.
+            #
+            # `.statistics()` is deprecated in favour of `.stats()`, but
+            # `RasterioDeprecationWarning` subclasses `FutureWarning`, not
+            # `DeprecationWarning` (confirmed via its `__mro__`), so it
+            # never trips this project's `filterwarnings =
+            # ["error::DeprecationWarning"]`. It is suppressed here purely
+            # to keep logs/test output free of noise for a warning this
+            # comment already explains.
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", RasterioDeprecationWarning)
+                band_stats = [dataset.statistics(band, approx=True) for band in dataset.indexes]
     except UpstreamDataError:
         raise
     except Exception as exc:
@@ -96,7 +117,7 @@ def _inspect_and_normalise(saved: Path, target: Path) -> dict[str, Any]:
         "band_count": band_count,
         "nodata": nodata,
         "extent": [float(value) for value in bounds_4326],
-        "rescale": [(float(stat.min), float(stat.max)) for stat in stats],
+        "rescale": [(float(stat.min), float(stat.max)) for stat in band_stats],
     }
 
 

@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 import rasterio
 from httpx import AsyncClient
+from rio_cogeo.cogeo import cog_validate
 
 from app.core.config import get_settings
 from app.core.errors import InvalidRequestError
@@ -64,6 +65,59 @@ async def test_import_rejects_a_raster_without_a_crs(
     )
     assert response.status_code == 502
     assert response.json()["error"]["code"] == "upstream_data_error"
+
+
+async def test_import_rejects_a_raster_whose_statistics_cannot_be_computed(
+    client: AsyncClient, project_id: str, sample_geotiff_all_nodata: Path
+) -> None:
+    """An all-nodata band gives GDAL no valid pixels anywhere to compute
+    min/max/mean from. This has a real CRS, so it must fail for a
+    different reason than `test_import_rejects_a_raster_without_a_crs`:
+    a clean 502, not a 201 with a bogus (min=0, max=0) rescale range, and
+    with no layer row or orphaned COG left behind."""
+    settings = get_settings()
+    before = set(settings.raster_dir.glob("*")) if settings.raster_dir.exists() else set()
+
+    response = await client.post(
+        f"/api/v1/projects/{project_id}/layers/import-raster",
+        files={"file": ("allnodata.tif", sample_geotiff_all_nodata.read_bytes(), "image/tiff")},
+    )
+    assert response.status_code == 502
+    assert response.json()["error"]["code"] == "upstream_data_error"
+
+    after = set(settings.raster_dir.glob("*")) if settings.raster_dir.exists() else set()
+    assert after == before
+
+    layers = (await client.get(f"/api/v1/projects/{project_id}/layers")).json()
+    assert layers == []
+
+
+async def test_import_converts_a_non_cog_raster(
+    client: AsyncClient, project_id: str, sample_geotiff_not_a_cog: Path
+) -> None:
+    """`sample_geotiff` (64x64) is small enough that GDAL's COG validator
+    accepts it as-is, so it never exercises the `cog_translate` branch --
+    the namesake feature of this task. `sample_geotiff_not_a_cog` is
+    600x600 and left untiled, which the validator genuinely rejects, so
+    this forces the real conversion path and proves its output passes
+    validation rather than merely trusting `isCog=True` on the wire."""
+    response = await client.post(
+        f"/api/v1/projects/{project_id}/layers/import-raster",
+        files={
+            "file": (
+                "large.tif",
+                sample_geotiff_not_a_cog.read_bytes(),
+                "image/tiff",
+            )
+        },
+    )
+    assert response.status_code == 201, response.text
+    layer = response.json()
+    assert layer["source"]["isCog"] is True
+
+    path = get_settings().raster_dir / Path(layer["source"]["path"]).name
+    is_valid, errors, _warnings = cog_validate(path, quiet=True)
+    assert is_valid, errors
 
 
 async def test_import_rejects_a_non_raster_extension(client: AsyncClient, project_id: str) -> None:
