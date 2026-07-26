@@ -39,6 +39,24 @@ async def test_duplicate_layer_name_in_project_is_a_conflict(
     assert duplicate.json()["error"]["code"] == "conflict"
 
 
+async def test_patch_layer_rename_to_duplicate_name_is_a_conflict(
+    client: AsyncClient, project_id: str
+) -> None:
+    """Task 4 note: the (project_id, name) uniqueness check must cover rename,
+    not just create — otherwise PATCH would raise a raw IntegrityError 500
+    instead of the conflict envelope."""
+    await client.post(f"/api/v1/projects/{project_id}/layers", json=BASEMAP)
+    other = (
+        await client.post(
+            f"/api/v1/projects/{project_id}/layers", json={**BASEMAP, "name": "Other"}
+        )
+    ).json()
+
+    response = await client.patch(f"/api/v1/layers/{other['id']}", json={"name": "OSM"})
+    assert response.status_code == 409
+    assert response.json()["error"]["code"] == "conflict"
+
+
 async def test_patch_layer_updates_visibility_opacity_and_style(
     client: AsyncClient, project_id: str
 ) -> None:
