@@ -205,8 +205,32 @@ async def client(db_session: AsyncSession) -> AsyncIterator[AsyncClient]:
 ## Migrations
 
 Schema changes go through Alembic, never `Base.metadata.create_all` against
-a real database (that's only for the test engine's throwaway schema). The
-standing rule for every migration, proven for `0001_initial_schema.py`:
+a real database (that's only for the test engine's throwaway schema).
+
+**One-time bootstrap on a fresh database.** `env.py` sets
+`version_table_schema=VERSION_SCHEMA` so Alembic's own bookkeeping table
+lives inside `gis`, alongside the tables it tracks — but Alembic creates
+that bookkeeping table *before* running any migration, so on a database
+that has never run a migration, the `gis` schema needs to already exist
+(see the README Quickstart for the exact command). The migration's own
+`CREATE SCHEMA IF NOT EXISTS "gis"` still runs on every `upgrade head`
+after that — it's what makes redeploying onto a database that already has
+the schema, or recreating it after a `downgrade base`, work without
+this bootstrap step.
+
+Separately, this project's database user happens to be named `gis` — the
+same as the metadata schema. Postgres's default `search_path` is
+`"$user", public, ...`, so without neutralizing that (`ALTER ROLE gis SET
+search_path TO public`, also in the README), every object in `gis` is this
+connection's *default* schema, and Postgres reflection reports it as
+schema-less. That's invisible for normal queries (this app always
+schema-qualifies), but it makes `alembic revision --autogenerate` report a
+false-positive drop/recreate of the `layer` → `project` foreign key on
+every run, because the model's `Layer.project_id` explicitly targets
+`"gis.project.id"` while the reflected, already-migrated table reports no
+schema at all for that same reference.
+
+The standing rule for every migration, proven for `0001_initial_schema.py`:
 
 ```bash
 alembic upgrade head
