@@ -12,9 +12,8 @@ like QGIS offers, delivered over HTTP so any browser can use it.
 # 1. PostGIS (port 5401) + pgAdmin (port 5051)
 docker compose up -d postgres
 
-# 2. One-time database bootstrap (fresh volume only — see note below)
-docker compose exec postgres psql -U gis -d gis_platform -c 'CREATE SCHEMA IF NOT EXISTS "gis";'
-docker compose exec postgres psql -U gis -d gis_platform -c "ALTER ROLE gis SET search_path TO public;"
+# 2. Test database (the only manual bootstrap step — Alembic's migration
+#    connection handles its own schema/search_path setup automatically)
 docker compose exec postgres psql -U gis -d postgres -c "CREATE DATABASE gis_platform_test OWNER gis;"
 
 # 3. Backend API (port 1316)
@@ -36,19 +35,18 @@ With the backend running, `curl http://localhost:1316/api/v1/health` returns
 `/health` for container/load-balancer probes), and
 `http://localhost:1316/docs` renders the interactive OpenAPI page.
 
-**Why step 2 is needed on a fresh volume:** Alembic's `version_table_schema`
-setting (see `docs/02-spatial-data-model.md`) requires the `gis` schema to
-already exist before it can create its own bookkeeping table, so the very
-first `alembic upgrade head` against an empty database needs that schema
-pre-created — the migration that *creates* `gis` can't also be the thing
-that creates the schema its own version tracking lives in. The `ALTER ROLE`
-is needed because this project's database user is, coincidentally, also
-named `gis`: Postgres's default `search_path` starts with `"$user"`, so
-without this the connection's default schema *is* `gis`, and Postgres
-silently reports objects in it as schema-less — which makes `alembic
-revision --autogenerate` report false-positive drift on every foreign key.
-Both are one-time, persisted in the `gis_platform_pgdata` volume; they only
-need re-running after `docker compose down -v` wipes that volume.
+`alembic upgrade head` works unattended against a genuinely fresh database —
+no manual `CREATE SCHEMA` and no role-level `search_path` change required.
+`migrations/env.py` creates the `gis` schema itself before configuring the
+migration context (see `docs/02-spatial-data-model.md` for why that has to
+happen before Alembic's own bookkeeping table can be created), and gives its
+own connection an explicit `search_path` instead of depending on server-side
+role state — this project's database user happens to be named `gis`, same as
+the metadata schema, which would otherwise make Postgres treat `gis` as that
+connection's default schema and silently corrupt `alembic
+revision --autogenerate`'s diff. Both fixes are scoped to the migration
+connection only; they never touch role configuration, so raw SQL run by the
+import pipeline (Tasks 5, 6, 9) over its own connections is unaffected.
 
 Run the backend test suite (Task 2 onward) against the dedicated test
 database, never the dev one:
@@ -110,6 +108,7 @@ gis-platform/
 │   └── tests/
 │       ├── __init__.py
 │       ├── conftest.py              # db_session, client fixtures
+│       ├── test_alembic_env.py      # include_object autogenerate-scope tests
 │       ├── test_errors.py
 │       ├── test_health.py
 │       └── test_models.py
