@@ -178,16 +178,15 @@ async def test_register_table_is_atomic_when_extent_computation_fails(
             },
         )
 
-    # The `client` fixture's session override intentionally never commits —
-    # the outer per-test transaction rollback is the whole isolation
-    # mechanism (see conftest.py) — so unlike a real request it does not
-    # roll back on failure either; that is `get_session`'s job in
-    # production, and it never runs here because the override replaces it
-    # wholesale. Roll back explicitly to observe what a real request
-    # boundary would have left behind: if `register_table` is properly
-    # atomic, this undoes the entire failed request, including the layer
-    # row created before the extent computation blew up.
-    await db_session.rollback()
-
+    # The `client` fixture's session override wraps each request in its own
+    # `db_session.begin_nested()` (see conftest.py) to mirror `get_session`'s
+    # real commit-on-success/rollback-on-exception contract, so the failed
+    # `POST .../layers/from-postgis` above was already rolled back to that
+    # request's own SAVEPOINT by the time `pytest.raises` caught the
+    # RuntimeError — including the layer row `create_layer` had written
+    # before `compute_extent_4326` blew up. No explicit rollback is needed
+    # here to observe that: if `register_table` were not atomic, the layer
+    # row would already be gone from `db_session`'s point of view before
+    # this assertion even runs.
     remaining = (await db_session.execute(select(Layer))).scalars().all()
     assert remaining == []

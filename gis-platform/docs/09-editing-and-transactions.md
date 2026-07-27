@@ -475,20 +475,35 @@ async def test_a_rejected_edit_leaves_the_row_unchanged(
     assert body["rows"][0]["population"] == 21540000
 ```
 
-If the guard order were wrong — properties written before geometry is
-validated — this test would catch it directly: `population` would read back
-as `1`, not the seeded `21540000`. That is not a hypothetical; reordering
-the code to write `population` first and validate geometry second (as a
-deliberate check while building this module) makes this exact assertion
-fail with `assert 1 == 21540000`. The test is not merely checking that the
-`PATCH` returned an error status — it re-reads the row through a completely
-independent path (`GET /attributes`, in a separate service module) and
-confirms the value PostgreSQL actually holds never moved.
+This is not, despite an earlier draft of this chapter claiming otherwise,
+a test of `edit_service.py`'s *own* guard ordering. It was written to be
+one — the reasoning was "properties are written before geometry is
+validated" would leave `population` at `1`. That was true under an earlier
+version of `tests/conftest.py`'s `client` fixture, where a failed request's
+writes stayed visible in the shared session because nothing rolled them
+back. It stopped being true the moment that fixture started wrapping each
+request in its own `session.begin_nested()` (the section above): reordering
+`update_feature` to write `population` before validating geometry — checked
+directly, by making that exact change and running this exact test — still
+passes. The mutated write happens, `_validated_geojson` then raises, the
+request boundary (the fixture's SAVEPOINT in tests, `get_session`'s real
+rollback in production) unwinds everything done in that request including
+the mutated write, and the follow-up `GET` still reads `21540000`. Guard
+*order* inside this module is good practice — it avoids attempting a write
+Postgres would only reject anyway — but it is not what makes "a rejected
+edit leaves the row unchanged" true. The request boundary is what makes
+that true, unconditionally, regardless of what order this module's
+functions run in.
+
+What this test does prove, correctly: a `PATCH` that both changes an
+attribute and supplies a broken geometry leaves the row exactly as it was,
+re-read through a completely independent path (`GET /attributes`, in a
+separate service module) rather than trusting the `PATCH` response's error
+status alone.
 
 That test, like every other test in `tests/test_editing_api.py`, goes
 through `conftest.py`'s `client` fixture — the test-only override just
-described, not the real `get_session`. That is a meaningful gap: it proves
-this module's *own* ordering is correct, but nothing in the suite had ever
+described, not the real `get_session`. Nothing in the suite had ever
 exercised the production rollback-on-exception path — `get_session`'s own
 `except Exception: await session.rollback(); raise` — through an actual
 editing route. `tests/test_session.py::test_an_unhandled_error_after_a_write_rolls_back_that_write`
@@ -500,10 +515,21 @@ nothing to do with the database — a monkeypatched `Feature(...)` raising
 It then checks row survival through `engine.connect()`, a connection with
 no relationship at all to the one the request used, so a `count() == 0`
 there is only possible if the request's write was genuinely rolled back at
-the database, not merely uncommitted within some still-open session. Run
-without the monkeypatch, the same request commits and the count is `1` —
-confirming the probe would actually catch a regression rather than always
-reading zero.
+the database, not merely uncommitted within some still-open session.
+
+`count() == 0` alone still leaves one gap: it reads the same whether the
+`INSERT` ran and was rolled back, or `insert_feature` was never reached at
+all — a refactor moving `Feature(...)` ahead of it in `create_feature`
+would make the test pass vacuously, for the wrong reason. The test closes
+that gap too, using a property specific to Postgres: `serial` sequences are
+not transactional, so a value `nextval()` hands out during a rolled-back
+`INSERT` is never returned. The test primes the table's sequence once,
+records its position, runs the monkeypatched request, and asserts the
+sequence *advanced* even though the row did not persist — direct evidence
+the `INSERT` statement genuinely executed, not just that the final state
+looks as if it hadn't. Checked directly: reproducing the "`Feature(...)`
+moved ahead of the `INSERT`" refactor makes `count() == 0` pass exactly as
+before, but fails this sequence assertion with `assert 1 > 1`.
 
 ## What is deliberately missing
 

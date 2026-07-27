@@ -142,8 +142,21 @@ async def test_an_unhandled_error_after_a_write_rolls_back_that_write(
     no override -- and checks that a completely unrelated failure (a bug in
     building the response, well after `edit_service.create_feature`'s
     INSERT has already executed) still leaves the row unwritten.
+
+    `count(*) == 0` on its own is a weaker check than it looks: it is
+    equally true whether the INSERT ran and got rolled back (what this test
+    means to prove) or `insert_feature` was never reached at all -- a
+    refactor moving `Feature(...)` ahead of it in `create_feature` would
+    make this test pass vacuously, for the wrong reason, with no signal
+    that anything had changed. Postgres's `serial` sequences are not
+    transactional, though: a value `nextval()` hands out is never returned,
+    even when the statement that consumed it rolls back. Checking that the
+    sequence *advanced* despite the row not persisting is direct proof the
+    INSERT statement actually executed -- not just that the final state
+    looks as if it never had.
     """
     table = 'gis_data."test_session_rollback_probe"'
+    sequence = "gis_data.test_session_rollback_probe_fid_seq"
     async with engine.begin() as conn:
         await conn.execute(text(f"DROP TABLE IF EXISTS {table}"))
         await conn.execute(
@@ -152,6 +165,17 @@ async def test_an_unhandled_error_after_a_write_rolls_back_that_write(
                 "(fid serial PRIMARY KEY, name text NOT NULL, geometry geometry(Point, 4326))"
             )
         )
+        # `last_value` reads the same before and after the *first-ever*
+        # nextval() call (both are 1) -- only `is_called` distinguishes
+        # them. Priming the sequence once, committed, means every
+        # comparison below is a plain "did this number get bigger" check.
+        await conn.execute(text(f"SELECT nextval('{sequence}')"))
+
+    async def _sequence_position() -> int:
+        async with engine.connect() as conn:
+            return int(
+                (await conn.execute(text(f"SELECT last_value FROM {sequence}"))).scalar_one()
+            )
 
     app = create_app()
     project_id: str | None = None
@@ -175,6 +199,8 @@ async def test_an_unhandled_error_after_a_write_rolls_back_that_write(
                     )
                 ).json()
 
+                before_seq = await _sequence_position()
+
                 def _boom(*args: object, **kwargs: object) -> None:
                     raise RuntimeError("response construction failed")
 
@@ -195,6 +221,9 @@ async def test_an_unhandled_error_after_a_write_rolls_back_that_write(
         async with engine.connect() as conn:
             count = (await conn.execute(text(f"SELECT count(*) FROM {table}"))).scalar_one()
         assert count == 0
+
+        after_seq = await _sequence_position()
+        assert after_seq > before_seq  # the INSERT ran; only its effect was undone
     finally:
         if project_id is not None:
             async with engine.begin() as conn:
