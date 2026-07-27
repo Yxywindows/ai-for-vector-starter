@@ -6303,7 +6303,15 @@ TILE_SIZE = 256
 
 
 def open_reader(key: str) -> Reader:
-    """Pool factory. `key` is the absolute path of a raster on disk."""
+    """Pool factory. `key` is the absolute path of a raster on disk.
+
+    NOTE: `DatasetPool._checkout` calls this synchronously **while holding the
+    pool's global guard**, so a slow `Reader(...)` open blocks every other
+    key's checkout — not just this key's. Task 11's pool deliberately keeps
+    different keys independent, and a blocking factory partially undoes that.
+    See the task step below: the open must not run on the event loop under the
+    guard.
+    """
     return Reader(key)
 
 
@@ -6390,6 +6398,35 @@ async def band_statistics(session: AsyncSession, layer_id: uuid.UUID) -> RasterS
     async with get_raster_pool().acquire(path) as reader:
         return await anyio.to_thread.run_sync(_read, reader)
 ```
+
+- [ ] **Step 4b: Keep a slow raster open from blocking every other layer**
+
+Raised by the Task 11 review and carried forward: `DatasetPool._checkout` calls
+the factory synchronously while holding the pool's global `_guard`. With the
+Task 11 placeholder that was harmless (it raised immediately), but `Reader(path)`
+does real file I/O — parsing the header, the tiling scheme and the overview
+table. Opening one large or network-backed raster would therefore stall the
+checkout of **every** key, undoing the "different keys do not block each other"
+property Task 11's strengthened test protects.
+
+Fix it in the pool, not by working around it here:
+
+- In `app/resources/dataset_pool.py`, make `_checkout` await the factory off the
+  event loop instead of calling it under the guard. `anyio.to_thread.run_sync`
+  is already the project's idiom for blocking work. The guard must not be held
+  across that await — re-check for a racing insert on the same key after the
+  factory returns, and if another coroutine won the race, close the loser's
+  handle with `self._closer` rather than leaking it.
+- Keep `factory` a plain synchronous `Callable[[str], T]`; the pool owns the
+  threading decision, not its callers.
+- Add a test proving it: a factory that blocks on a `threading.Event` for one
+  key must not delay a *different* key's checkout. Model it on the rewritten
+  `test_different_keys_do_not_block_each_other` — gate on an event and assert
+  the other key completes, rather than asserting elapsed milliseconds.
+- Re-run the Task 11 pool tests; all of them must still pass, including
+  exclusivity, in-use-eviction safety and the ghost-entry case. The ghost-entry
+  test matters most here: a factory that throws must still leave nothing behind
+  now that insertion happens after an await.
 
 - [ ] **Step 5: Add the routes**
 
