@@ -73,6 +73,33 @@ async def test_import_geojson_creates_a_layer_backed_by_a_new_table(
     assert layer["extent"][0] == pytest.approx(91.1409, abs=1e-4)
 
 
+async def test_imported_layer_accepts_a_created_feature(
+    client: AsyncClient, project_id: str
+) -> None:
+    """The import must leave `fid` self-assigning, or Task 13's create path
+    fails on every imported layer with a NOT NULL violation."""
+    layer = (
+        await client.post(
+            f"/api/v1/projects/{project_id}/layers/import",
+            files={"file": ("cities.geojson", json.dumps(GEOJSON), "application/geo+json")},
+        )
+    ).json()
+    response = await client.post(
+        f"/api/v1/layers/{layer['id']}/features",
+        json={
+            "geometry": {"type": "Point", "coordinates": [87.6, 43.8]},
+            "properties": {"name": "Urumqi", "population": 4054000},
+        },
+    )
+    assert response.status_code == 201, response.text
+    created = response.json()
+    # The generated fid must not collide with the imported rows' 0..n-1 ids.
+    assert created["properties"]["name"] == "Urumqi"
+    rows = (await client.get(f"/api/v1/layers/{layer['id']}/attributes")).json()
+    assert rows["total"] == 3
+    assert len({row["fid"] for row in rows["rows"]}) == 3
+
+
 async def test_imported_table_is_queryable_through_the_catalog(
     client: AsyncClient, project_id: str
 ) -> None:
