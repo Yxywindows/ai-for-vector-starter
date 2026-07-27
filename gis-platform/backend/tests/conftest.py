@@ -81,9 +81,12 @@ async def client(db_session: AsyncSession) -> AsyncIterator[AsyncClient]:
         yield db_session
 
     app.dependency_overrides[get_session] = _override
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as http_client:
-        yield http_client
+    # httpx's ASGITransport does not run the app's lifespan, but /system/memory
+    # needs the raster pool the lifespan creates -- drive it manually here.
+    async with app.router.lifespan_context(app):
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as http_client:
+            yield http_client
     app.dependency_overrides.clear()
 
 

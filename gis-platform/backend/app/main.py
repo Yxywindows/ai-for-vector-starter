@@ -13,6 +13,7 @@ from app.api.v1.routes import health
 from app.core.config import Settings, get_settings
 from app.core.errors import register_exception_handlers
 from app.core.logging import configure_logging
+from app.resources.dataset_pool import DatasetPool, get_raster_pool, set_raster_pool
 
 
 @asynccontextmanager
@@ -20,7 +21,21 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings: Settings = get_settings()
     settings.raster_dir.mkdir(parents=True, exist_ok=True)
     settings.upload_tmp_dir.mkdir(parents=True, exist_ok=True)
-    yield
+
+    from app.services.raster_tile_service import close_reader, open_reader
+
+    set_raster_pool(
+        DatasetPool(
+            factory=open_reader,
+            closer=close_reader,
+            max_open=settings.raster_pool_max_open,
+            idle_ttl=settings.raster_pool_idle_ttl_seconds,
+        )
+    )
+    try:
+        yield
+    finally:
+        await get_raster_pool().close_all()
 
 
 def create_app() -> FastAPI:
