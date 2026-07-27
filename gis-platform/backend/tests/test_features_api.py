@@ -128,10 +128,17 @@ async def test_reprojects_from_a_non_4326_table(
             """
         )
     )
+    # Beijing (116.4074, 39.9042 in EPSG:4326), stored pre-transformed into
+    # EPSG:3857 metres (roughly x=12,957,700 / y=4,852,900). The origin
+    # (0, 0) is a fixed point of the Mercator transform -- identical numbers
+    # in both CRSs -- so it can't distinguish a real ST_Transform from a
+    # relabel-only ST_SetSRID. A real city can: its 3857 coordinates are
+    # numerically nothing like its 4326 degrees, so only a query whose
+    # envelope was actually reprojected into metres will overlap this point.
     await db_session.execute(
         text(
             "INSERT INTO gis_data.test_webmerc (name, geometry) VALUES "
-            "('Origin', ST_SetSRID(ST_MakePoint(0, 0), 3857))"
+            "('Beijing', ST_Transform(ST_SetSRID(ST_MakePoint(116.4074, 39.9042), 4326), 3857))"
         )
     )
     await db_session.flush()
@@ -151,8 +158,20 @@ async def test_reprojects_from_a_non_4326_table(
     ).json()
     assert layer["srid"] == 3857
 
+    # A ~2km box around Beijing, expressed in EPSG:4326 degrees. A
+    # relabel-only implementation would treat these degree values as if
+    # they were already metres -- a box a few centimetres wide sitting near
+    # 3857's origin -- and miss the stored point (~12.9 million metres away)
+    # entirely: `returned` would be 0, not 1.
     body = (
-        await client.get(f"/api/v1/layers/{layer['id']}/features", params={"bbox": "-1,-1,1,1"})
+        await client.get(
+            f"/api/v1/layers/{layer['id']}/features",
+            params={"bbox": "116.40,39.90,116.42,39.91"},
+        )
     ).json()
     assert body["returned"] == 1
-    assert body["features"][0]["geometry"]["coordinates"] == pytest.approx([0.0, 0.0], abs=1e-9)
+    # A tolerance this tight also rules out a metre-valued coordinate
+    # (~12,957,700) slipping through as if it were degrees.
+    assert body["features"][0]["geometry"]["coordinates"] == pytest.approx(
+        [116.4074, 39.9042], abs=1e-4
+    )
