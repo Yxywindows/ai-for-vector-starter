@@ -66,3 +66,17 @@ class FeatureCollection(APIModel):
     truncated: bool = Field(
         description="True when more features intersect the bbox than the cap allowed"
     )
+
+
+class FeatureWrite(APIModel):
+    """Body for POST /features. Geometry is required on create."""
+
+    geometry: dict[str, Any]
+    properties: dict[str, Any] = Field(default_factory=dict)
+
+
+class FeaturePatch(APIModel):
+    """Body for PATCH. Omitting a key means 'leave it alone'; both omitted is an error."""
+
+    geometry: dict[str, Any] | None = None
+    properties: dict[str, Any] | None = None

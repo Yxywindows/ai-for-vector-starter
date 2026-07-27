@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import uuid
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, status
 
 from app.db.session import SessionDep
 from app.schemas.attribute import AttributePage, FieldList
-from app.schemas.feature import BBox, FeatureCollection
+from app.schemas.feature import BBox, Feature, FeatureCollection, FeaturePatch, FeatureWrite
 from app.schemas.system import RasterStatistics
-from app.services import attribute_service, feature_service, raster_tile_service
+from app.services import attribute_service, edit_service, feature_service, raster_tile_service
 
 router = APIRouter(prefix="/layers/{layer_id}", tags=["features"])
 
@@ -46,3 +46,22 @@ async def read_attributes(
 @router.get("/statistics", response_model=RasterStatistics)
 async def read_statistics(layer_id: uuid.UUID, session: SessionDep) -> RasterStatistics:
     return await raster_tile_service.band_statistics(session, layer_id)
+
+
+@router.post("/features", response_model=Feature, status_code=status.HTTP_201_CREATED)
+async def create_feature(
+    layer_id: uuid.UUID, payload: FeatureWrite, session: SessionDep
+) -> Feature:
+    return await edit_service.create_feature(session, layer_id, payload)
+
+
+@router.patch("/features/{feature_id}", response_model=Feature)
+async def update_feature(
+    layer_id: uuid.UUID, feature_id: str, payload: FeaturePatch, session: SessionDep
+) -> Feature:
+    return await edit_service.update_feature(session, layer_id, feature_id, payload)
+
+
+@router.delete("/features/{feature_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_feature(layer_id: uuid.UUID, feature_id: str, session: SessionDep) -> None:
+    await edit_service.delete_feature(session, layer_id, feature_id)
