@@ -7,7 +7,8 @@ from fastapi import APIRouter, Query
 from app.db.session import SessionDep
 from app.schemas.attribute import AttributePage, FieldList
 from app.schemas.feature import BBox, FeatureCollection
-from app.services import attribute_service, feature_service
+from app.schemas.system import RasterStatistics
+from app.services import attribute_service, feature_service, raster_tile_service
 
 router = APIRouter(prefix="/layers/{layer_id}", tags=["features"])
 
@@ -40,3 +41,8 @@ async def read_attributes(
     return await attribute_service.get_page(
         session, layer_id, page, page_size, sort_by, sort_order, filters
     )
+
+
+@router.get("/statistics", response_model=RasterStatistics)
+async def read_statistics(layer_id: uuid.UUID, session: SessionDep) -> RasterStatistics:
+    return await raster_tile_service.band_statistics(session, layer_id)

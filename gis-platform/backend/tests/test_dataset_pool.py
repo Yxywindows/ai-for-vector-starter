@@ -1,4 +1,5 @@
 import asyncio
+import threading
 
 import pytest
 
@@ -122,6 +123,83 @@ async def test_different_keys_do_not_block_each_other() -> None:
     await asyncio.wait_for(fast(), timeout=1.0)
     release_slow.set()
     await task
+
+
+async def test_a_slow_factory_for_one_key_does_not_block_a_different_key() -> None:
+    """Step 4b: `_checkout` must not hold `self._guard` while the factory
+    runs -- `Reader(path)` does real file I/O (header, tiling scheme,
+    overview table), and the placeholder factory Task 11 tested against
+    returned instantly, so it could never have caught the guard being held
+    across a slow open. Unlike `test_different_keys_do_not_block_each_other`
+    above, the factory here blocks on a real `threading.Event` inside the
+    worker thread `_checkout`'s dedicated `ThreadPoolExecutor` runs it on --
+    not an `asyncio.Event` the event loop could interleave around for free
+    -- so a regression that reintroduces the guard around the factory call
+    makes 'fast' hang waiting for the event loop itself, not just for a
+    lock.
+    """
+    loop = asyncio.get_running_loop()
+    entered_slow_open = asyncio.Event()
+    release_slow_open = threading.Event()
+
+    def factory(key: str) -> FakeHandle:
+        if key == "slow":
+            loop.call_soon_threadsafe(entered_slow_open.set)
+            assert release_slow_open.wait(timeout=5), "test deadlocked: never released"
+        return FakeHandle(key)
+
+    pool = DatasetPool(factory=factory, closer=lambda handle: None, max_open=4, idle_ttl=60.0)
+
+    async def slow() -> None:
+        async with pool.acquire("slow"):
+            pass
+
+    async def fast() -> None:
+        async with pool.acquire("fast") as handle:
+            assert handle.key == "fast"
+
+    task = asyncio.create_task(slow())
+    await asyncio.wait_for(entered_slow_open.wait(), timeout=1.0)
+    await asyncio.wait_for(fast(), timeout=1.0)
+    release_slow_open.set()
+    await task
+
+
+async def test_concurrent_checkouts_of_the_same_key_close_the_racing_loser() -> None:
+    """Releasing `self._guard` around the factory call (Step 4b) opens a new
+    race that never existed before: two coroutines can both miss the same
+    key while the guard is up for grabs, and both open a handle. Exactly one
+    may end up live in the pool; the other must be closed through
+    `self._closer`, not leaked open and unreferenced. A `threading.Barrier`
+    forces both factory calls to be genuinely in flight at once -- on real
+    worker threads -- before either returns, so the race is deterministic
+    rather than a timing gamble.
+    """
+    barrier = threading.Barrier(2, timeout=5)
+
+    def factory(key: str) -> FakeHandle:
+        barrier.wait()  # both callers must be mid-open before either returns
+        return FakeHandle(key)
+
+    closed: list[FakeHandle] = []
+
+    def closer(handle: FakeHandle) -> None:
+        handle.closed = True
+        closed.append(handle)
+
+    pool = DatasetPool(factory=factory, closer=closer, max_open=4, idle_ttl=60.0)
+    handles: list[FakeHandle] = []
+
+    async def checkout() -> None:
+        async with pool.acquire("shared") as handle:
+            handles.append(handle)
+
+    await asyncio.wait_for(asyncio.gather(checkout(), checkout()), timeout=5.0)
+
+    assert pool.stats().open_handles == 1
+    assert handles[0] is handles[1]  # both callers ended up with the survivor
+    assert len(closed) == 1
+    assert closed[0] is not handles[0]  # the loser was closed, not the winner
 
 
 async def test_idle_handles_are_evicted_after_the_ttl() -> None:

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from typing import cast
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,12 +25,22 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     from app.services.raster_tile_service import close_reader, open_reader
 
+    # `DatasetPool[T]` is invariant in `T` (Task 11's public API is
+    # `DatasetPool[object]`, deliberately generic over which resource it
+    # pools), while `open_reader`/`close_reader` are concretely typed for
+    # `Reader` (Task 12's interface). Neither side should widen -- the pool
+    # stays a general-purpose resource pool, and the reader factory/closer
+    # stay precisely typed for their one real caller -- so this cast marks
+    # the single, deliberate erasure point between them.
     set_raster_pool(
-        DatasetPool(
-            factory=open_reader,
-            closer=close_reader,
-            max_open=settings.raster_pool_max_open,
-            idle_ttl=settings.raster_pool_idle_ttl_seconds,
+        cast(
+            "DatasetPool[object]",
+            DatasetPool(
+                factory=open_reader,
+                closer=close_reader,
+                max_open=settings.raster_pool_max_open,
+                idle_ttl=settings.raster_pool_idle_ttl_seconds,
+            ),
         )
     )
     try:
