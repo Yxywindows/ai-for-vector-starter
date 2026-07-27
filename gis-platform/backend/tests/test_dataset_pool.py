@@ -102,24 +102,25 @@ async def test_acquire_is_exclusive_per_key() -> None:
 async def test_different_keys_do_not_block_each_other() -> None:
     pool, _opened, _closed, _clock = make_pool(max_open=4)
     started = asyncio.Event()
+    release_slow = asyncio.Event()
 
     async def slow() -> None:
         async with pool.acquire("slow"):
             started.set()
-            await asyncio.sleep(0.05)
+            await release_slow.wait()
+
+    async def fast() -> None:
+        async with pool.acquire("fast") as handle:  # must not wait for 'slow'
+            assert handle.key == "fast"
 
     task = asyncio.create_task(slow())
     await started.wait()
-    loop_time = asyncio.get_running_loop().time
-    before = loop_time()
-    async with pool.acquire("fast") as handle:  # must not wait for 'slow'
-        assert handle.key == "fast"
-    elapsed = loop_time() - before
-    # 'slow' still holds its lock for another ~0.05s at this point. If 'fast'
-    # were blocked on it (e.g. a shared lock instead of one per key), this
-    # would take that long too. A generous margin distinguishes "did not
-    # wait at all" from "waited for the other key" without being timing-picky.
-    assert elapsed < 0.03, f"acquire('fast') took {elapsed:.3f}s -- looks like it waited on 'slow'"
+    # 'slow' is holding its lock indefinitely (until we set release_slow
+    # below). If 'fast' were blocked on it -- e.g. a shared lock instead of
+    # one per key -- this hangs rather than merely runs slow, so a
+    # regression fails as an unambiguous timeout instead of a timing margin.
+    await asyncio.wait_for(fast(), timeout=1.0)
+    release_slow.set()
     await task
 
 

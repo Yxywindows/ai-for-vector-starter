@@ -55,6 +55,11 @@ class UpstreamDataError(AppError):
     code = "upstream_data_error"
 
 
+class ServiceUnavailableError(AppError):
+    status_code = 503
+    code = "service_unavailable"
+
+
 def _envelope(code: str, message: str, details: dict[str, Any] | None = None) -> dict[str, Any]:
     return {"error": {"code": code, "message": message, "details": details}}
 

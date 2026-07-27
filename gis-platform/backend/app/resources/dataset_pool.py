@@ -23,6 +23,7 @@ from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 
+from app.core.errors import ServiceUnavailableError
 from app.schemas.system import PoolStats
 
 logger = logging.getLogger(__name__)
@@ -149,5 +150,8 @@ def set_raster_pool(pool: DatasetPool[object]) -> None:
 
 def get_raster_pool() -> DatasetPool[object]:
     if _raster_pool is None:
-        raise RuntimeError("Raster pool has not been initialised")
+        raise ServiceUnavailableError(
+            "The raster dataset pool has not been initialised -- "
+            "the application lifespan has not run yet"
+        )
     return _raster_pool
