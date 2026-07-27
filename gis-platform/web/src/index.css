@@ -41,6 +41,11 @@ body {
   min-height: 0;
 }
 
+.map-canvas {
+  position: absolute;
+  inset: 0;
+}
+
 .app-shell__bottom {
   border-top: 1px solid var(--panel-border);
   overflow: auto;
