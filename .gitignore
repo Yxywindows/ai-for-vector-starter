@@ -1,11 +1,20 @@
 # Python
-backend/.venv/
+# Unanchored so these match at any depth — the repo holds several modules,
+# each with its own virtualenv (backend/, gis-platform/backend/, ...).
+.venv/
 __pycache__/
 *.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # Node
-frontend/node_modules/
-frontend/dist/
+node_modules/
+dist/
+
+# Local data written at runtime (uploaded rasters, temp uploads)
+gis-platform/backend/var/
 
 # Editor / OS
 .DS_Store
