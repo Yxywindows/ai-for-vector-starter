@@ -1,0 +1,48 @@
+:root {
+  --panel-bg: #f8fafc;
+  --panel-border: #e2e8f0;
+  --text: #0f172a;
+  --accent: #2563eb;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font: 14px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 300px 1fr auto;
+  height: 100vh;
+}
+
+.app-shell__sidebar,
+.app-shell__inspector {
+  overflow-y: auto;
+  background: var(--panel-bg);
+  border-right: 1px solid var(--panel-border);
+}
+
+.app-shell__inspector {
+  width: 320px;
+  border-right: none;
+  border-left: 1px solid var(--panel-border);
+}
+
+.app-shell__main {
+  display: grid;
+  grid-template-rows: 1fr 260px;
+  min-width: 0;
+}
+
+.app-shell__map {
+  position: relative;
+  min-height: 0;
+}
+
+.app-shell__bottom {
+  border-top: 1px solid var(--panel-border);
+  overflow: auto;
+  background: #fff;
+}
