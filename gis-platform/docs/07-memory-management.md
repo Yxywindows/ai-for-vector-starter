@@ -42,10 +42,27 @@ environment exists`), and a shared, reused worker pool such as
 `anyio.to_thread.run_sync` cannot guarantee a handle's open and its later
 close land on the same thread once there is real concurrent activity. A
 one-thread-per-entry executor makes that guarantee explicit rather than
-accidental, while still letting different keys' opens (and closes) run
-fully in parallel on their own threads.
+accidental.
+
+Different keys' OPENS run fully in parallel, each on its own thread and
+outside `self._guard` (see `_checkout`) -- a slow or network-backed open
+for one key never delays another key's checkout. Closes do not have that
+property yet: `_close_entry` (used by `_enforce_capacity`, `evict_idle`
+and `close_all`) and `_close_losing_handle` (used by `_checkout`'s
+same-key-race path) are both awaited while `self._guard` is held, so
+closes are still serialised against each other and against every other
+key's checkout. This matters less in practice than it would for opens --
+a close has no header/tiling/overview parsing to do -- but it is a real,
+known asymmetry, not a fixed one. Extending the guard-release this pool
+already gives opens to closes as well is future work.
 """
 ```
+
+The distinction in that last paragraph is not academic: `_checkout`'s own
+same-key-race path (`_close_losing_handle`) runs on exactly the path Step
+4b introduced, under exactly the guard Step 4b was written to stop opens
+from blocking on. Opens got the fix; closes did not, on purpose, because
+they cost far less to serialise.
 
 and its live counter:
 

@@ -202,6 +202,140 @@ async def test_concurrent_checkouts_of_the_same_key_close_the_racing_loser() -> 
     assert closed[0] is not handles[0]  # the loser was closed, not the winner
 
 
+async def test_a_cancelled_checkout_during_the_open_leaves_no_leak() -> None:
+    """`asyncio.CancelledError` derives from `BaseException`, not
+    `Exception` -- Step 4b's two new `await` points between the factory
+    call and its handle being committed to `self._entries` are cancellable
+    in a way the Task 11 placeholder's single, yield-free span never was.
+    A checkout cancelled while its factory is still running on a worker
+    thread must not abandon whatever that factory eventually produces:
+    the handle must still be closed, and its dedicated thread must still
+    exit -- neither is optional just because nobody is left waiting for
+    the checkout that started them.
+    """
+    baseline_threads = threading.active_count()
+    entered_factory = threading.Event()
+    release_factory = threading.Event()
+    closed: list[FakeHandle] = []
+
+    def factory(key: str) -> FakeHandle:
+        entered_factory.set()
+        assert release_factory.wait(timeout=5), "test deadlocked: never released"
+        return FakeHandle(key)
+
+    def closer(handle: FakeHandle) -> None:
+        handle.closed = True
+        closed.append(handle)
+
+    pool = DatasetPool(factory=factory, closer=closer, max_open=4, idle_ttl=60.0)
+
+    async def checkout() -> None:
+        async with pool.acquire("cancel-me"):
+            pass  # never reached -- the task is cancelled before this
+
+    task = asyncio.create_task(checkout())
+    # Wait for the factory to actually start on its own worker thread --
+    # not merely for the task to be scheduled -- so a `concurrent.futures.
+    # Future` already RUNNING is what gets cancelled against, exactly the
+    # window a naive `except Exception:` cannot catch. Polling `is_set()`
+    # rather than `run_in_executor(None, entered_factory.wait, ...)`
+    # deliberately avoids waking the loop's own default executor: that
+    # would spin up a worker thread of its own, which lingers afterwards
+    # and would corrupt the `threading.active_count()` comparison below.
+    for _ in range(500):
+        if entered_factory.is_set():
+            break
+        await asyncio.sleep(0.01)
+    assert entered_factory.is_set(), "test deadlocked: factory never started"
+
+    task.cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await task
+
+    # The factory is still blocked on `release_factory` at this point --
+    # cancelling `task` cannot stop a thread already running it. Let it
+    # finish and give the pool's own background cleanup a bounded window
+    # to close the handle it produces and retire its thread.
+    release_factory.set()
+    for _ in range(300):
+        if closed and threading.active_count() == baseline_threads:
+            break
+        await asyncio.sleep(0.01)
+
+    assert closed and closed[0].key == "cancel-me"  # the leaked handle was closed
+    assert threading.active_count() == baseline_threads  # its thread exited
+    assert pool.stats().open_handles == 0  # no ghost entry
+    assert pool.stats().keys == []
+
+
+async def test_a_cancelled_checkout_does_not_permanently_pin_the_entry_it_committed() -> None:
+    """A second cancellation window, distinct from the one above: once a
+    new entry is inserted into `self._entries` (`in_use=1`), the only
+    remaining await before `_checkout` returns it is `_enforce_capacity`,
+    which only truly suspends when it has something to evict. Force that
+    by filling the pool to `max_open` first, then checking out one more
+    key while the eviction its insertion triggers is blocked on a slow
+    close, and cancel while that eviction is in flight. If the claim on
+    the *new* entry were left at `in_use=1` forever, nothing would ever
+    release it -- `acquire`'s own `finally` never runs, because
+    `_checkout` itself never returns the entry to bind -- permanently
+    shrinking the pool's effective capacity by one.
+    """
+    entered_close = threading.Event()
+    release_close = threading.Event()
+
+    def factory(key: str) -> FakeHandle:
+        return FakeHandle(key)
+
+    def closer(handle: FakeHandle) -> None:
+        entered_close.set()
+        assert release_close.wait(timeout=5), "test deadlocked: never released"
+        handle.closed = True
+
+    clock = FakeClock()
+    pool = DatasetPool(factory=factory, closer=closer, max_open=1, idle_ttl=30.0, clock=clock)
+
+    async with pool.acquire("a"):
+        pass  # 'a' is now idle, the pool's only entry, already at capacity
+
+    async def checkout_b() -> None:
+        async with pool.acquire("b"):
+            pass  # never reached
+
+    task = asyncio.create_task(checkout_b())
+    # Opening 'b' is instant; committing it pushes the pool over
+    # max_open=1, so `_enforce_capacity` must evict 'a' -- that eviction's
+    # close is what blocks here, with 'b' already inserted at `in_use=1`.
+    for _ in range(500):
+        if entered_close.is_set():
+            break
+        await asyncio.sleep(0.01)
+    assert entered_close.is_set(), "test deadlocked: eviction of 'a' never started"
+
+    task.cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await task
+    release_close.set()
+
+    for _ in range(300):
+        if pool.stats().open_handles <= 1:
+            break
+        await asyncio.sleep(0.01)
+    assert pool.stats().open_handles == 1  # 'a' evicted, 'b' remains
+
+    # A stuck `in_use` count is invisible to `stats()` and even to a fresh
+    # `acquire("b")` -- a hit still reuses the entry and still returns the
+    # right handle regardless of whether its claim was ever released. The
+    # one place a permanent pin is observable from outside is eviction:
+    # `evict_idle`/`_enforce_capacity` both skip any entry with
+    # `in_use > 0`, forever, no matter how stale it is. Advancing well
+    # past `idle_ttl` and evicting is the black-box proof the claim this
+    # cancelled checkout took out on 'b' was actually released.
+    clock.advance(60.0)
+    assert await pool.evict_idle() == 1
+    assert pool.stats().open_handles == 0
+
+
 async def test_idle_handles_are_evicted_after_the_ttl() -> None:
     pool, _opened, closed, clock = make_pool(max_open=8, idle_ttl=30.0)
     async with pool.acquire("a"):

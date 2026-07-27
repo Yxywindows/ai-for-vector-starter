@@ -21,8 +21,19 @@ environment exists`), and a shared, reused worker pool such as
 `anyio.to_thread.run_sync` cannot guarantee a handle's open and its later
 close land on the same thread once there is real concurrent activity. A
 one-thread-per-entry executor makes that guarantee explicit rather than
-accidental, while still letting different keys' opens (and closes) run
-fully in parallel on their own threads.
+accidental.
+
+Different keys' OPENS run fully in parallel, each on its own thread and
+outside `self._guard` (see `_checkout`) -- a slow or network-backed open
+for one key never delays another key's checkout. Closes do not have that
+property yet: `_close_entry` (used by `_enforce_capacity`, `evict_idle`
+and `close_all`) and `_close_losing_handle` (used by `_checkout`'s
+same-key-race path) are both awaited while `self._guard` is held, so
+closes are still serialised against each other and against every other
+key's checkout. This matters less in practice than it would for opens --
+a close has no header/tiling/overview parsing to do -- but it is a real,
+known asymmetry, not a fixed one. Extending the guard-release this pool
+already gives opens to closes as well is future work.
 """
 
 from __future__ import annotations
@@ -31,10 +42,11 @@ import asyncio
 import logging
 import time
 from collections import OrderedDict
-from collections.abc import AsyncIterator, Callable
+from collections.abc import AsyncIterator, Callable, Coroutine
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
+from typing import Any
 
 from app.core.errors import ServiceUnavailableError
 from app.schemas.system import PoolStats
@@ -71,6 +83,14 @@ class DatasetPool[T]:
         self._hits = 0
         self._misses = 0
         self._evictions = 0
+        # Cancelled checkouts that lost a race against a still-running
+        # factory (see `_checkout`) finish their cleanup here, off to one
+        # side, after the coroutine that started them has already
+        # propagated its `CancelledError`. Kept as a strong reference set
+        # so a cleanup task is never garbage-collected mid-flight, and so
+        # `close_all` can wait for every last one before declaring the
+        # pool closed.
+        self._background_cleanup: set[asyncio.Task[None]] = set()
 
     @asynccontextmanager
     async def acquire(self, key: str) -> AsyncIterator[T]:
@@ -109,37 +129,109 @@ class DatasetPool[T]:
         # used once more to close the loser and then retired.
         loop = asyncio.get_running_loop()
         executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="dataset-pool")
+        open_future = loop.run_in_executor(executor, self._factory, key)
         try:
-            handle = await loop.run_in_executor(executor, self._factory, key)
+            # `asyncio.CancelledError` derives from `BaseException`, not
+            # `Exception` -- a checkout cancelled while awaiting this
+            # (e.g. a request-timeout middleware, or a server that cancels
+            # on client disconnect) must not silently abandon whatever the
+            # factory produces. `shield` is what makes that possible: a
+            # `concurrent.futures.Future` already picked up by its worker
+            # thread cannot be cancelled out from under it regardless, so
+            # without `shield` the *asyncio* wrapper future would simply
+            # be marked cancelled here while the real open kept running
+            # unobserved -- one leaked GDAL dataset and one leaked OS
+            # thread, invisible to `stats()` because no entry is ever
+            # inserted into `self._entries` for it.
+            handle = await asyncio.shield(open_future)
+        except asyncio.CancelledError:
+            self._track_cleanup(self._finish_cancelled_open(key, open_future, executor))
+            raise
         except Exception:
             logger.exception("Failed to open dataset %s", key)
             executor.shutdown(wait=False)
             raise
 
-        async with self._guard:
-            # Another checkout may have raced us for the same key while the
-            # factory above ran without the guard held. If it won, reuse its
-            # entry and close the handle this call just opened instead of
-            # leaking it -- there must be exactly one open handle per key.
-            winner = self._entries.get(key)
-            if winner is not None:
-                winner.in_use += 1
-                winner.last_used = self._clock()
-                self._entries.move_to_end(key)
-                await self._close_losing_handle(key, handle, executor)
-                return winner
+        # From here on `handle`/`executor` must end up in exactly one of
+        # two places -- closed as a same-key race's loser, or committed
+        # into `self._entries` as this key's new entry -- never abandoned.
+        # `disposed` tracks which has happened; the `finally` below closes
+        # the handle if a cancellation (or any other exception) strikes
+        # before either does.
+        disposed = False
+        try:
+            async with self._guard:
+                # Another checkout may have raced us for the same key
+                # while the factory above ran without the guard held. If
+                # it won, reuse its entry and close the handle this call
+                # just opened -- there must be exactly one open handle per
+                # key.
+                winner = self._entries.get(key)
+                if winner is not None:
+                    winner.in_use += 1
+                    winner.last_used = self._clock()
+                    self._entries.move_to_end(key)
+                    disposed = True
+                    await self._close_losing_handle(key, handle, executor)
+                    return winner
 
-            entry = _Entry(handle=handle, executor=executor, in_use=1, last_used=self._clock())
-            self._entries[key] = entry
-            await self._enforce_capacity()
-            return entry
+                entry = _Entry(handle=handle, executor=executor, in_use=1, last_used=self._clock())
+                self._entries[key] = entry
+                disposed = True
+                try:
+                    await self._enforce_capacity()
+                except BaseException:
+                    # `entry` is already a committed pool entry for `key`.
+                    # If cancelled here, release the claim `_checkout` was
+                    # about to hand back to `acquire` -- exactly what
+                    # `acquire`'s own `finally` would do on a normal exit
+                    # -- so `entry` becomes an ordinary idle, reusable
+                    # entry instead of permanently pinned at `in_use=1`
+                    # forever. Nothing else will ever decrement it:
+                    # `acquire` never gets a chance to bind `entry` if
+                    # `_checkout` itself never returns it.
+                    entry.in_use -= 1
+                    entry.last_used = self._clock()
+                    raise
+                return entry
+        finally:
+            if not disposed:
+                await self._close_losing_handle(key, handle, executor)
+
+    async def _finish_cancelled_open(
+        self, key: str, open_future: asyncio.Future[T], executor: ThreadPoolExecutor
+    ) -> None:
+        """Cleanup for a checkout cancelled while its factory call was
+        still in flight. `open_future` was shielded, so it is still
+        running (or has already finished) regardless of the cancellation
+        delivered to the coroutine that started it; this waits for its
+        real outcome and disposes of it -- closes a handle if one was
+        produced, or just retires the executor if the factory itself
+        failed.
+        """
+        try:
+            handle = await open_future
+        except Exception:
+            executor.shutdown(wait=False)
+            return
+        await self._close_losing_handle(key, handle, executor)
+
+    def _track_cleanup(self, coro: Coroutine[Any, Any, None]) -> None:
+        """Fire-and-forget a cleanup coroutine while keeping a strong
+        reference to its task -- an untracked task can be garbage
+        collected mid-flight, silently abandoning the very cleanup it
+        exists to do."""
+        task = asyncio.ensure_future(coro)
+        self._background_cleanup.add(task)
+        task.add_done_callback(self._background_cleanup.discard)
 
     async def _close_losing_handle(self, key: str, handle: T, executor: ThreadPoolExecutor) -> None:
         """Close a handle opened by a checkout that lost a same-key race.
 
         Unlike `_close_entry`, there is no pool entry to remove for this
         handle -- the winner's entry already occupies `key` in
-        `self._entries` -- so this only closes the handle, on the executor
+        `self._entries` (or, for a cancelled-open cleanup, no entry was
+        ever created) -- so this only closes the handle, on the executor
         that opened it, and retires that executor.
         """
         loop = asyncio.get_running_loop()
@@ -186,6 +278,11 @@ class DatasetPool[T]:
         return removed
 
     async def close_all(self) -> None:
+        # Let any in-flight cancelled-open cleanup finish first, so a
+        # process shutdown that races a cancelled request still ends with
+        # every thread this pool ever started properly retired.
+        if self._background_cleanup:
+            await asyncio.gather(*self._background_cleanup, return_exceptions=True)
         async with self._guard:
             for key in list(self._entries.keys()):
                 await self._close_entry(key, self._entries[key])
