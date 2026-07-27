@@ -24,10 +24,10 @@ pip install -e ".[dev]"
 alembic upgrade head
 uvicorn app.main:app --reload --port 1316
 
-# 4. Web frontend (port 1317) — added when the frontend module lands
-cd gis-platform/frontend
+# 4. Web frontend (port 1317; proxies /api to the backend on 1316)
+cd gis-platform/web
 npm install
-npm run dev -- --port 1317
+npm run dev
 ```
 
 With the backend running, `curl http://localhost:1316/api/v1/health` returns
@@ -71,65 +71,60 @@ gis-platform/
 ├── README.md
 ├── docker-compose.yml                # PostGIS 16-3.4 (5401) + pgAdmin (5051)
 ├── .env.example                      # docker-compose POSTGRES_* vars
-├── backend/
-│   ├── pyproject.toml
-│   ├── requirements.lock.txt        # exact versions frozen from pip install -e ".[dev]"
-│   ├── .env.example
-│   ├── alembic.ini
-│   ├── migrations/
-│   │   ├── env.py                   # reads Settings.database_url; async engine
-│   │   ├── script.py.mako
-│   │   └── versions/
-│   │       └── 0001_initial_schema.py
+├── backend/                          # FastAPI + SQLAlchemy + PostGIS
 │   ├── app/
-│   │   ├── __init__.py
-│   │   ├── main.py                  # create_app() and module-level app
-│   │   ├── core/
-│   │   │   ├── __init__.py
-│   │   │   ├── config.py            # Settings, get_settings()
-│   │   │   ├── logging.py           # configure_logging()
-│   │   │   └── errors.py            # AppError hierarchy, error envelope
-│   │   ├── db/
-│   │   │   ├── __init__.py
-│   │   │   ├── base.py              # Base, naming convention
-│   │   │   └── session.py           # engine, SessionLocal, get_session()
-│   │   ├── models/
-│   │   │   ├── __init__.py
-│   │   │   ├── project.py           # Project
-│   │   │   └── layer.py             # Layer
-│   │   └── api/
-│   │       ├── __init__.py
-│   │       └── v1/
-│   │           ├── __init__.py
-│   │           ├── router.py        # api_router — every route registers here
-│   │           └── routes/
-│   │               ├── __init__.py
-│   │               └── health.py
-│   └── tests/
-│       ├── __init__.py
-│       ├── conftest.py              # db_session, client fixtures
-│       ├── test_alembic_env.py      # include_object autogenerate-scope tests
-│       ├── test_errors.py
-│       ├── test_health.py
-│       └── test_models.py
-└── docs/
-    ├── 01-architecture-overview.md
-    └── 02-spatial-data-model.md
+│   │   ├── core/                    # Settings, logging, error envelope
+│   │   ├── db/                      # engine/session, identifier quoting, sync engine
+│   │   ├── models/                  # Project, Layer ORM
+│   │   ├── schemas/                 # wire contracts: LayerSource, StyleSpec, …
+│   │   ├── repositories/            # SQL: features, attributes, tiles, catalog
+│   │   ├── services/                # import, editing, tiles, raster pool, system
+│   │   └── api/v1/routes/           # projects, layers, features, tiles, system
+│   ├── migrations/                  # Alembic (async env)
+│   └── tests/                       # pytest against gis_platform_test
+└── web/                              # React + OpenLayers + TanStack Query + zustand
+    └── src/
+        ├── api/                     # typed API layer mirroring the wire contracts
+        ├── app/                     # shell layout, query client
+        ├── map/                     # MapProvider, layer factory, sync, memory manager
+        ├── features/
+        │   ├── layers/              # layer panel, add-layer dialog
+        │   ├── attributes/          # attribute table with inline editing
+        │   ├── styling/             # style editor, colour ramps
+        │   ├── editing/             # draw/modify/delete with a buffered edit session
+        │   └── memory/              # browser + server memory panel
+        └── state/                   # UI-only zustand store
 ```
 
 ## Documentation
 
-| Doc                                                            | Covers |
-|------------------------------------------------------------------|--------|
-| [`docs/01-architecture-overview.md`](docs/01-architecture-overview.md) | The three tiers, the layered backend, the error envelope, configuration, and how to run the API. |
-| [`docs/02-spatial-data-model.md`](docs/02-spatial-data-model.md) | The `gis`/`gis_data`/user-schema split, the `layer` table, cascade/uniqueness constraints, test transaction isolation, and the Alembic migration workflow. |
+Nine numbered chapters in [`docs/`](docs/), written to teach the concepts the
+code embodies, in reading order:
 
-## Quality gate
+| Doc | Covers |
+|---|---|
+| [`01-architecture-overview.md`](docs/01-architecture-overview.md) | The three tiers, the layered backend, the error envelope, configuration. |
+| [`02-spatial-data-model.md`](docs/02-spatial-data-model.md) | The `gis`/`gis_data` schema split, the `layer` table, migrations. |
+| [`03-postgis-and-dynamic-sql.md`](docs/03-postgis-and-dynamic-sql.md) | Safe dynamic SQL over user-named tables; catalog introspection. |
+| [`04-feature-streaming.md`](docs/04-feature-streaming.md) | BBOX windowing, reprojection that keeps indexes usable, truncation honesty. |
+| [`05-vector-tiles-mvt.md`](docs/05-vector-tiles-mvt.md) | `ST_AsMVT` tiles, ETags, empty-tile 204s. |
+| [`06-raster-tiling-and-cog.md`](docs/06-raster-tiling-and-cog.md) | GeoTIFF import, COG conversion, rio-tiler XYZ tiles and statistics. |
+| [`07-memory-management.md`](docs/07-memory-management.md) | All three memory layers: server handle pool, response caps, browser budget. |
+| [`08-styling-and-renderers.md`](docs/08-styling-and-renderers.md) | The engine-neutral `StyleSpec` and its OpenLayers compiler. |
+| [`09-editing-and-transactions.md`](docs/09-editing-and-transactions.md) | Write-path transactions, geometry validation, the client edit buffer. |
 
-Run from `gis-platform/backend/`, with the virtual environment activated:
+## Quality gates
+
+Backend — run from `gis-platform/backend/` with the venv active:
 
 ```bash
 ruff check . && ruff format --check . && mypy app && pytest
 ```
 
-All four must pass before any change to this module is considered done.
+Web — run from `gis-platform/web/`:
+
+```bash
+npm run lint && npm run typecheck && npm run test -- --run
+```
+
+All must pass before any change to this module is considered done.

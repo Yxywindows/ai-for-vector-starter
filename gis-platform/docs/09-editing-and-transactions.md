@@ -569,3 +569,68 @@ requiring a schema change up front:
 Either is a real design decision with its own trade-offs — this task ships
 neither, and says so here rather than leaving the gap to be discovered
 later as a bug report.
+
+## The client edit buffer
+
+The server side of editing is one request, one transaction. The client side
+is deliberately not one edit, one request. `EditQueue` in
+`web/src/features/editing/editSession.ts` sits between the map interactions
+and the API:
+
+> A QGIS-style edit buffer.
+>
+> Edits accumulate locally so a user can drag a vertex twenty times without
+> twenty PATCHes, and can abandon the whole session. The queue collapses
+> redundant work: repeated updates to one feature keep only the last
+> geometry, a delete supersedes a pending update, and deleting something
+> that was never saved simply removes it from the queue.
+>
+> On flush, failures stay queued. A geometry the server rejects should not
+> silently vanish from the user's pending list.
+
+The three collapse rules are each pinned by a test. Repeated updates keep
+only the last geometry; the other two:
+
+```ts
+it('a delete supersedes a pending update for the same feature', () => {
+  const queue = new EditQueue()
+  queue.enqueue({ kind: 'update', featureId: '1', geometry: POINT })
+  queue.enqueue({ kind: 'delete', featureId: '1' })
+  expect(queue.pending).toEqual([{ kind: 'delete', featureId: '1' }])
+})
+
+it('deleting a not-yet-saved creation just drops it', () => {
+  const queue = new EditQueue()
+  queue.enqueue({ kind: 'create', tempId: 't1', geometry: POINT })
+  queue.enqueue({ kind: 'delete', featureId: 't1' })
+  expect(queue.pending).toEqual([])
+})
+```
+
+The last one matters most: a feature that was drawn and then deleted before
+ever being saved must produce *zero* requests — sending a create followed by
+a delete would briefly materialise a row another user could see.
+
+Why failures stay queued: `flush` runs every operation, collects the
+rejections, and puts only the failed operations back. Succeeded work is not
+retried; failed work is not forgotten. The user sees "1 edit(s) failed"
+with the server's message, still has the edit pending, and can fix or
+discard it deliberately. Dropping the failure would mean a rejected
+geometry disappears with no trace; blocking on the first failure would hold
+hostage the edits the server was happy with.
+
+### Compared with QGIS's edit session
+
+| | QGIS | This platform |
+|---|---|---|
+| Buffer location | In-process undo stack per layer | `EditQueue` in the browser tab |
+| Commit trigger | Toggle editing off / "Save Layer Edits" | The "Save edits" button flushes the queue |
+| Conflict handling | Last write wins on commit | Last write wins; no lock, no version check (see "What is deliberately missing") |
+| Undo scope | Full multi-step undo/redo within the session | Discard-all only; a saved flush cannot be undone |
+
+The shape is the same — accumulate locally, commit explicitly, abandon
+freely — with a much smaller undo story: QGIS can step backwards through
+individual edits, while this buffer only offers "discard everything not yet
+saved". That is a prototype boundary, not an architectural one; the queue
+already holds discrete operations, so per-operation undo would be an
+extension of the same structure rather than a rewrite.
