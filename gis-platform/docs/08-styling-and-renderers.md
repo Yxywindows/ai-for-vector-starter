@@ -206,3 +206,66 @@ def test_source_round_trips_to_camel_case() -> None:
 `source_layer` goes in, `sourceLayer` comes out — this is the exact
 translation Task 14's hand-written TypeScript mirrors depend on staying
 stable.
+
+## Compiling the spec in the browser
+
+The server never tells OpenLayers how to draw — it hands over the same
+engine-neutral `StyleSpec` JSON that the style editor writes, and the client
+compiles it. The compiler is one function:
+
+```ts
+function compileVector(spec: VectorStyle): StyleLike {
+  return (feature: FeatureLike) => {
+    const read = (key: string) => feature.get(key)
+    const color = resolveColor(spec.renderer, read, spec.fill.color)
+
+    const style = new Style({
+      fill: new Fill({ color: hexToRgba(color, spec.fill.opacity) }),
+      stroke: new Stroke({
+        color: hexToRgba(spec.stroke.color, 1),
+        width: spec.stroke.width,
+        lineDash: spec.stroke.dash ?? undefined,
+      }),
+      image: buildImage(spec, color),
+    })
+
+    if (spec.label) {
+      const value = read(spec.label.field)
+      style.setText(
+        new Text({
+          text: value === null || value === undefined ? '' : String(value),
+          font: `${spec.label.size}px system-ui, sans-serif`,
+          fill: new Fill({ color: hexToRgba(spec.label.color, 1) }),
+          stroke: new Stroke({ color: hexToRgba(spec.label.haloColor, 1), width: 3 }),
+          offsetY: -(spec.marker.radius + spec.label.size * 0.6),
+          overflow: true,
+        }),
+      )
+    }
+
+    return style
+  }
+}
+```
+
+Note what `compileVector` returns: not a `Style`, but a *function* from
+feature to `Style`. A static style would be enough for the single-symbol
+renderer, where every feature looks the same. But under a categorized or
+graduated renderer the colour depends on the feature's attribute values,
+and those are only known at draw time, when the renderer walks the features
+actually on screen. So the compiler closes over the spec and defers the
+per-feature decision to `resolveColor`:
+
+> Which colour a feature gets. Categorized compares loosely (`String(a) ===
+> String(b)`) because a numeric column arriving as a string from MVT
+> attributes should still match a numeric category. Graduated treats a class
+> as `[min, max)` so a value sitting exactly on a boundary lands in the upper
+> class, and an open-ended final class (`max: null`) catches the tail.
+
+Raster specs compile to nothing (`compileStyle` returns `undefined` for
+them) — deliberately. Raster symbology (band selection, rescaling, colormap)
+is applied server-side by rio-tiler while it renders the PNG tile, so by the
+time pixels reach the browser the styling has already happened. The client's
+only raster knob is layer opacity, which OpenLayers applies to the tile
+images directly. See `06-raster-tiling-and-cog.md` for how the tile endpoint
+turns the raster half of the same `StyleSpec` into rio-tiler parameters.
