@@ -66,3 +66,10 @@ body {
 .memory-panel { padding: 12px; }
 .memory-panel__list { list-style: none; margin: 0; padding: 0; }
 .memory-panel__list li { display: flex; gap: 8px; justify-content: space-between; padding: 2px 0; }
+.attribute-table { padding: 8px 12px; }
+.attribute-table__empty { padding: 12px; color: #64748b; }
+.attribute-table__header { display: flex; justify-content: space-between; padding: 4px 0; }
+.attribute-table table { border-collapse: collapse; width: 100%; }
+.attribute-table th, .attribute-table td { border: 1px solid var(--panel-border); padding: 3px 8px; text-align: left; }
+.attribute-table th { cursor: pointer; background: var(--panel-bg); position: sticky; top: 0; }
+.attribute-table tr.is-selected { background: #fef3c7; }

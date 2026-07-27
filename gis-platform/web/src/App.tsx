@@ -3,13 +3,28 @@ import { useEffect, useMemo } from 'react'
 
 import { getProject, listProjects } from './api/layers'
 import { AppShell } from './app/AppShell'
+import { AttributeTable } from './features/attributes/AttributeTable'
 import { LayerPanel } from './features/layers/LayerPanel'
 import { MemoryPanel } from './features/memory/MemoryPanel'
 import { MapCanvas } from './map/MapCanvas'
-import { MapProvider } from './map/MapProvider'
+import { MapProvider, useMap } from './map/MapProvider'
 import type { LayerFactoryDeps } from './map/layerFactory'
 import { useLayerMemory } from './map/memory/useLayerMemory'
+import { highlightFeatures } from './map/selection'
 import { useLayerStore } from './state/layerStore'
+
+/** Mirrors the store's feature selection onto the map as a feature property. */
+function SelectionSync() {
+  const map = useMap()
+  const selectedLayerId = useLayerStore((state) => state.selectedLayerId)
+  const selectedFeatureIds = useLayerStore((state) => state.selectedFeatureIds)
+
+  useEffect(() => {
+    if (map && selectedLayerId) highlightFeatures(map, selectedLayerId, selectedFeatureIds)
+  }, [map, selectedLayerId, selectedFeatureIds])
+
+  return null
+}
 
 export function App() {
   const projects = useQuery({ queryKey: ['projects'], queryFn: listProjects })
@@ -49,6 +64,7 @@ export function App() {
 
   return (
     <MapProvider center={view?.center ?? [0, 0]} zoom={view?.zoom ?? 2}>
+      <SelectionSync />
       <AppShell
         sidebar={
           projectId ? (
@@ -58,7 +74,7 @@ export function App() {
           )
         }
         map={<MapCanvas layers={layers} deps={deps} />}
-        bottom={<div style={{ padding: 12 }}>Attribute table goes here</div>}
+        bottom={<AttributeTable layerId={selectedLayerId} />}
         inspector={
           <MemoryPanel
             usage={usage}
