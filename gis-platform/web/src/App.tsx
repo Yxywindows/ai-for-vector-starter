@@ -4,6 +4,7 @@ import { useEffect, useMemo } from 'react'
 import { getProject, listProjects } from './api/layers'
 import { AppShell } from './app/AppShell'
 import { AttributeTable } from './features/attributes/AttributeTable'
+import { EditToolbar } from './features/editing/EditToolbar'
 import { LayerPanel } from './features/layers/LayerPanel'
 import { MemoryPanel } from './features/memory/MemoryPanel'
 import { StyleEditor } from './features/styling/StyleEditor'
@@ -75,7 +76,12 @@ export function App() {
             <div style={{ padding: 12 }}>Loading projects…</div>
           )
         }
-        map={<MapCanvas layers={layers} deps={deps} />}
+        map={
+          <>
+            <EditToolbar layer={selectedLayer ?? null} />
+            <MapCanvas layers={layers} deps={deps} />
+          </>
+        }
         bottom={<AttributeTable layerId={selectedLayerId} />}
         inspector={
           <>
