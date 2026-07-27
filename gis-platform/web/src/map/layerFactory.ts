@@ -11,10 +11,13 @@ import XYZ from 'ol/source/XYZ'
 import { tileUrl } from '../api/features'
 import type { Layer } from '../api/types'
 import { createBboxLoader, type LoaderDeps } from './featureLoader'
+import type { LayerMemoryManager } from './memory/LayerMemoryManager'
+import { instrumentTileSource, instrumentVectorTileSource } from './memory/instrumentation'
 import { compileStyle } from './styleCompiler'
 
 export interface LayerFactoryDeps extends LoaderDeps {
   onTileBytes?: (layerId: string, bytes: number) => void
+  memory?: LayerMemoryManager
 }
 
 /** A layer is editable only when its geometry lives in a PostGIS table. */
@@ -37,6 +40,9 @@ export function createOlLayer(layer: Layer, deps: LayerFactoryDeps): BaseLayer {
       strategy: bboxStrategy,
       loader: createBboxLoader(layer.id, deps),
     })
+    if (deps.memory) {
+      deps.memory.register(layer.id, () => vectorSource.clear(true))
+    }
     const olLayer = new VectorLayer({ source: vectorSource, style: compileStyle(layer.style) })
     return tagLayer(applyLayerProperties(olLayer, layer), layer)
   }
@@ -46,6 +52,10 @@ export function createOlLayer(layer: Layer, deps: LayerFactoryDeps): BaseLayer {
       format: new MVT(),
       url: source.url,
     })
+    if (deps.memory) {
+      deps.memory.register(layer.id, () => vectorTileSource.clear())
+      instrumentVectorTileSource(vectorTileSource, layer.id, deps.memory)
+    }
     const olLayer = new VectorTileLayer({
       source: vectorTileSource,
       style: compileStyle(layer.style),
@@ -54,19 +64,25 @@ export function createOlLayer(layer: Layer, deps: LayerFactoryDeps): BaseLayer {
   }
 
   if (source.type === 'raster_file') {
-    const olLayer = new TileLayer({
-      source: new XYZ({ url: tileUrl(layer.id, 'png'), crossOrigin: 'anonymous' }),
-    })
+    const tileSource = new XYZ({ url: tileUrl(layer.id, 'png'), crossOrigin: 'anonymous' })
+    if (deps.memory) {
+      deps.memory.register(layer.id, () => tileSource.refresh())
+      instrumentTileSource(tileSource, layer.id, deps.memory)
+    }
+    const olLayer = new TileLayer({ source: tileSource })
     return tagLayer(applyLayerProperties(olLayer, layer), layer)
   }
 
-  const olLayer = new TileLayer({
-    source: new XYZ({
-      url: source.url,
-      attributions: source.attribution ?? undefined,
-      crossOrigin: 'anonymous',
-    }),
+  const tileSource = new XYZ({
+    url: source.url,
+    attributions: source.attribution ?? undefined,
+    crossOrigin: 'anonymous',
   })
+  if (deps.memory) {
+    deps.memory.register(layer.id, () => tileSource.refresh())
+    instrumentTileSource(tileSource, layer.id, deps.memory)
+  }
+  const olLayer = new TileLayer({ source: tileSource })
   return tagLayer(applyLayerProperties(olLayer, layer), layer)
 }
 

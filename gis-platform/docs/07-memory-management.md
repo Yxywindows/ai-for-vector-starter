@@ -159,22 +159,115 @@ Layers 1 and 2 bound what the *server* holds and sends. Neither one stops a
 browser tab from accumulating tiles and feature payloads across an entire
 session, panning and zooming its way to holding far more decoded imagery
 and GeoJSON in memory than any one viewport needs at once. That bound is
-the browser's own, and it is forthcoming — Task 18 — not yet built. This
-section is the contract that task must meet, written now so the rest of the
-system can be designed against it: a `LayerMemoryManager` that measures
-every tile and feature payload the client fetches, attributes each one to
-the layer it belongs to, and evicts the least-recently-used payloads once
-the total crosses a byte budget — except the layer currently being viewed,
-which is pinned and never evicted out from under the user while they are
-looking at it. The shape is deliberately the same one Layer 1 already
-uses server-side (a bounded, attributed, LRU-evicting cache with one
-exemption for what is actively in use) — the browser needs the same
-discipline the server already has, for the same reason.
+the browser's own: `LayerMemoryManager` in
+`web/src/map/memory/LayerMemoryManager.ts`. Its docstring is the design:
+
+> Memory layer 3 of 3: the browser.
+>
+> Every tile and every feature payload is weighed on arrival and charged to
+> the layer that asked for it. When the total crosses the budget, the least
+> recently used layer's cached data is dropped — `onEvict` clears the OL
+> source, so the bytes are actually released rather than merely uncounted.
+>
+> Two things are never evicted: a pinned layer (the one being edited or
+> inspected) and the most recently touched layer when it alone exceeds the
+> whole budget. Without the second rule a single layer larger than the whole
+> budget would be cleared and immediately refetched, forever.
+
+The shape is deliberately the same one Layer 1 already uses server-side (a
+bounded, attributed, LRU-evicting cache with an exemption for what is
+actively in use) — the browser needs the same discipline the server already
+has, for the same reason.
+
+### The two never-evict rules
+
+Pinning is the obvious one: the layer the user is editing or inspecting is
+exempt, because clearing it mid-edit would throw away the very features the
+edit buffer refers to. The second rule is subtler, and it exists for the
+pathological case where the most recently used layer is *by itself* bigger
+than the whole budget. Evicting it would gain nothing durable — OpenLayers
+would refetch it on the next render, it would blow the budget again, and the
+manager would clear it again, forever. The test pins the behaviour down:
+
+```ts
+it('never evicts the most recently touched layer, even unpinned', () => {
+  const manager = makeManager(100)
+  manager.register('a', vi.fn())
+  now = 1
+  manager.record('a', 900)
+  expect(manager.enforce()).toEqual([])
+})
+```
+
+The guard is deliberately narrow: when the newest layer fits within the
+budget, it is an ordinary eviction candidate like any other — protecting it
+unconditionally would let one pinned layer plus one recent layer hold the
+whole budget hostage.
+
+### Measuring what the browser actually downloaded
+
+Byte counts are only observable if the client does its own fetching. The
+default OpenLayers image-tile loader sets `img.src = url` and lets the
+browser fetch the image internally — no JavaScript ever sees the response
+size. So the instrumented loader fetches the tile itself, weighs the blob,
+and only then hands it to the `<img>` via an object URL:
+
+```ts
+export function instrumentTileSource(
+  source: XYZ,
+  layerId: string,
+  manager: LayerMemoryManager,
+): void {
+  source.setTileLoadFunction((tile, src) => {
+    const image = (tile as ImageTile).getImage() as HTMLImageElement
+    fetch(src)
+      .then((response) => (response.ok ? response.blob() : Promise.reject(response.status)))
+      .then((blob) => {
+        manager.record(layerId, blob.size)
+        const objectUrl = URL.createObjectURL(blob)
+        image.onload = () => URL.revokeObjectURL(objectUrl)
+        image.onerror = () => URL.revokeObjectURL(objectUrl)
+        image.src = objectUrl
+      })
+      .catch(() => {
+        // A 204 (empty tile) or a network failure: leave the tile blank.
+        image.src = ''
+      })
+  })
+}
+```
+
+MVT tiles get the same treatment (`instrumentVectorTileSource` measures the
+protobuf's `byteLength` before handing it to the format), and bbox feature
+payloads are weighed in the loader that fetched them (`onFeatureBytes`
+reports `JSON.stringify(collection).length`).
+
+### Eviction must free bytes, not just stop counting them
+
+Each layer registers an `onEvict` callback that clears the actual OL source
+cache, chosen per source kind in `layerFactory.ts`:
+
+```ts
+// tile sources (raster XYZ and basemaps): drop the tile cache, reload lazily
+deps.memory.register(layer.id, () => tileSource.refresh())
+// MVT: drop the loaded tiles
+deps.memory.register(layer.id, () => vectorTileSource.clear())
+// PostGIS vector: drop features without firing per-feature remove events
+deps.memory.register(layer.id, () => vectorSource.clear(true))
+```
+
+`refresh()` on a tile source empties its internal tile cache and refetches
+only what the current viewport still needs; `clear(true)` drops a vector
+source's features in one batch. Without these callbacks the manager would
+zero its ledger while the browser kept every decoded tile alive — the
+accounting would look healthy precisely when it had stopped being true.
 
 ## Observability
 
-All three layers are visible through one endpoint, `GET
-/api/v1/system/memory` (Layer 3's numbers will join it once Task 18 ships):
+The two server layers are visible through one endpoint, `GET
+/api/v1/system/memory`; the browser layer reports alongside it in the
+client's memory panel, which polls this endpoint and renders both ledgers
+side by side:
 
 ```json
 {
