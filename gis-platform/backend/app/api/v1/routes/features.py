@@ -5,8 +5,9 @@ import uuid
 from fastapi import APIRouter, Query
 
 from app.db.session import SessionDep
+from app.schemas.attribute import AttributePage, FieldList
 from app.schemas.feature import BBox, FeatureCollection
-from app.services import feature_service
+from app.services import attribute_service, feature_service
 
 router = APIRouter(prefix="/layers/{layer_id}", tags=["features"])
 
@@ -19,3 +20,23 @@ async def read_features(
     limit: int | None = Query(default=None, ge=1),
 ) -> FeatureCollection:
     return await feature_service.get_features(session, layer_id, BBox.parse(bbox), limit)
+
+
+@router.get("/fields", response_model=FieldList)
+async def read_fields(layer_id: uuid.UUID, session: SessionDep) -> FieldList:
+    return await attribute_service.get_fields(session, layer_id)
+
+
+@router.get("/attributes", response_model=AttributePage)
+async def read_attributes(
+    layer_id: uuid.UUID,
+    session: SessionDep,
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=50, alias="pageSize", ge=1),
+    sort_by: str | None = Query(default=None, alias="sortBy"),
+    sort_order: str = Query(default="asc", alias="sortOrder"),
+    filters: str | None = Query(default=None, description="JSON array of {field, op, value}"),
+) -> AttributePage:
+    return await attribute_service.get_page(
+        session, layer_id, page, page_size, sort_by, sort_order, filters
+    )
