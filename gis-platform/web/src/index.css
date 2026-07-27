@@ -51,3 +51,15 @@ body {
   overflow: auto;
   background: #fff;
 }
+
+.layer-panel { padding: 12px; }
+.layer-panel__header { display: flex; align-items: center; justify-content: space-between; }
+.layer-panel__list { list-style: none; margin: 0; padding: 0; }
+.layer-item { padding: 8px; border-bottom: 1px solid var(--panel-border); }
+.layer-item--selected { background: #e0e7ff; }
+.layer-item__row { display: flex; align-items: center; gap: 6px; }
+.layer-item__name { flex: 1; text-align: left; background: none; border: none; cursor: pointer; font: inherit; }
+.layer-item__meta { color: #64748b; font-size: 12px; }
+.layer-item__warning { color: #b45309; font-size: 12px; margin: 4px 0 0; }
+.dialog { position: fixed; inset: 20% 30%; background: #fff; border: 1px solid var(--panel-border); padding: 16px; z-index: 10; overflow: auto; }
+.dialog__tables { list-style: none; padding: 0; max-height: 300px; overflow: auto; }
