@@ -1,5 +1,7 @@
 import pytest
 from httpx import AsyncClient
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.source import PostgisSource
 
@@ -190,3 +192,72 @@ async def test_a_rejected_edit_leaves_the_row_unchanged(
         )
     ).json()
     assert body["rows"][0]["population"] == 21540000
+
+
+async def test_a_not_null_violation_is_a_422_not_a_500(
+    client: AsyncClient, cities_layer: dict
+) -> None:
+    """`geometry_is_valid`/`ST_IsValid` has nothing to say about this: a
+    valid point with no `name` passes every guard in `edit_service.py`
+    and only fails once it reaches the database, where `name text NOT
+    NULL` rejects it. This is exactly the class of error the review found
+    unhandled -- `DataError` never fires under the asyncpg dialect, and
+    the surviving `IntegrityError` branch is what has to catch a NOT NULL
+    violation.
+    """
+    response = await client.post(
+        f"/api/v1/layers/{cities_layer['id']}/features",
+        json={"geometry": POINT, "properties": {}},
+    )
+    assert response.status_code == 422, response.text
+    assert response.json()["error"]["code"] == "invalid_request"
+
+
+async def test_a_geometry_type_mismatch_is_a_422_not_a_500(
+    client: AsyncClient, cities_layer: dict
+) -> None:
+    """A square polygon is perfectly OGC-valid -- `ST_IsValid` accepts it --
+    but `test_cities.geometry` is declared `geometry(Point, 4326)`, so
+    PostGIS's own typmod check rejects it at INSERT/UPDATE. That failure
+    is SQLSTATE class 22 (`invalid_parameter_value`), which the asyncpg
+    dialect surfaces as a bare `DBAPIError`, not `DataError` -- the case
+    the review found returning an uncaught 500.
+    """
+    square = {
+        "type": "Polygon",
+        "coordinates": [
+            [[113.0, 23.0], [113.1, 23.0], [113.1, 23.1], [113.0, 23.1], [113.0, 23.0]]
+        ],
+    }
+    response = await client.patch(
+        f"/api/v1/layers/{cities_layer['id']}/features/1", json={"geometry": square}
+    )
+    assert response.status_code == 422, response.text
+    assert response.json()["error"]["code"] == "invalid_request"
+
+
+async def test_a_foreign_key_restricted_delete_is_a_422_not_a_500(
+    client: AsyncClient, cities_layer: dict, db_session: AsyncSession
+) -> None:
+    """`delete_feature` had no `except` at all before the review -- a DELETE
+    blocked by a foreign key on a table this platform does not own (and so
+    cannot control the constraints of) was an uncaught 500, contradicting
+    the module's own claim that every error path here raises a deliberate
+    `AppError`.
+    """
+    await db_session.execute(
+        text(
+            """
+            CREATE TABLE gis_data.test_city_notes (
+                id serial PRIMARY KEY,
+                city_fid integer NOT NULL REFERENCES gis_data.test_cities(fid)
+            )
+            """
+        )
+    )
+    await db_session.execute(text("INSERT INTO gis_data.test_city_notes (city_fid) VALUES (1)"))
+    await db_session.flush()
+
+    response = await client.delete(f"/api/v1/layers/{cities_layer['id']}/features/1")
+    assert response.status_code == 422, response.text
+    assert response.json()["error"]["code"] == "invalid_request"

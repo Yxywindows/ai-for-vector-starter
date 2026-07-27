@@ -21,6 +21,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import register_exception_handlers
 from app.db.session import SessionDep, engine
+from app.main import create_app
+from app.services import edit_service
 
 _PROBE_TABLE = "gis.get_session_probe"
 
@@ -120,3 +122,84 @@ async def test_a_commit_failure_becomes_a_500_envelope_not_a_silent_success(
     }
     # And the row the handler inserted was never actually committed.
     assert await _probe_row_count() == 0
+
+
+async def test_an_unhandled_error_after_a_write_rolls_back_that_write(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The same guarantee as the two tests above, exercised through the real
+    editing routes rather than a synthetic app.
+
+    Every test in `tests/test_editing_api.py` goes through `conftest.py`'s
+    `client` fixture, which replaces `get_session` with a test-only override
+    (a SAVEPOINT per request on a shared, never-committed session -- see
+    that fixture's docstring and `docs/09-editing-and-transactions.md`) so
+    that per-test isolation works. That override was written to imitate
+    `get_session`'s commit-on-success/rollback-on-exception contract, but
+    imitating it is not the same as exercising the real thing: nothing in
+    this codebase's editing test suite ever runs a write through the actual
+    `get_session`. This test does -- real app, real routes, real database,
+    no override -- and checks that a completely unrelated failure (a bug in
+    building the response, well after `edit_service.create_feature`'s
+    INSERT has already executed) still leaves the row unwritten.
+    """
+    table = 'gis_data."test_session_rollback_probe"'
+    async with engine.begin() as conn:
+        await conn.execute(text(f"DROP TABLE IF EXISTS {table}"))
+        await conn.execute(
+            text(
+                f"CREATE TABLE {table} "
+                "(fid serial PRIMARY KEY, name text NOT NULL, geometry geometry(Point, 4326))"
+            )
+        )
+
+    app = create_app()
+    project_id: str | None = None
+    try:
+        async with app.router.lifespan_context(app):
+            transport = ASGITransport(app=app, raise_app_exceptions=False)
+            async with AsyncClient(transport=transport, base_url="http://test") as client:
+                project_id = (
+                    await client.post("/api/v1/projects", json={"name": "rollback-probe"})
+                ).json()["id"]
+                layer = (
+                    await client.post(
+                        f"/api/v1/projects/{project_id}/layers/from-postgis",
+                        json={
+                            "schemaName": "gis_data",
+                            "tableName": "test_session_rollback_probe",
+                            "geometryColumn": "geometry",
+                            "idColumn": "fid",
+                            "name": "Probe",
+                        },
+                    )
+                ).json()
+
+                def _boom(*args: object, **kwargs: object) -> None:
+                    raise RuntimeError("response construction failed")
+
+                # The INSERT inside `edit_service.create_feature` has already
+                # executed by the time this fires -- `Feature(...)` is the
+                # very last statement in that function.
+                monkeypatch.setattr(edit_service, "Feature", _boom)
+
+                response = await client.post(
+                    f"/api/v1/layers/{layer['id']}/features",
+                    json={
+                        "geometry": {"type": "Point", "coordinates": [1, 1]},
+                        "properties": {"name": "should not survive"},
+                    },
+                )
+        assert response.status_code == 500
+
+        async with engine.connect() as conn:
+            count = (await conn.execute(text(f"SELECT count(*) FROM {table}"))).scalar_one()
+        assert count == 0
+    finally:
+        if project_id is not None:
+            async with engine.begin() as conn:
+                await conn.execute(
+                    text("DELETE FROM gis.project WHERE id = :id"), {"id": project_id}
+                )
+        async with engine.begin() as conn:
+            await conn.execute(text(f"DROP TABLE IF EXISTS {table}"))

@@ -78,7 +78,24 @@ async def client(db_session: AsyncSession) -> AsyncIterator[AsyncClient]:
     app = create_app()
 
     async def _override() -> AsyncIterator[AsyncSession]:
-        yield db_session
+        """Mirror `get_session`'s per-request unit of work for the test session.
+
+        The real `get_session` commits once per request on success and rolls
+        back on exception; `db_session` here can't actually commit (its own
+        outer transaction has to survive to the next request so cross-request
+        reads within one test work at all, and ultimately has to roll back at
+        teardown for test isolation). `begin_nested()` gives each request its
+        own SAVEPOINT instead: released on success, rolled back to on
+        exception -- the same per-request boundary, without an actual COMMIT.
+        A bare `yield db_session` (this fixture's first version) had no such
+        boundary at all: a statement PostgreSQL rejected left the session
+        poisoned for every later request in the same test, and the only way
+        to recover it -- a session-wide rollback -- would undo every earlier
+        request's work too, not just the failed one. See
+        `docs/09-editing-and-transactions.md`.
+        """
+        async with db_session.begin_nested():
+            yield db_session
 
     app.dependency_overrides[get_session] = _override
     # httpx's ASGITransport does not run the app's lifespan, but /system/memory

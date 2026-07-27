@@ -154,6 +154,50 @@ GEOMETRY_SQL = (
     "ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON(:geojson), 4326), CAST(:srid AS integer))"
 )
 
+_INTEGER_TYPES = {"smallint", "integer", "bigint"}
+
+
+async def _id_column_type(session: AsyncSession, source: PostgisSource) -> str:
+    columns = await catalog_repository.list_columns(session, source.schema_name, source.table_name)
+    return next(column.data_type for column in columns if column.name == source.id_column)
+
+
+def _id_predicate(fid: str, data_type: str, alias: str | None = None) -> str:
+    """The single-feature id comparison, shaped to keep the primary-key index usable.
+
+    `fid`/`alias` are already-quoted SQL fragments (`quote(...)`); `:fid` is
+    always bound as a Python `str` -- every route takes `feature_id: str`.
+    Casting the *column* (`{fid}::text = :fid`, this module's first
+    version) turns the predicate into a function of the column: a plain
+    btree index on `fid` was built on the column's real values, not their
+    text representation, so Postgres cannot use it to answer a predicate
+    shaped like that -- every single-feature `PATCH`/`DELETE` became a
+    sequential scan. Casting the *parameter* instead leaves the column bare
+    on the left, so the index built on exactly that column stays usable --
+    the same principle documented for the bbox predicate in
+    `04-feature-streaming.md` (transform the one side that is cheap to
+    transform, never the indexed column).
+
+    For a numeric id column (`integer`/`bigint`/`smallint` -- what
+    `serial`/`bigserial`/`identity` primary keys actually are), the
+    parameter is cast to that type via `CAST(:fid AS text)::<type>`, not the
+    more obvious `CAST(:fid AS integer)`. The obvious form fails at
+    runtime: `CAST(:fid AS integer)` makes Postgres infer the *parameter
+    itself* as `integer`, and asyncpg then rejects the Python `str` that is
+    actually bound (`invalid input for query argument: 'str' object cannot
+    be interpreted as an integer`) -- casting to `text` first matches what
+    is actually bound, and only then converts to the column's type.
+    Anything else -- a `text` or `uuid` id column -- is compared with a
+    bare `=`: with no overload to disambiguate (unlike `ST_Transform`'s two
+    signatures), Postgres infers the parameter's type from the column with
+    no cast needed.
+    """
+    column = f"{alias}.{fid}" if alias else fid
+    if data_type in _INTEGER_TYPES:
+        return f"{column} = CAST(:fid AS text)::{data_type}"
+    return f"{column} = :fid"
+
+
 RETURNING_SQL = """
     RETURNING {fid}::text AS fid,
               ST_AsGeoJSON(ST_Transform({geom}, 4326)) AS geometry,
@@ -195,6 +239,7 @@ async def read_one(
     geom = quote(source.geometry_column)
     fid = quote(source.id_column)
     table = qualified(source.schema_name, source.table_name)
+    predicate = _id_predicate(fid, await _id_column_type(session, source), alias="t")
     row = (
         (
             await session.execute(
@@ -204,7 +249,7 @@ async def read_one(
                        ST_AsGeoJSON(ST_Transform(t.{geom}, 4326)) AS geometry,
                        to_jsonb(t) - :geom_key - :id_key AS properties
                 FROM {table} AS t
-                WHERE t.{fid}::text = :fid
+                WHERE {predicate}
                 """
                 ),
                 {
@@ -287,13 +332,14 @@ async def update_feature_row(
         assignments.append(f"{geom} = {GEOMETRY_SQL}")
         params["geojson"] = geojson
 
+    predicate = _id_predicate(fid, await _id_column_type(session, source), alias=alias)
     returning = RETURNING_SQL.format(fid=fid, geom=geom, tbl=alias)
     row = (
         (
             await session.execute(
                 text(
                     f"UPDATE {table} AS {alias} SET {', '.join(assignments)} "
-                    f"WHERE {alias}.{fid}::text = :fid {returning}"
+                    f"WHERE {predicate} {returning}"
                 ),
                 params,
             )
@@ -307,7 +353,8 @@ async def update_feature_row(
 async def delete_feature_row(session: AsyncSession, source: PostgisSource, feature_id: str) -> bool:
     fid = quote(source.id_column)
     table = qualified(source.schema_name, source.table_name)
+    predicate = _id_predicate(fid, await _id_column_type(session, source))
     result = await session.execute(
-        text(f"DELETE FROM {table} WHERE {fid}::text = :fid RETURNING 1"), {"fid": feature_id}
+        text(f"DELETE FROM {table} WHERE {predicate} RETURNING 1"), {"fid": feature_id}
     )
     return result.first() is not None

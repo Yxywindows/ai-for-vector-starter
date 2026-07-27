@@ -8,17 +8,27 @@ Three guards stand between a request body and an UPDATE statement:
 3. The geometry must survive `ST_GeomFromGeoJSON` and `ST_IsValid` before
    anything is written.
 
-Each request is one transaction, managed by `app.db.session.get_session` --
-this module never calls `session.commit()` or `session.rollback()`. A SQL
-statement that PostgreSQL rejects (a malformed GeoJSON literal, a
-constraint violation) aborts the *database* transaction, though, and
-nothing else in this session can run until that is cleared. Each such
-statement is therefore wrapped in its own `session.begin_nested()`
-(SAVEPOINT): on failure only that SAVEPOINT unwinds, clearing the aborted
-state without touching whatever the request-scoped transaction already
-holds. A plain `session.rollback()` would reach further than that -- it
-would discard the transaction the route depends on to see its own prior
-work -- so this module never calls it.
+Each request is one transaction, managed entirely by
+`app.db.session.get_session` -- this module never calls `session.commit()`
+or `session.rollback()`. Every error path below raises immediately after
+the statement that failed, so nothing else runs on this session before the
+request boundary rolls the whole thing back; there is no partial state
+for this module to clean up itself.
+
+A statement PostgreSQL rejects can surface as more than one SQLAlchemy
+exception type. `IntegrityError` covers constraint violations (`NOT NULL`,
+a foreign key) and gets its own message below. Everything else PostgreSQL
+can reject a statement for -- a GeoJSON type PostGIS's parser refuses, a
+geometry whose type doesn't match the column's typmod (a Polygon into a
+`geometry(Point, 4326)` column), a value that doesn't cast to the target
+column's type -- is caught via `DBAPIError`, the common base every
+DBAPI-level error inherits from. This matters concretely with the asyncpg
+dialect: its SQLAlchemy translation table has no entry for `DataError`, so
+SQLSTATE class 22 errors (numeric/text conversion failures, the typmod
+mismatch above) surface as a bare `DBAPIError`, not `DataError` -- catching
+only `(IntegrityError, DataError)`, as an earlier version of this module
+did, leaves that whole class of ordinary, client-triggerable input errors
+unhandled and returning 500.
 """
 
 from __future__ import annotations
@@ -27,7 +37,7 @@ import json
 import uuid
 from typing import Any
 
-from sqlalchemy.exc import DataError, IntegrityError, InternalError
+from sqlalchemy.exc import DBAPIError, IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import InvalidRequestError, NotFoundError
@@ -62,9 +72,8 @@ async def _validated_geojson(session: AsyncSession, geometry: dict[str, Any] | N
         return None
     payload = json.dumps(geometry)
     try:
-        async with session.begin_nested():
-            valid, reason = await feature_repository.geometry_is_valid(session, payload)
-    except (DataError, IntegrityError, InternalError) as exc:
+        valid, reason = await feature_repository.geometry_is_valid(session, payload)
+    except DBAPIError as exc:
         raise InvalidRequestError(
             "Geometry could not be parsed as GeoJSON",
             details={"reason": str(exc.orig)[:300] if exc.orig else None},
@@ -91,13 +100,15 @@ async def create_feature(
     assert geojson is not None  # geometry is required on create
 
     try:
-        async with session.begin_nested():
-            row = await feature_repository.insert_feature(
-                session, source, geojson, payload.properties
-            )
+        row = await feature_repository.insert_feature(session, source, geojson, payload.properties)
     except IntegrityError as exc:
         raise InvalidRequestError(
             "Insert violates a table constraint",
+            details={"reason": str(exc.orig)[:300] if exc.orig else None},
+        ) from exc
+    except DBAPIError as exc:
+        raise InvalidRequestError(
+            "Insert rejected by the database",
             details={"reason": str(exc.orig)[:300] if exc.orig else None},
         ) from exc
     return Feature(id=row["fid"], geometry=row["geometry"], properties=row["properties"])
@@ -116,13 +127,17 @@ async def update_feature(
     geojson = await _validated_geojson(session, payload.geometry)
 
     try:
-        async with session.begin_nested():
-            row = await feature_repository.update_feature_row(
-                session, source, feature_id, geojson, payload.properties
-            )
-    except (IntegrityError, DataError) as exc:
+        row = await feature_repository.update_feature_row(
+            session, source, feature_id, geojson, payload.properties
+        )
+    except IntegrityError as exc:
         raise InvalidRequestError(
             "Update violates a table constraint",
+            details={"reason": str(exc.orig)[:300] if exc.orig else None},
+        ) from exc
+    except DBAPIError as exc:
+        raise InvalidRequestError(
+            "Update rejected by the database",
             details={"reason": str(exc.orig)[:300] if exc.orig else None},
         ) from exc
     if row is None:
@@ -135,7 +150,18 @@ async def update_feature(
 
 async def delete_feature(session: AsyncSession, layer_id: uuid.UUID, feature_id: str) -> None:
     source = await _resolve(session, layer_id)
-    deleted = await feature_repository.delete_feature_row(session, source, feature_id)
+    try:
+        deleted = await feature_repository.delete_feature_row(session, source, feature_id)
+    except IntegrityError as exc:
+        raise InvalidRequestError(
+            "Delete blocked by a table constraint",
+            details={"reason": str(exc.orig)[:300] if exc.orig else None},
+        ) from exc
+    except DBAPIError as exc:
+        raise InvalidRequestError(
+            "Delete rejected by the database",
+            details={"reason": str(exc.orig)[:300] if exc.orig else None},
+        ) from exc
     if not deleted:
         raise NotFoundError(
             f"Feature {feature_id} not found",

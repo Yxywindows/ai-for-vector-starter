@@ -35,20 +35,33 @@ design of this module, quoted verbatim:
 > 3. The geometry must survive `ST_GeomFromGeoJSON` and `ST_IsValid` before
 >    anything is written.
 >
-> Each request is one transaction, managed by `app.db.session.get_session`
-> — this module never calls `session.commit()` or `session.rollback()`. A
-> SQL statement that PostgreSQL rejects (a malformed GeoJSON literal, a
-> constraint violation) aborts the *database* transaction, though, and
-> nothing else in this session can run until that is cleared. Each such
-> statement is therefore wrapped in its own `session.begin_nested()`
-> (SAVEPOINT): on failure only that SAVEPOINT unwinds, clearing the aborted
-> state without touching whatever the request-scoped transaction already
-> holds. A plain `session.rollback()` would reach further than that — it
-> would discard the transaction the route depends on to see its own prior
-> work — so this module never calls it.
+> Each request is one transaction, managed entirely by
+> `app.db.session.get_session` -- this module never calls `session.commit()`
+> or `session.rollback()`. Every error path below raises immediately after
+> the statement that failed, so nothing else runs on this session before the
+> request boundary rolls the whole thing back; there is no partial state
+> for this module to clean up itself.
+>
+> A statement PostgreSQL rejects can surface as more than one SQLAlchemy
+> exception type. `IntegrityError` covers constraint violations (`NOT NULL`,
+> a foreign key) and gets its own message below. Everything else PostgreSQL
+> can reject a statement for -- a GeoJSON type PostGIS's parser refuses, a
+> geometry whose type doesn't match the column's typmod (a Polygon into a
+> `geometry(Point, 4326)` column), a value that doesn't cast to the target
+> column's type -- is caught via `DBAPIError`, the common base every
+> DBAPI-level error inherits from. This matters concretely with the asyncpg
+> dialect: its SQLAlchemy translation table has no entry for `DataError`, so
+> SQLSTATE class 22 errors (numeric/text conversion failures, the typmod
+> mismatch above) surface as a bare `DBAPIError`, not `DataError` -- catching
+> only `(IntegrityError, DataError)`, as an earlier version of this module
+> did, leaves that whole class of ordinary, client-triggerable input errors
+> unhandled and returning 500.
 
 Each guard is independently necessary — none of the other two can stand in
-for it.
+for it. The three guards are not the whole story, though: they reject
+everything they know how to check for in Python, before any SQL runs. What
+happens when a request passes all three and PostgreSQL rejects it anyway is
+its own section, below ("A statement PostgreSQL rejects").
 
 **Guard 1 — the allowlist.** `editable_columns` asks the catalog what
 columns actually exist and excludes exactly three kinds: the geometry
@@ -146,9 +159,8 @@ async def _validated_geojson(session: AsyncSession, geometry: dict[str, Any] | N
         return None
     payload = json.dumps(geometry)
     try:
-        async with session.begin_nested():
-            valid, reason = await feature_repository.geometry_is_valid(session, payload)
-    except (DataError, IntegrityError, InternalError) as exc:
+        valid, reason = await feature_repository.geometry_is_valid(session, payload)
+    except DBAPIError as exc:
         raise InvalidRequestError(
             "Geometry could not be parsed as GeoJSON",
             details={"reason": str(exc.orig)[:300] if exc.orig else None},
@@ -162,11 +174,11 @@ Two failure modes, both handled: a *syntactically* broken payload (`{"type":
 "Nonsense", "coordinates": [1, 2]}`) makes `ST_GeomFromGeoJSON` itself raise
 at the database level — observed in this codebase as
 `sqlalchemy.exc.InternalError` wrapping
-`asyncpg.exceptions.InternalServerError: invalid GeoJson representation`,
-which is why `InternalError` sits in that `except` tuple alongside
-`DataError`/`IntegrityError`. A *geometrically* invalid payload — one that
-parses fine but fails the simple-features test — is the `if not valid`
-branch instead.
+`asyncpg.exceptions.InternalServerError: invalid GeoJson representation`.
+`InternalError` is a subclass of `DBAPIError`, which is what this `except`
+actually names (see "A statement PostgreSQL rejects" below for why). A
+*geometrically* invalid payload — one that parses fine but fails the
+simple-features test — is the `if not valid` branch instead.
 
 ### Worked example: the bow-tie polygon
 
@@ -191,6 +203,74 @@ The API turns this into `422 {"error": {"code": "invalid_request",
 "message": "Geometry is not valid", "details": {"reason":
 "Self-intersection[0.5 0.5]"}}}`. Nothing about this message is invented by
 the application; it is PostGIS's own diagnostic, passed through unchanged.
+
+## A statement PostgreSQL rejects
+
+`ST_IsValid` only tells the whole story for the geometry column. A request
+can pass all three guards — writable columns, legal identifiers, a valid
+geometry — and PostgreSQL can still reject the `INSERT`/`UPDATE`/`DELETE`
+itself: a `NOT NULL` column with no value supplied, a valid-but-wrong-shaped
+geometry (a Polygon posted against a column declared `geometry(Point,
+4326)`), a value that doesn't cast to its column's type, a `DELETE` blocked
+by a foreign key on a table this platform does not own and so does not
+control the constraints of. None of that is this module's business to
+predict in Python; it is PostgreSQL's own constraint machinery, and the
+only reliable way to know about a rejection is to attempt the statement and
+catch what comes back.
+
+What comes back is not one exception type. `create_feature`, `update_feature`
+and `delete_feature` each wrap their write in the same two-branch pattern —
+shown here for `create_feature`:
+
+```python
+    try:
+        row = await feature_repository.insert_feature(session, source, geojson, payload.properties)
+    except IntegrityError as exc:
+        raise InvalidRequestError(
+            "Insert violates a table constraint",
+            details={"reason": str(exc.orig)[:300] if exc.orig else None},
+        ) from exc
+    except DBAPIError as exc:
+        raise InvalidRequestError(
+            "Insert rejected by the database",
+            details={"reason": str(exc.orig)[:300] if exc.orig else None},
+        ) from exc
+```
+
+`IntegrityError` is checked first and gets its own message, for constraint
+violations specifically (`NOT NULL`, a foreign key). `DBAPIError` — the
+common base every DBAPI-level error inherits from, `IntegrityError`
+included — catches everything else. That second branch is not defensive
+padding: an earlier version of this module caught only `(IntegrityError,
+DataError)`, on the reasonable-looking assumption that those two together
+covered "constraint violation" and "bad data." They do not, under the
+asyncpg dialect specifically — SQLAlchemy's asyncpg translation table has
+no entry for `DataError` at all, so every SQLSTATE class-22 error (numeric
+and text conversion failures — exactly the typmod mismatch below) falls
+through to a bare `DBAPIError` instead. A square polygon posted against
+`test_cities.geometry` (`geometry(Point, 4326)`) demonstrates this
+concretely — it is OGC-valid, so `ST_IsValid` accepts it, and the rejection
+only happens once PostGIS's typmod check runs at the `INSERT`/`UPDATE`
+itself:
+
+```
+>>> INSERT INTO gis_data.test_cities (name, geometry) VALUES ('X', <square polygon>)
+asyncpg.exceptions.InvalidParameterValueError: Geometry type (Polygon) does not match column type (Point)
+-- surfaces as sqlalchemy.exc.DBAPIError, NOT sqlalchemy.exc.DataError
+```
+
+With only `(IntegrityError, DataError)` in the `except` tuple, that
+`DBAPIError` was uncaught, propagated past every layer of this codebase's
+own error handling, and became a bare `500 {"error": {"code":
+"internal_error"}}` — for a request that was never anything but an ordinary,
+client-triggerable mistake. `tests/test_editing_api.py` has three tests for
+this class of failure now: `test_a_not_null_violation_is_a_422_not_a_500`
+(an `IntegrityError`, already caught before this fix — kept as coverage for
+a branch that previously had none), `test_a_geometry_type_mismatch_is_a_422_not_a_500`
+(the `DBAPIError` case above, confirmed to 500 against the old handler
+before the fix), and `test_a_foreign_key_restricted_delete_is_a_422_not_a_500`
+(`delete_feature` had no `except` at all before this fix — any database
+rejection of a `DELETE`, not just a foreign key, was unconditionally a 500).
 
 ## RETURNING instead of a second SELECT
 
@@ -225,6 +305,91 @@ two already surfaced separately," identical to the read path in
 `04-feature-streaming.md`, so a newly imported table with different
 attribute columns needs no code change here either.
 
+## Keeping the primary-key index usable
+
+`PATCH`/`DELETE` both operate on exactly one feature, found by its id, and
+that lookup should cost an index probe, not a scan of the whole table.
+Whether it does depends entirely on how the `WHERE` clause is shaped:
+
+```python
+def _id_predicate(fid: str, data_type: str, alias: str | None = None) -> str:
+    column = f"{alias}.{fid}" if alias else fid
+    if data_type in _INTEGER_TYPES:
+        return f"{column} = CAST(:fid AS text)::{data_type}"
+    return f"{column} = :fid"
+```
+
+This module's first version wrote `{fid}::text = :fid` — casting the
+*column* to text, so it could compare against `feature_id: str` (every
+route takes the id as a string; a URL path segment always is one). That
+defeats the primary key's own btree index: a plain index on `fid` is built
+on the column's real `integer` values, not their text representation, so a
+predicate that runs a function on `fid` before comparing it is a predicate
+Postgres cannot answer from that index at all — every single-feature
+`PATCH`/`DELETE` was a sequential scan, on a table this platform does not
+own and cannot add an index to without altering someone else's schema.
+`_id_predicate` casts the *parameter* instead, leaving `fid` bare on the
+left of `=` — the same principle `04-feature-streaming.md` documents for
+the bbox predicate: transform the one side that is cheap to transform,
+never the indexed column.
+
+The double cast — `CAST(:fid AS text)::<type>`, not the more obvious
+`CAST(:fid AS integer)` — exists for the same reason the bbox query casts
+`:srid` explicitly (`03-postgis-and-dynamic-sql.md`): Postgres's own
+parameter-type inference gets the wrong answer if left to guess.
+`CAST(:fid AS integer)` makes Postgres infer the *placeholder itself* as
+`integer`, and asyncpg then rejects the Python `str` that `feature_id`
+actually is (`invalid input for query argument: 'str' object cannot be
+interpreted as an integer`) — confirmed against the live database, not
+assumed. Casting to `text` first matches what is actually bound, and only
+then converts to the column's type. A `text`/`uuid` id column skips the
+cast entirely: a bare `=` against a column of known type has no overload to
+disambiguate (unlike `ST_Transform`'s two signatures), so Postgres infers
+the parameter's type correctly with nothing extra.
+
+### Evidence: the index is actually used
+
+Against a synthetic 200,000-row copy of `test_cities` (`04-feature-streaming.md`'s
+own evidence section explains why the 3-row fixture can't demonstrate
+this — the planner correctly prefers a sequential scan on a table that
+small):
+
+```
+EXPLAIN (ANALYZE, COSTS OFF)
+UPDATE gis_data.test_cities_big AS "test_cities_big" SET population = 999
+WHERE "test_cities_big"."fid" = CAST(:fid AS text)::integer
+
+Update on test_cities_big (actual time=0.119..0.119 rows=0 loops=1)
+  ->  Index Scan using test_cities_big_pkey on test_cities_big (actual time=0.009..0.010 rows=1 loops=1)
+        Index Cond: (fid = 100000)
+Planning Time: 0.189 ms
+Execution Time: 0.190 ms
+```
+
+against the predicate this module shipped with first:
+
+```
+EXPLAIN (ANALYZE, COSTS OFF)
+SELECT * FROM gis_data.test_cities_big AS t WHERE t."fid"::text = :fid
+
+Gather (actual time=13.072..22.726 rows=1 loops=1)
+  Workers Planned: 1
+  Workers Launched: 1
+  ->  Parallel Seq Scan on test_cities_big t (actual time=11.177..14.972 rows=0 loops=2)
+        Filter: ((fid)::text = '100000'::text)
+        Rows Removed by Filter: 100000
+Planning Time: 0.140 ms
+Execution Time: 22.746 ms
+```
+
+`Index Scan using test_cities_big_pkey`, `Index Cond: (fid = 100000)` — the
+predicate reaches the primary key's own index directly, at roughly 100x the
+speed of the `Parallel Seq Scan` the column-cast version fell back to, and
+that gap only widens as the table grows: the index scan's cost barely
+depends on table size, the sequential scan's cost is linear in it. No test
+in this suite exercises a table large enough to fail if this regressed —
+`EXPLAIN` here is the only evidence that would ever catch it.
+
 ## Never writable
 
 | Column | Why it is excluded |
@@ -249,22 +414,45 @@ async def get_session() -> AsyncIterator[AsyncSession]:
             raise
 ```
 
-`edit_service.py` never calls `session.commit()` — consistent with every
-other service in this codebase — and, as explained above, does not call
-`session.rollback()` either: a bare `rollback()` would unwind the whole
-request-scoped transaction, including work this same request already did
-(the layer lookup, the catalog check), which is more than a single failed
-write should ever have to discard. Instead, each statement that PostgreSQL
-could reject runs inside its own `session.begin_nested()` — a SAVEPOINT.
-When PostGIS rejects a geometry, the nested block's own `__aexit__` issues
-`ROLLBACK TO SAVEPOINT`, which undoes only that statement and clears the
-aborted-transaction state, leaving everything else in the session exactly
-as it was. A failed edit aborts before any write is attempted at all in the
-common case — `_validated_geojson` runs and can raise before either
-`insert_feature` or `update_feature_row` is ever called — so "a partially
-applied edit is not possible" holds both for the ordinary rejection path
-and for the rarer case of a constraint violation surfacing from the
-`INSERT`/`UPDATE` itself.
+`edit_service.py` never calls `session.commit()` or `session.rollback()` —
+consistent with every other service in this codebase. That is a real
+constraint, not an accident of how this module happens to be written: every
+error path here raises immediately after the statement that failed (`_validated_geojson`
+can raise before `insert_feature`/`update_feature_row` is ever called at
+all; each `except` block in the previous section raises as soon as the
+write itself fails), so nothing else ever runs on the session before the
+exception reaches the request boundary above. `get_session` owning the
+whole transaction is not just tidy layering, then — it is sufficient,
+because this module never needs the session to be usable *after* an error,
+only before one.
+
+An earlier version of this module wrapped every risky statement in its own
+`session.begin_nested()` (a SAVEPOINT), reasoning that a bare
+`session.rollback()` would discard more of the request than a single failed
+write should. That reasoning doesn't hold up under scrutiny, though: since
+every error path raises immediately, this module was never actually going
+to call `session.rollback()` in the first place — a service reaching into
+transaction state to protect against a call it makes nowhere in its own
+code is solving a problem this module doesn't have. The "poisoned
+transaction" the SAVEPOINTs were guarding against was real, but it was a
+gap in the *test harness*, not in this service: `tests/conftest.py`'s
+`client` fixture originally overrode `get_session` with a bare `yield
+db_session` — no commit, no rollback, shared across every request in a
+test — so a statement PostgreSQL rejected left that shared session poisoned
+for every later request in the same test. The fix belongs there, and that
+is where it now lives:
+
+```python
+async def _override() -> AsyncIterator[AsyncSession]:
+    async with db_session.begin_nested():
+        yield db_session
+```
+
+Each request gets its own SAVEPOINT — released on success, rolled back to
+on exception — mirroring `get_session`'s real commit/rollback contract
+without requiring an actual `COMMIT` the outer test transaction can't
+afford to allow. This module itself is back to owning no transaction state
+at all, which is what the constraint asked for from the start.
 
 `tests/test_editing_api.py::test_a_rejected_edit_leaves_the_row_unchanged`
 is the test for exactly this guarantee — a single `PATCH` that tries to
@@ -296,6 +484,26 @@ fail with `assert 1 == 21540000`. The test is not merely checking that the
 `PATCH` returned an error status — it re-reads the row through a completely
 independent path (`GET /attributes`, in a separate service module) and
 confirms the value PostgreSQL actually holds never moved.
+
+That test, like every other test in `tests/test_editing_api.py`, goes
+through `conftest.py`'s `client` fixture — the test-only override just
+described, not the real `get_session`. That is a meaningful gap: it proves
+this module's *own* ordering is correct, but nothing in the suite had ever
+exercised the production rollback-on-exception path — `get_session`'s own
+`except Exception: await session.rollback(); raise` — through an actual
+editing route. `tests/test_session.py::test_an_unhandled_error_after_a_write_rolls_back_that_write`
+closes that gap: it builds the real app with no dependency override at all,
+registers a real (non-transactional, genuinely committed) scratch table,
+calls the real `POST /layers/{id}/features`, and forces a failure that has
+nothing to do with the database — a monkeypatched `Feature(...)` raising
+`RuntimeError` — *after* `create_feature`'s `INSERT` has already executed.
+It then checks row survival through `engine.connect()`, a connection with
+no relationship at all to the one the request used, so a `count() == 0`
+there is only possible if the request's write was genuinely rolled back at
+the database, not merely uncommitted within some still-open session. Run
+without the monkeypatch, the same request commits and the count is `1` —
+confirming the probe would actually catch a regression rather than always
+reading zero.
 
 ## What is deliberately missing
 
