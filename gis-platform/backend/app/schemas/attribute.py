@@ -14,16 +14,6 @@ FilterOp = Literal[
 ]
 
 # op -> SQL fragment template. `{col}` is a validated identifier; `:p` is a bind.
-#
-# `in` compares both sides as text rather than `{col} = ANY(:p)` over a
-# native-typed array. asyncpg has to infer a concrete element type for an
-# array bind parameter before it knows the column's type, and with no
-# untyped-array placeholder support in the wire protocol it defaults to
-# `text[]`, which then fails to compare against a non-text column (e.g.
-# `population = ANY(ARRAY['1'])` errors, it does not coerce). Casting the
-# column to `text` makes both sides agree unconditionally, for every column
-# type, without this repository having to look up each column's Postgres
-# type first.
 OPERATOR_SQL: dict[str, str] = {
     "eq": "{col} = :{p}",
     "neq": "{col} IS DISTINCT FROM :{p}",
@@ -33,7 +23,7 @@ OPERATOR_SQL: dict[str, str] = {
     "lte": "{col} <= :{p}",
     "like": "{col}::text LIKE :{p}",
     "ilike": "{col}::text ILIKE :{p}",
-    "in": "{col}::text = ANY(:{p})",
+    "in": "{col} = ANY(:{p})",
     "isnull": "{col} IS NULL",
     "notnull": "{col} IS NOT NULL",
 }

@@ -321,16 +321,6 @@ FilterOp = Literal[
 ]
 
 # op -> SQL fragment template. `{col}` is a validated identifier; `:p` is a bind.
-#
-# `in` compares both sides as text rather than `{col} = ANY(:p)` over a
-# native-typed array. asyncpg has to infer a concrete element type for an
-# array bind parameter before it knows the column's type, and with no
-# untyped-array placeholder support in the wire protocol it defaults to
-# `text[]`, which then fails to compare against a non-text column (e.g.
-# `population = ANY(ARRAY['1'])` errors, it does not coerce). Casting the
-# column to `text` makes both sides agree unconditionally, for every column
-# type, without this repository having to look up each column's Postgres
-# type first.
 OPERATOR_SQL: dict[str, str] = {
     "eq": "{col} = :{p}",
     "neq": "{col} IS DISTINCT FROM :{p}",
@@ -340,13 +330,41 @@ OPERATOR_SQL: dict[str, str] = {
     "lte": "{col} <= :{p}",
     "like": "{col}::text LIKE :{p}",
     "ilike": "{col}::text ILIKE :{p}",
-    "in": "{col}::text = ANY(:{p})",
+    "in": "{col} = ANY(:{p})",
     "isnull": "{col} IS NULL",
     "notnull": "{col} IS NOT NULL",
 }
 
 VALUELESS_OPS = {"isnull", "notnull"}
 ```
+
+`in` binds its list as-is rather than casting the column and stringifying
+the values. An earlier revision of this code cast both sides to `text` on
+the theory that asyncpg needed help typing the array; that theory doesn't
+hold up against what Postgres actually does. Preparing the same shape of
+query this function builds and asking Postgres what type it inferred for
+the array parameter, for three differently-typed columns:
+
+```
+population = ANY($1) param type: int4[]
+density    = ANY($1) param type: numeric[]
+label      = ANY($1) param type: text[]
+```
+
+Postgres infers the array's element type from `{col}`, the left operand of
+`= ANY(...)`, not from some fixed default — so no per-type cast was ever
+needed. Worse, the `::text` cast was actively wrong: Postgres's own `::text`
+rendering of a value and Python's `str()` of the same value disagree for
+`float`, `numeric`, and `bool` (`1.0::text` is `'1'`, `str(1.0)` is
+`"1.0"`; `0.50::numeric(10,2)::text` is `'0.50'`, `str(0.5)` is `"0.5"`),
+so `{col}::text = ANY(:p)` with Python-stringified values silently matched
+nothing for those types instead of raising. Binding `item.value` unchanged
+is both simpler and correct — confirmed against text, integer,
+`double precision`, and `numeric` columns, all four returning the right
+rows with no cast on either side (`test_in_filter_accepts_a_list`,
+`test_in_filter_works_on_a_numeric_column`,
+`test_in_filter_works_on_a_float_and_a_numeric_column` in
+`tests/test_attributes_api.py`).
 
 And the function that turns a list of client-supplied filters into a
 `WHERE` clause plus its bind parameters:
@@ -379,9 +397,7 @@ def build_where(filters: list[AttributeFilter], allowed: set[str]) -> tuple[str,
                         "The 'in' operator needs a non-empty list",
                         details={"field": item.field},
                     )
-                # The template casts the column to text (see OPERATOR_SQL),
-                # so the bound array must be text too, for every column type.
-                params[placeholder] = [str(v) for v in item.value]
+                params[placeholder] = item.value
             else:
                 params[placeholder] = item.value
     return (" AND ".join(clauses) if clauses else "TRUE"), params
@@ -410,10 +426,12 @@ own:
   interpolation, so there is no way for a value to be smuggled in through
   the operator position either.
 - **The value** is always `params[placeholder]` — a bind parameter, never
-  text. Even `in`, which binds a *list*, still binds it: the column is cast
-  to `text` in the template and the list is stringified in Python
-  (`[str(v) for v in item.value]`), but the values themselves are never
-  concatenated into the SQL string.
+  text. Even `in`, which binds a *list*, still binds it: `item.value` is
+  passed to `= ANY(:{p})` unchanged, with Postgres inferring the bound
+  array's element type from `{col}` on the left, so the same bind works for
+  a text column, an integer column, or a `numeric` column without this
+  function needing to know which. Nothing about the value is ever
+  concatenated into the SQL string, for any operator.
 
 `sortBy` gets the same treatment, just without the operator dimension.
 `attribute_service.get_page` checks the requested sort column against the

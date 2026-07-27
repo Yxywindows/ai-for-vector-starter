@@ -96,9 +96,7 @@ def build_where(filters: list[AttributeFilter], allowed: set[str]) -> tuple[str,
                         "The 'in' operator needs a non-empty list",
                         details={"field": item.field},
                     )
-                # The template casts the column to text (see OPERATOR_SQL),
-                # so the bound array must be text too, for every column type.
-                params[placeholder] = [str(v) for v in item.value]
+                params[placeholder] = item.value
             else:
                 params[placeholder] = item.value
     return (" AND ".join(clauses) if clauses else "TRUE"), params

@@ -221,6 +221,11 @@ async def test_ilike_filter_is_case_insensitive(client: AsyncClient, cities_laye
 
 
 async def test_in_filter_works_on_a_numeric_column(client: AsyncClient, cities_layer: dict) -> None:
+    # `population` is an integer, whose text round-trip happens to be exact
+    # (`str(21540000) == "21540000"`), so this alone would not catch a
+    # design that bound `in` values by casting both sides to text -- see
+    # `test_in_filter_works_on_a_float_and_a_numeric_column` below for the
+    # types where that particular bug actually hides.
     filters = json.dumps([{"field": "population", "op": "in", "value": [21540000, 560000]}])
     body = (
         await client.get(
@@ -228,6 +233,70 @@ async def test_in_filter_works_on_a_numeric_column(client: AsyncClient, cities_l
         )
     ).json()
     assert {row["name"] for row in body["rows"]} == {"Beijing", "Lhasa"}
+
+
+async def test_in_filter_works_on_a_float_and_a_numeric_column(
+    client: AsyncClient, db_session: AsyncSession
+) -> None:
+    """Pins the case a `{col}::text = ANY(:p)` design gets wrong: Postgres's
+    `::text` rendering of a `double precision`/`numeric` value and Python's
+    `str()` of the same value disagree (`str(1.0) == "1.0"` but
+    `1.0::text == '1'`; `str(0.5) == "0.5"` but `0.50::numeric(10,2)::text
+    == '0.50'`). Binding `item.value` unchanged -- letting Postgres infer
+    the array's element type from the left-hand column, as it does for
+    `population`/`name` above -- is what actually returns the right rows.
+    """
+    await db_session.execute(
+        text(
+            """
+            CREATE TABLE gis_data.test_numeric_types (
+                fid serial PRIMARY KEY,
+                area_km2 double precision,
+                density numeric(10,2),
+                geometry geometry(Point, 4326)
+            )
+            """
+        )
+    )
+    await db_session.execute(
+        text(
+            "INSERT INTO gis_data.test_numeric_types (area_km2, density, geometry) VALUES "
+            "(16410.5, 1312.00, ST_SetSRID(ST_MakePoint(116.4, 39.9), 4326)), "
+            "(6340.5,  3926.00, ST_SetSRID(ST_MakePoint(121.4, 31.2), 4326)), "
+            "(3.0,        0.50, ST_SetSRID(ST_MakePoint(91.1, 29.6), 4326))"
+        )
+    )
+    await db_session.flush()
+
+    project_id = (await client.post("/api/v1/projects", json={"name": "N"})).json()["id"]
+    layer = (
+        await client.post(
+            f"/api/v1/projects/{project_id}/layers/from-postgis",
+            json={
+                "schemaName": "gis_data",
+                "tableName": "test_numeric_types",
+                "geometryColumn": "geometry",
+                "idColumn": "fid",
+                "name": "NumericTypes",
+            },
+        )
+    ).json()
+
+    float_filters = json.dumps([{"field": "area_km2", "op": "in", "value": [16410.5, 3.0]}])
+    body = (
+        await client.get(
+            f"/api/v1/layers/{layer['id']}/attributes", params={"filters": float_filters}
+        )
+    ).json()
+    assert body["total"] == 2
+
+    numeric_filters = json.dumps([{"field": "density", "op": "in", "value": [1312.00, 0.50]}])
+    body = (
+        await client.get(
+            f"/api/v1/layers/{layer['id']}/attributes", params={"filters": numeric_filters}
+        )
+    ).json()
+    assert body["total"] == 2
 
 
 @pytest.fixture
