@@ -6,6 +6,7 @@ import { AppShell } from './app/AppShell'
 import { AttributeTable } from './features/attributes/AttributeTable'
 import { LayerPanel } from './features/layers/LayerPanel'
 import { MemoryPanel } from './features/memory/MemoryPanel'
+import { StyleEditor } from './features/styling/StyleEditor'
 import { MapCanvas } from './map/MapCanvas'
 import { MapProvider, useMap } from './map/MapProvider'
 import type { LayerFactoryDeps } from './map/layerFactory'
@@ -61,6 +62,7 @@ export function App() {
   const layers = useMemo(() => project.data?.layers ?? [], [project.data])
   const view = project.data?.view
   const names = useMemo(() => new Map(layers.map((layer) => [layer.id, layer.name])), [layers])
+  const selectedLayer = layers.find((layer) => layer.id === selectedLayerId)
 
   return (
     <MapProvider center={view?.center ?? [0, 0]} zoom={view?.zoom ?? 2}>
@@ -76,12 +78,17 @@ export function App() {
         map={<MapCanvas layers={layers} deps={deps} />}
         bottom={<AttributeTable layerId={selectedLayerId} />}
         inspector={
-          <MemoryPanel
-            usage={usage}
-            totalBytes={totalBytes}
-            budgetBytes={budgetBytes}
-            names={names}
-          />
+          <>
+            {projectId && selectedLayer ? (
+              <StyleEditor key={selectedLayer.id} projectId={projectId} layer={selectedLayer} />
+            ) : null}
+            <MemoryPanel
+              usage={usage}
+              totalBytes={totalBytes}
+              budgetBytes={budgetBytes}
+              names={names}
+            />
+          </>
         }
       />
     </MapProvider>

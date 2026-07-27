@@ -73,3 +73,7 @@ body {
 .attribute-table th, .attribute-table td { border: 1px solid var(--panel-border); padding: 3px 8px; text-align: left; }
 .attribute-table th { cursor: pointer; background: var(--panel-bg); position: sticky; top: 0; }
 .attribute-table tr.is-selected { background: #fef3c7; }
+.style-editor { padding: 12px; border-bottom: 1px solid var(--panel-border); }
+.style-editor label { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 6px 0; }
+.style-editor__classes { list-style: none; margin: 8px 0; padding: 0; }
+.style-editor__classes li { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
