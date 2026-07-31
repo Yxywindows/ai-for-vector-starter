@@ -78,6 +78,33 @@ describe('validateDraft', () => {
     expect(errors).toEqual([])
     expect(warnings[0]!.code).toBe('mixed_property_type')
   })
+
+  it('accepts an open triangle ring and warns that it was closed', () => {
+    const openRing = { type: 'Polygon', coordinates: [[[0, 0], [1, 0], [1, 1]]] }
+    const { errors, warnings } = validateDraft(features(openRing), columns)
+    expect(errors).toEqual([])
+    expect(warnings).toContainEqual(expect.objectContaining({ code: 'ring_auto_closed' }))
+  })
+
+  it('accepts an open triangle ring nested inside a MultiPolygon', () => {
+    const openRing = { type: 'MultiPolygon', coordinates: [[[[0, 0], [1, 0], [1, 1]]]] }
+    const { errors, warnings } = validateDraft(features(openRing), columns)
+    expect(errors).toEqual([])
+    expect(warnings).toContainEqual(expect.objectContaining({ code: 'ring_auto_closed' }))
+  })
+
+  it('still rejects a ring with fewer than 3 positions even though closing cannot rescue it', () => {
+    const tooShort = { type: 'Polygon', coordinates: [[[0, 0], [1, 0]]] }
+    const { errors } = validateDraft(features(tooShort), columns)
+    expect(errors[0]!.code).toBe('malformed_coordinates')
+  })
+
+  it('accepts an already-closed ring with no warning', () => {
+    const closedRing = { type: 'Polygon', coordinates: [[[0, 0], [1, 0], [1, 1], [0, 0]]] }
+    const { errors, warnings } = validateDraft(features(closedRing), columns)
+    expect(errors).toEqual([])
+    expect(warnings).toEqual([])
+  })
 })
 
 describe('validateCell', () => {

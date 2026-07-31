@@ -41,15 +41,30 @@ const MIN_POSITIONS: Record<string, number> = {
   MultiPolygon: 4,
 }
 
+/** Types whose innermost lists are linear rings that must be closed. */
+const RING_TYPES = new Set(['Polygon', 'MultiPolygon'])
+
 const isPosition = (value: unknown): value is number[] =>
   Array.isArray(value) &&
   value.length >= 2 &&
   value.length <= 3 &&
   value.every((entry) => typeof entry === 'number')
 
+const positionsEqual = (a: unknown, b: unknown): boolean =>
+  Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((v, i) => v === b[i])
+
 function issue(featureIndex: number, code: string, message: string): DraftIssue {
   return { featureIndex, field: null, code, message }
 }
+
+/**
+ * True when `ring` has at least 3 positions and its first and last differ —
+ * the case the server closes automatically rather than rejecting. Mirrors
+ * `_close_ring` in `geojson_validation.py`, but computed virtually: this
+ * module reports on the draft, it never rewrites it.
+ */
+const isOpenRing = (ring: unknown[]): boolean =>
+  ring.length >= 3 && !positionsEqual(ring[0], ring[ring.length - 1])
 
 function checkStructure(
   node: unknown,
@@ -57,6 +72,7 @@ function checkStructure(
   type: string,
   index: number,
   errors: DraftIssue[],
+  warnings: DraftIssue[],
 ): boolean {
   if (depth === 0) {
     if (!isPosition(node)) {
@@ -71,7 +87,12 @@ function checkStructure(
   }
   if (depth === 1) {
     const minimum = MIN_POSITIONS[type]
-    if (minimum !== undefined && node.length < minimum) {
+    // An unclosed ring is closed virtually before the minimum is applied —
+    // matching the server's ordering — so an open triangle (3 positions,
+    // effectively 4 once closed) is accepted, not rejected.
+    const open = RING_TYPES.has(type) && isOpenRing(node)
+    const effectiveLength = open ? node.length + 1 : node.length
+    if (minimum !== undefined && effectiveLength < minimum) {
       errors.push(
         issue(
           index,
@@ -81,8 +102,13 @@ function checkStructure(
       )
       return false
     }
+    if (open) {
+      warnings.push(
+        issue(index, 'ring_auto_closed', 'Polygon ring was not closed and was closed automatically'),
+      )
+    }
   }
-  return node.every((child) => checkStructure(child, depth - 1, type, index, errors))
+  return node.every((child) => checkStructure(child, depth - 1, type, index, errors, warnings))
 }
 
 function positions(node: unknown, depth: number): number[][] {
@@ -94,6 +120,7 @@ function checkGeometry(
   geometry: Record<string, unknown> | null,
   index: number,
   errors: DraftIssue[],
+  warnings: DraftIssue[],
 ): void {
   if (!geometry) {
     errors.push(issue(index, 'missing_geometry', 'Feature has no geometry'))
@@ -107,7 +134,7 @@ function checkGeometry(
     return
   }
   const depth = COORDINATE_DEPTH[type]!
-  if (!checkStructure(geometry.coordinates, depth, type, index, errors)) return
+  if (!checkStructure(geometry.coordinates, depth, type, index, errors, warnings)) return
 
   for (const [longitude, latitude] of positions(geometry.coordinates, depth)) {
     if (!Number.isFinite(longitude!) || !Number.isFinite(latitude!)) {
@@ -139,7 +166,7 @@ export function validateDraft(
     return { errors, warnings }
   }
 
-  features.forEach((feature, index) => checkGeometry(feature.geometry, index, errors))
+  features.forEach((feature, index) => checkGeometry(feature.geometry, index, errors, warnings))
 
   for (const column of columns) {
     if (!column.mixed) continue
