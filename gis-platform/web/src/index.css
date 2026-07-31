@@ -92,3 +92,16 @@ body {
 .style-editor label { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 6px 0; }
 .style-editor__classes { list-style: none; margin: 8px 0; padding: 0; }
 .style-editor__classes li { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
+
+.draft-grid { height: 100%; min-height: 200px; }
+.draft-grid .ag-root-wrapper {
+  --ag-background-color: #fff;
+  --ag-header-background-color: var(--panel-bg);
+  --ag-border-color: var(--panel-border);
+  --ag-foreground-color: var(--text);
+  --ag-selected-row-background-color: #fef3c7;
+  --ag-font-family: inherit;
+  --ag-font-size: 13px;
+}
+.draft-grid__cell--error { background: #fee2e2; }
+.draft-grid .ag-large-text-input textarea { font-family: ui-monospace, monospace; font-size: 12px; }
