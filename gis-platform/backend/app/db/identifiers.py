@@ -1,25 +1,39 @@
 """The only sanctioned way to put a user-supplied name into SQL.
 
 Table and column names cannot be bind parameters, so they must be
-interpolated. That is safe here only because `validate_identifier` accepts
-a deliberately tiny grammar — lowercase ASCII, digits and underscore, max
-63 characters, never starting with a digit. Anything else is rejected
-outright rather than escaped, so there is no escaping bug to get wrong.
+interpolated. `validate_identifier` handles the common case -- a name
+arriving directly on *this* request (a new table/column being created, a
+`sortBy`/filter field typed into a query string) -- by accepting a
+deliberately tiny grammar: lowercase ASCII, digits and underscore, max 63
+characters, never starting with a digit. Anything else is rejected outright.
 
-This is gate one of two. Gate two is `catalog_service.verify_source`,
-which confirms the name actually exists in the catalog.
+This is gate one of two for that case. Gate two is `catalog_service.
+verify_source`, which confirms the name actually exists in the catalog.
 
-`quote_catalog_name` is a second, deliberately narrower escape hatch for a
-different trust boundary: a name that did not arrive on this request at all,
-but was just read back from `information_schema` for a table this request
-already resolved via `catalog_service.verify_source`. It was never a
-candidate for injection -- whatever created that column (an import writer
-using SQLAlchemy's own safe DDL quoting, e.g. an imported GeoJSON property
-named "Name") already committed it to the catalog -- so there is nothing left
-to validate except round-tripping it back into a double-quoted identifier
-correctly, including a name Postgres allows but `validate_identifier` does
-not (mixed case, mostly). Never call this on a name that came from request
-input; use `validate_identifier`/`quote` for that.
+`quote_catalog_name` is a second, narrower function for a different trust
+boundary, and it is NOT belt-and-braces over already-trustworthy data: it is
+the sole control on that path, so its escaping must be exactly right and
+must never be weakened or "simplified" away.
+
+The names it quotes were not typed into *this* request, but they were still
+attacker-chosen, just earlier: a draft import (`ImportDraftRequest.
+feature_collection` is `dict[str, Any]`) can carry a GeoJSON property key of
+literally anything -- `geojson_validation._validate_properties` checks that
+property *values* are JSON-serialisable, never that keys are safe
+identifiers -- and `to_postgis` creates a column named verbatim after that
+key. A property key of `evil" , (SELECT current_setting('x')) AS "y` lands
+in `information_schema.columns` exactly as typed, attacker-chosen end to
+end, and is read back out through `quote_catalog_name` on every later
+attribute/tile read of that layer. The name has already passed through a
+different gate by the time it gets here (`catalog_service.verify_source`
+confirms it is a real, existing column, so it can't be an arbitrary string
+smuggled in on *this* request), which is why `quote_catalog_name` does not
+need `validate_identifier`'s character-set restriction -- but it absolutely
+still needs correct SQL identifier quoting, because Postgres itself allows
+that column to exist. The one thing standing between that stored name and a
+second-order SQL injection is doubling an embedded `"`, exactly as Postgres
+does: `quote_catalog_name` doing that correctly is not defense in depth, it
+is the whole defense.
 """
 
 from __future__ import annotations
@@ -60,10 +74,17 @@ def quote_list(names: Iterable[str]) -> str:
 def quote_catalog_name(name: str) -> str:
     """Quote a name already confirmed to exist in the database catalog.
 
-    Escapes an embedded double quote by doubling it, exactly as Postgres
-    itself does, instead of restricting the character set the way
-    `validate_identifier` does -- see the module docstring for why that is
-    safe here and not a general substitute for `validate_identifier`.
+    NEVER call this on a name that arrived on the current request (a new
+    table/column, a `sortBy`/filter field) -- use `validate_identifier`/
+    `quote` for that. This function accepts any character Postgres itself
+    would accept in a quoted identifier, including a mixed-case name
+    `validate_identifier` would reject, because the input is not a fresh
+    string from this request -- it is a name already sitting in
+    `information_schema` for a table `catalog_service.verify_source` has
+    confirmed exists. See the module docstring: that name can still be
+    attacker-chosen (via a prior import), so the doubling escape below is
+    load-bearing, not defense in depth -- it is the only thing standing
+    between this value and a second-order SQL injection.
     """
     if not isinstance(name, str) or name == "":
         raise InvalidRequestError(
@@ -74,4 +95,5 @@ def quote_catalog_name(name: str) -> str:
 
 
 def quote_list_catalog(names: Iterable[str]) -> str:
+    """`quote_catalog_name`, joined for a SELECT list. Never on request input."""
     return ", ".join(quote_catalog_name(name) for name in names)

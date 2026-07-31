@@ -26,7 +26,13 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import InvalidRequestError
-from app.db.identifiers import qualified, quote, quote_list_catalog, validate_identifier
+from app.db.identifiers import (
+    qualified,
+    quote,
+    quote_catalog_name,
+    quote_list_catalog,
+    validate_identifier,
+)
 from app.repositories import catalog_repository
 from app.schemas.attribute import OPERATOR_SQL, VALUELESS_OPS, AttributeFilter
 from app.schemas.feature import BBox
@@ -79,11 +85,14 @@ async def read_in_bbox(
 def build_where(filters: list[AttributeFilter], allowed: set[str]) -> tuple[str, dict[str, Any]]:
     """Compose a WHERE clause from validated fields and bound values.
 
-    The field name is validated twice — against the set of columns that
-    actually exist on this table, and against the identifier allowlist
-    regex (via `quote`/`validate_identifier`) when it is spliced into the
-    clause — and the operator can only be one of the fixed keys of
-    OPERATOR_SQL. The value is always a bind parameter, never text.
+    `allowed` (a catalog-derived column set, e.g. `attribute_columns`) is the
+    real gate here, not a charset check: `item.field not in allowed` rejects
+    anything that isn't a real, existing column on this table before the
+    field name is ever quoted, so `quote_catalog_name` -- not
+    `validate_identifier` -- is the right quoting function for it, exactly
+    as for the SELECT list in `read_attribute_page`. The operator can only be
+    one of the fixed keys of OPERATOR_SQL, and the value is always a bind
+    parameter, never text.
     """
     clauses: list[str] = []
     params: dict[str, Any] = {}
@@ -95,7 +104,7 @@ def build_where(filters: list[AttributeFilter], allowed: set[str]) -> tuple[str,
             )
         template = OPERATOR_SQL[item.op]
         placeholder = f"f{index}"
-        clauses.append(template.format(col=quote(validate_identifier(item.field)), p=placeholder))
+        clauses.append(template.format(col=quote_catalog_name(item.field), p=placeholder))
         if item.op not in VALUELESS_OPS:
             if item.op == "in":
                 if not isinstance(item.value, list) or not item.value:
@@ -121,8 +130,17 @@ async def read_attribute_page(
 ) -> tuple[list[dict[str, Any]], int]:
     table = qualified(source.schema_name, source.table_name)
     where, params = build_where(filters, set(columns))
+    # `attribute_service.get_page` already checks `sort_by` against the same
+    # catalog column list before calling in here; this function does not
+    # trust that and re-checks it locally, because `columns` (not a charset
+    # regex) is the actual gate that makes `quote_catalog_name` safe to use
+    # below -- see `build_where`'s docstring for the identical reasoning.
+    if sort_by not in columns:
+        raise InvalidRequestError(
+            "Unknown sort column", details={"sortBy": sort_by, "allowed": columns}
+        )
     direction = "DESC" if sort_order.lower() == "desc" else "ASC"
-    order = f"{quote(validate_identifier(sort_by))} {direction}"
+    order = f"{quote_catalog_name(sort_by)} {direction}"
 
     total = int(
         (

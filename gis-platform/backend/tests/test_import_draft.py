@@ -96,6 +96,23 @@ async def test_nested_properties_round_trip_through_jsonb(
     assert rows[0]["meta"] == nested  # nesting preserved, not flattened
 
 
+async def test_a_mixed_case_property_layer_renders_a_vector_tile(
+    client: AsyncClient, project_id: str
+) -> None:
+    """Regression guard: `tile_repository.render_mvt` reads the same
+    catalog-derived column list as the attribute page, so a layer with a
+    non-lowercase property (like `Name` above) must be selectable there too,
+    not just readable through /attributes."""
+    response = await post_draft(client, project_id, draft(feature(POINT, Name="Beijing")))
+    assert response.status_code == 201, response.text
+    layer_id = response.json()["layer"]["id"]
+
+    tile = await client.get(f"/api/v1/layers/{layer_id}/tiles/0/0/0.mvt")
+    assert tile.status_code == 200
+    assert len(tile.content) > 0
+    assert b"Name" in tile.content
+
+
 async def test_a_single_invalid_feature_rejects_the_whole_import(
     client: AsyncClient, project_id: str
 ) -> None:
@@ -208,3 +225,6 @@ async def test_a_duplicate_confirmation_conflicts_instead_of_creating_two_layers
 
     project = (await client.get(f"/api/v1/projects/{project_id}")).json()
     assert len(project["layers"]) == 1
+    # The second write() runs before the conflict is detected and does
+    # create a table -- the drop-on-failure guard must remove it.
+    assert len(imported_tables()) == 1

@@ -16,7 +16,7 @@ from __future__ import annotations
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.identifiers import qualified, quote, validate_identifier
+from app.db.identifiers import qualified, quote, quote_catalog_name
 from app.schemas.source import PostgisSource
 
 MVT_EXTENT = 4096
@@ -35,10 +35,13 @@ async def render_mvt(
     geom = quote(source.geometry_column)
     fid = quote(source.id_column)
     table = qualified(source.schema_name, source.table_name)
+    # `columns` is `feature_repository.attribute_columns(session, source)` --
+    # names read back from `information_schema` for a table already resolved
+    # via `catalog_service.verify_source`, the same catalog trust boundary as
+    # `read_attribute_page`'s SELECT list. `quote_catalog_name` (not
+    # `validate_identifier`) is correct here for the same reason.
     attribute_select = "".join(
-        f", t.{quote(validate_identifier(column))}"
-        for column in columns
-        if column != source.id_column
+        f", t.{quote_catalog_name(column)}" for column in columns if column != source.id_column
     )
 
     # The `&&` predicate transforms the tile envelope into the table's SRID,
