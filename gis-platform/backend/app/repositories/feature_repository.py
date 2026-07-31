@@ -26,7 +26,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import InvalidRequestError
-from app.db.identifiers import qualified, quote, quote_list, validate_identifier
+from app.db.identifiers import qualified, quote, quote_list_catalog, validate_identifier
 from app.repositories import catalog_repository
 from app.schemas.attribute import OPERATOR_SQL, VALUELESS_OPS, AttributeFilter
 from app.schemas.feature import BBox
@@ -134,7 +134,7 @@ async def read_attribute_page(
             await session.execute(
                 text(
                     f"""
-                SELECT {quote_list(columns)}
+                SELECT {quote_list_catalog(columns)}
                 FROM {table}
                 WHERE {where}
                 ORDER BY {order}, {quote(source.id_column)} ASC

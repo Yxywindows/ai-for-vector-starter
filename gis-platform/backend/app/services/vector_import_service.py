@@ -9,7 +9,9 @@ nothing behind regardless of which step it failed in.
 
 from __future__ import annotations
 
+import json
 import logging
+import math
 import re
 import shutil
 import uuid
@@ -21,6 +23,7 @@ import anyio
 import geopandas as gpd
 from fastapi import UploadFile
 from sqlalchemy import Engine, text
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
@@ -156,6 +159,50 @@ def normalize_frame(frame: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     return frame
 
 
+def _json_column_names(frame: gpd.GeoDataFrame) -> set[str]:
+    """Columns holding at least one dict/list value (a nested GeoJSON property).
+
+    Both import paths -- GDAL/pyogrio for a file, `shape()`/raw properties for
+    a draft -- can put a Python dict or list into an attribute column.
+    """
+    geometry_column = frame.geometry.name
+    return {
+        column
+        for column in frame.columns
+        if column != geometry_column
+        and frame[column].map(lambda value: isinstance(value, (dict, list))).any()
+    }
+
+
+def _json_scalar(value: Any) -> str | None:
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return None
+    return json.dumps(value)
+
+
+def _encode_json_columns(frame: gpd.GeoDataFrame, columns: set[str]) -> gpd.GeoDataFrame:
+    """Pre-serialise `columns` to JSON text before the frame reaches `to_sql`.
+
+    `to_postgis` writes rows through `geopandas.io.sql._psql_insert_copy`, a
+    `COPY ... FROM STDIN` fast path that builds its input with `csv.writer`
+    directly from the frame's raw Python values -- it never goes through a
+    SQLAlchemy bind processor. `dtype=JSONB` on `to_postgis` only decides the
+    column's declared type; left otherwise alone, `csv.writer` stringifies a
+    dict/list with `str()`, which is a Python repr (single-quoted) and not
+    valid JSON, so Postgres would reject the COPY outright. Encoding to JSON
+    text here, before that fast path ever sees the value, is what actually
+    lands valid `jsonb`. Every value in a selected column is encoded, not
+    just the dict/list ones, so a column holding a scalar in one row and a
+    nested object in another still lands as valid `jsonb` throughout.
+    """
+    if not columns:
+        return frame
+    frame = frame.copy()
+    for column in columns:
+        frame[column] = frame[column].map(_json_scalar)
+    return frame
+
+
 def _write_frame(frame: gpd.GeoDataFrame, table_name: str) -> dict[str, Any]:
     """Blocking write half. Runs on a worker thread.
 
@@ -167,13 +214,16 @@ def _write_frame(frame: gpd.GeoDataFrame, table_name: str) -> dict[str, Any]:
     """
     settings = get_settings()
     engine = get_sync_engine()
-    frame.to_postgis(
+    json_columns = _json_column_names(frame)
+    encoded = _encode_json_columns(frame, json_columns)
+    encoded.to_postgis(
         table_name,
         engine,
         schema=settings.import_schema,
         if_exists="fail",
         index=True,
         index_label=ID_COLUMN,
+        dtype=dict.fromkeys(json_columns, JSONB),
     )
     _create_indexes(engine, settings.import_schema, table_name)
     return {
