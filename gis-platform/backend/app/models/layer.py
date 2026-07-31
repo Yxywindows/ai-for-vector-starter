@@ -59,6 +59,7 @@ class Layer(Base):
     feature_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
     srid: Mapped[int | None] = mapped_column(Integer, nullable=True)
     geometry_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    source_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )

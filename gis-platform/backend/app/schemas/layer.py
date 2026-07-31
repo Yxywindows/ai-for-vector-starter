@@ -61,5 +61,6 @@ class LayerRead(APIModel):
     feature_count: int | None
     srid: int | None
     geometry_type: str | None
+    source_filename: str | None = None
 
     _coerce_style = field_validator("style", mode="before")(_coerce_style)

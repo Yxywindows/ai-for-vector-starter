@@ -127,3 +127,26 @@ async def test_delete_layer(client: AsyncClient, project_id: str) -> None:
     layer = (await client.post(f"/api/v1/projects/{project_id}/layers", json=BASEMAP)).json()
     assert (await client.delete(f"/api/v1/layers/{layer['id']}")).status_code == 204
     assert (await client.get(f"/api/v1/layers/{layer['id']}")).status_code == 404
+
+
+async def test_layer_read_exposes_a_null_source_filename_by_default(
+    client: AsyncClient,
+) -> None:
+    """Layers not created by a file import have no source filename, and the
+    field must still be present on the wire so the client can render it
+    without probing for the key."""
+    project_id = (await client.post("/api/v1/projects", json={"name": "P"})).json()["id"]
+    response = await client.post(
+        f"/api/v1/projects/{project_id}/layers",
+        json={
+            "name": "Basemap",
+            "kind": "basemap",
+            "source": {
+                "type": "xyz",
+                "url": "https://example.com/{z}/{x}/{y}.png",
+                "attribution": None,
+            },
+        },
+    )
+    assert response.status_code == 201, response.text
+    assert response.json()["sourceFilename"] is None
