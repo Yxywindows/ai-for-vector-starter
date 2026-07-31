@@ -4,9 +4,12 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 1317,
+    port: Number(process.env.VITE_PORT ?? 1317),
     proxy: {
-      '/api': { target: 'http://localhost:1316', changeOrigin: true },
+      '/api': {
+        target: process.env.VITE_API_TARGET ?? 'http://localhost:1316',
+        changeOrigin: true,
+      },
     },
   },
   test: {
