@@ -38,6 +38,12 @@ class Settings(BaseSettings):
     raster_pool_max_open: int = 8
     raster_pool_idle_ttl_seconds: float = 300.0
 
+    # Staged JSON/GeoJSON import
+    import_allowed_extensions: list[str] = [".json", ".geojson"]
+    import_max_file_bytes: int = 64 * 1024 * 1024
+    import_max_features: int = 50_000
+    import_preview_max_features: int = 5_000
+
     @property
     def raster_dir(self) -> Path:
         return self.data_dir / "rasters"

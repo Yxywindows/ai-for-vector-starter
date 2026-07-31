@@ -20,6 +20,13 @@ class MemoryReport(APIModel):
     process_rss_bytes: int
 
 
+class ImportLimits(APIModel):
+    allowed_extensions: list[str]
+    max_file_bytes: int
+    max_features: int
+    preview_max_features: int
+
+
 class BandStatistics(APIModel):
     band: int
     min: float

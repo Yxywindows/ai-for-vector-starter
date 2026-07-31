@@ -31,3 +31,13 @@ async def test_memory_report_is_service_unavailable_before_the_pool_is_initialis
 
     assert response.status_code == 503
     assert response.json()["error"]["code"] == "service_unavailable"
+
+
+async def test_import_limits_reports_the_configured_values(client: AsyncClient) -> None:
+    response = await client.get("/api/v1/system/import-limits")
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["allowedExtensions"] == [".json", ".geojson"]
+    assert body["maxFileBytes"] == 64 * 1024 * 1024
+    assert body["maxFeatures"] == 50_000
+    assert body["previewMaxFeatures"] == 5_000
