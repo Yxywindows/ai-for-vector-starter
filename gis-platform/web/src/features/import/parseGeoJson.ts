@@ -61,8 +61,17 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
-const isRecordArray = (value: unknown): value is Record<string, unknown>[] =>
-  Array.isArray(value) && value.length > 0 && value.every(isObject)
+/**
+ * True for an array that is *structurally* a record array — every element is
+ * an object, including the vacuous case of an empty array. Emptiness alone
+ * must not change a root's classification: an empty `[]` or `{ features: [] }`
+ * is still recognisably an array-of-records shape, just one with no rows in
+ * it, so it should fail the shared `empty_document` check rather than being
+ * misreported as `unsupported_root`. An array of non-objects (e.g. `[1, 2]`)
+ * is never a record array, empty or not.
+ */
+const isObjectArray = (value: unknown): value is Record<string, unknown>[] =>
+  Array.isArray(value) && value.every(isObject)
 
 function valueType(value: unknown): DraftColumnType {
   if (typeof value === 'number') return 'number'
@@ -169,13 +178,13 @@ export function parseGeoJson(text: string): ParseResult {
   } else if (isObject(root) && root.type === 'Feature') {
     detectedFormat = 'feature'
     features = fromFeatureArray([root])
-  } else if (isRecordArray(root)) {
+  } else if (isObjectArray(root)) {
     detectedFormat = 'array'
     features = toDraftFeatures(root.map((entry) => ({ geometry: null, properties: entry })))
     derivesGeometry = true
   } else if (isObject(root)) {
-    const named = RECORD_ARRAY_KEYS.find((key) => isRecordArray(root[key]))
-    const candidates = Object.keys(root).filter((key) => isRecordArray(root[key]))
+    const named = RECORD_ARRAY_KEYS.find((key) => isObjectArray(root[key]))
+    const candidates = Object.keys(root).filter((key) => isObjectArray(root[key]))
     const key = named ?? (candidates.length === 1 ? candidates[0] : undefined)
     if (!key) {
       throw new ParseError(

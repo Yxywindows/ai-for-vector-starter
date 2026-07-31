@@ -80,6 +80,7 @@ describe('parseGeoJson failures', () => {
     try {
       parseGeoJson('   ')
     } catch (error) {
+      expect(error).toBeInstanceOf(ParseError)
       expect((error as ParseError).code).toBe('empty_document')
     }
   })
@@ -88,6 +89,7 @@ describe('parseGeoJson failures', () => {
     try {
       parseGeoJson(JSON.stringify({ type: 'Point', coordinates: [0, 0] }))
     } catch (error) {
+      expect(error).toBeInstanceOf(ParseError)
       expect((error as ParseError).code).toBe('unsupported_root')
     }
   })
@@ -96,6 +98,7 @@ describe('parseGeoJson failures', () => {
     try {
       parseGeoJson(JSON.stringify({ a: [{ x: 1 }], b: [{ y: 2 }] }))
     } catch (error) {
+      expect(error).toBeInstanceOf(ParseError)
       expect((error as ParseError).code).toBe('unsupported_root')
     }
   })
@@ -104,7 +107,44 @@ describe('parseGeoJson failures', () => {
     try {
       parseGeoJson(JSON.stringify({ type: 'FeatureCollection', features: [] }))
     } catch (error) {
+      expect(error).toBeInstanceOf(ParseError)
       expect((error as ParseError).code).toBe('empty_document')
+    }
+  })
+
+  it('reports empty_document for a bare empty array root', () => {
+    try {
+      parseGeoJson(JSON.stringify([]))
+    } catch (error) {
+      expect(error).toBeInstanceOf(ParseError)
+      expect((error as ParseError).code).toBe('empty_document')
+    }
+  })
+
+  it('reports empty_document for a wrapper object with an empty records array', () => {
+    try {
+      parseGeoJson(JSON.stringify({ features: [] }))
+    } catch (error) {
+      expect(error).toBeInstanceOf(ParseError)
+      expect((error as ParseError).code).toBe('empty_document')
+    }
+  })
+
+  it('still reports unsupported_root for an array of non-objects', () => {
+    try {
+      parseGeoJson(JSON.stringify([1, 2, 3]))
+    } catch (error) {
+      expect(error).toBeInstanceOf(ParseError)
+      expect((error as ParseError).code).toBe('unsupported_root')
+    }
+  })
+
+  it('still reports unsupported_root for an object with no array property at all', () => {
+    try {
+      parseGeoJson(JSON.stringify({}))
+    } catch (error) {
+      expect(error).toBeInstanceOf(ParseError)
+      expect((error as ParseError).code).toBe('unsupported_root')
     }
   })
 })
