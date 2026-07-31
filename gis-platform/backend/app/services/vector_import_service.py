@@ -124,15 +124,13 @@ def _create_indexes(engine: Engine, schema: str, table_name: str) -> None:
         )
 
 
-def _read_and_write(path: Path, table_name: str) -> dict[str, Any]:
-    """Blocking half of the import. Runs on a worker thread.
+def _read_frame(path: Path) -> gpd.GeoDataFrame:
+    """Blocking read half. Runs on a worker thread.
 
-    From the moment `to_postgis` returns, `table_name` is a durably
-    committed table in `gis_data` -- that commit happens on the separate
-    sync connection and is entirely independent of the request-scoped
-    async session. `import_vector_file` treats this whole function, plus
-    everything after it, as one failure domain that must drop the table
-    on any exception.
+    Reads the dataset and normalises it to EPSG:4326 with a `geometry` column.
+    Writing is deliberately not done here: `write_frame_and_register` owns
+    that, so the draft importer -- which has a frame but no file -- shares
+    the same write.
     """
     dataset = _resolve_dataset_path(path)
     try:
@@ -145,12 +143,28 @@ def _read_and_write(path: Path, table_name: str) -> dict[str, Any]:
 
     if frame.empty:
         raise UpstreamDataError("Dataset contains no features", details={"filename": path.name})
+    return normalize_frame(frame)
+
+
+def normalize_frame(frame: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """CRS84 default, reproject to 4326, and name the geometry column."""
     if frame.crs is None:
         frame = frame.set_crs(4326)  # GeoJSON without a CRS member is CRS84
     frame = frame.to_crs(4326)
     if frame.geometry.name != GEOMETRY_COLUMN:
         frame = frame.rename_geometry(GEOMETRY_COLUMN)
+    return frame
 
+
+def _write_frame(frame: gpd.GeoDataFrame, table_name: str) -> dict[str, Any]:
+    """Blocking write half. Runs on a worker thread.
+
+    From the moment `to_postgis` returns, `table_name` is a durably committed
+    table in `gis_data` -- that commit happens on the separate sync connection
+    and is entirely independent of the request-scoped async session. The
+    caller must treat this function, plus everything after it, as one failure
+    domain that drops the table on any exception.
+    """
     settings = get_settings()
     engine = get_sync_engine()
     frame.to_postgis(
@@ -175,6 +189,57 @@ def _drop_table(table_name: str) -> None:
         conn.execute(text(f"DROP TABLE IF EXISTS {qualified(settings.import_schema, table_name)}"))
 
 
+async def write_frame_and_register(
+    session: AsyncSession,
+    project_id: uuid.UUID,
+    frame: gpd.GeoDataFrame,
+    *,
+    layer_name: str,
+    table_name: str,
+    source_filename: str | None,
+) -> Layer:
+    """Write a frame to `gis_data` and register the layer, as one failure domain.
+
+    One guard spans both windows in which `table_name` can end up as a real,
+    committed table with nothing left to undo it: the bulk `to_postgis` write
+    and its PK/index DDL inside `_write_frame` (committed on the separate sync
+    connection), and layer registration below (committed by the request-scoped
+    session). A failure anywhere in this block drops the table
+    unconditionally; `DROP TABLE IF EXISTS` is a no-op if the write never got
+    that far.
+    """
+    settings = get_settings()
+    try:
+        stats = await anyio.to_thread.run_sync(_write_frame, frame, table_name)
+
+        source = PostgisSource(
+            schema_name=settings.import_schema,
+            table_name=table_name,
+            geometry_column=GEOMETRY_COLUMN,
+            id_column=ID_COLUMN,
+            srid=4326,
+        )
+        layer = await layer_service.create_layer(
+            session,
+            project_id,
+            LayerCreate(name=layer_name, kind="vector", source=source),
+        )
+        metadata = await catalog_repository.geometry_metadata(session, source)
+        return await layer_repository.update(
+            session,
+            layer,
+            srid=4326,
+            geometry_type=(str(metadata["geometry_type"]) if metadata else stats["geometry_type"]),
+            extent=stats["extent"],
+            feature_count=stats["feature_count"],
+            source_filename=source_filename,
+        )
+    except Exception:
+        logger.exception("Import failed; dropping table %s if it was created", table_name)
+        await anyio.to_thread.run_sync(_drop_table, table_name)
+        raise
+
+
 async def import_vector_file(
     session: AsyncSession,
     project_id: uuid.UUID,
@@ -193,46 +258,14 @@ async def import_vector_file(
     table_name = slugify_table_name(original_name)
     try:
         saved = await save_upload(upload, work_dir, settings.upload_max_bytes)
-        # One guard spans both windows in which `table_name` can end up as a
-        # real, committed table with nothing left to undo it: the bulk
-        # `to_postgis` write and its PK/index DDL inside `_read_and_write`
-        # (committed on the separate sync connection), and layer
-        # registration below (committed by the request-scoped session).
-        # A failure anywhere in this block drops the table unconditionally;
-        # `DROP TABLE IF EXISTS` is a no-op if the write never got that far.
-        try:
-            stats = await anyio.to_thread.run_sync(_read_and_write, saved, table_name)
-
-            source = PostgisSource(
-                schema_name=settings.import_schema,
-                table_name=table_name,
-                geometry_column=GEOMETRY_COLUMN,
-                id_column=ID_COLUMN,
-                srid=4326,
-            )
-            layer = await layer_service.create_layer(
-                session,
-                project_id,
-                LayerCreate(
-                    name=layer_name or Path(original_name).stem, kind="vector", source=source
-                ),
-            )
-            metadata = await catalog_repository.geometry_metadata(session, source)
-            return await layer_repository.update(
-                session,
-                layer,
-                srid=4326,
-                geometry_type=(
-                    str(metadata["geometry_type"]) if metadata else stats["geometry_type"]
-                ),
-                extent=stats["extent"],
-                feature_count=stats["feature_count"],
-            )
-        except Exception:
-            logger.exception(
-                "Vector import failed; dropping table %s if it was created", table_name
-            )
-            await anyio.to_thread.run_sync(_drop_table, table_name)
-            raise
+        frame = await anyio.to_thread.run_sync(_read_frame, saved)
+        return await write_frame_and_register(
+            session,
+            project_id,
+            frame,
+            layer_name=layer_name or Path(original_name).stem,
+            table_name=table_name,
+            source_filename=original_name,
+        )
     finally:
         shutil.rmtree(work_dir, ignore_errors=True)
