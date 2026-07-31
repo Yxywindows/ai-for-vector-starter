@@ -1,3 +1,5 @@
+import { StrictMode } from 'react'
+
 import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
@@ -49,6 +51,35 @@ describe('useImportDraft', () => {
     act(() => result.current.redo())
     expect(result.current.draft!.features[0]!.properties.name).toBe('Changed')
     expect(result.current.isDirty).toBe(true)
+  })
+
+  it('survives StrictMode double-invocation of state updaters', () => {
+    // React's StrictMode (which the real app mounts under, in main.tsx)
+    // double-invokes setState updater functions in development to surface
+    // impure updaters. If undo/redo ever again call one stack's setter from
+    // inside the other stack's updater, that nested call is a side effect
+    // that fires twice under StrictMode, silently double-transferring a
+    // command between the undo and redo stacks. A single undo/redo cycle
+    // cannot expose that: it takes at least two edits, two undos, and two
+    // redos for the corruption to produce a wrong final value.
+    const { result } = renderHook(
+      () => useImportDraft(draftFromParse(parseGeoJson(DOCUMENT), 'cities.geojson', 1234)),
+      { wrapper: StrictMode },
+    )
+    act(() => result.current.setCellValue('0', 'name', 'A'))
+    act(() => result.current.setCellValue('0', 'name', 'B'))
+    act(() => result.current.undo())
+    act(() => result.current.undo())
+    expect(result.current.draft!.features[0]!.properties.name).toBe('Beijing')
+    expect(result.current.canUndo).toBe(false)
+    expect(result.current.canRedo).toBe(true)
+
+    act(() => result.current.redo())
+    expect(result.current.draft!.features[0]!.properties.name).toBe('A')
+    act(() => result.current.redo())
+    expect(result.current.draft!.features[0]!.properties.name).toBe('B')
+    expect(result.current.canUndo).toBe(true)
+    expect(result.current.canRedo).toBe(false)
   })
 
   it('a new edit clears the redo stack', () => {
