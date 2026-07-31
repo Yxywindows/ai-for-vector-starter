@@ -93,6 +93,55 @@ def test_rejects_a_linestring_with_one_position() -> None:
     assert codes(outcome.errors) == ["malformed_coordinates"]
 
 
+def test_rejects_malformed_multipoint_coordinates() -> None:
+    geometry = {"type": "MultiPoint", "coordinates": "not-an-array"}
+    outcome = validate_feature_collection(collection(geometry), max_features=100)
+    assert codes(outcome.errors) == ["malformed_coordinates"]
+
+
+def test_rejects_malformed_multilinestring_coordinates() -> None:
+    geometry = {"type": "MultiLineString", "coordinates": "not-an-array"}
+    outcome = validate_feature_collection(collection(geometry), max_features=100)
+    assert codes(outcome.errors) == ["malformed_coordinates"]
+
+
+def test_rejects_a_multilinestring_line_with_one_position() -> None:
+    geometry = {
+        "type": "MultiLineString",
+        "coordinates": [[[116.4, 39.9], [121.5, 31.2]], [[0.0, 0.0]]],
+    }
+    outcome = validate_feature_collection(collection(geometry), max_features=100)
+    assert codes(outcome.errors) == ["malformed_coordinates"]
+
+
+def test_rejects_malformed_multipolygon_coordinates() -> None:
+    geometry = {"type": "MultiPolygon", "coordinates": "not-an-array"}
+    outcome = validate_feature_collection(collection(geometry), max_features=100)
+    assert codes(outcome.errors) == ["malformed_coordinates"]
+
+
+def test_rejects_a_multipolygon_ring_below_the_minimum_position_count() -> None:
+    geometry = {
+        "type": "MultiPolygon",
+        "coordinates": [[[[0.0, 0.0], [1.0, 1.0]]]],
+    }
+    outcome = validate_feature_collection(collection(geometry), max_features=100)
+    assert codes(outcome.errors) == ["malformed_coordinates"]
+
+
+def test_closes_an_unclosed_ring_nested_inside_a_multipolygon_and_warns() -> None:
+    unclosed = {
+        "type": "MultiPolygon",
+        "coordinates": [[[[0.0, 0.0], [1.0, 0.0], [1.0, 1.0]]]],
+    }
+    outcome = validate_feature_collection(collection(unclosed), max_features=100)
+    assert outcome.errors == []
+    assert codes(outcome.warnings) == ["ring_auto_closed"]
+    ring = outcome.features[0]["geometry"]["coordinates"][0][0]
+    assert ring[0] == ring[-1]
+    assert len(ring) == 4
+
+
 @pytest.mark.parametrize("position", [[181.0, 39.9], [-181.0, 39.9], [116.4, 91.0], [116.4, -91.0]])
 def test_rejects_out_of_range_coordinates(position: list[float]) -> None:
     geometry = {"type": "Point", "coordinates": position}
@@ -180,6 +229,47 @@ def test_rejects_a_property_value_that_is_not_json_serialisable() -> None:
         "type": "FeatureCollection",
         "features": [
             {"type": "Feature", "geometry": POINT, "properties": {"when": object()}},
+        ],
+    }
+    outcome = validate_feature_collection(document, max_features=100)
+    assert codes(outcome.errors) == ["unsupported_property_value"]
+
+
+def test_rejects_a_top_level_nan_property_value() -> None:
+    document = {
+        "type": "FeatureCollection",
+        "features": [
+            {"type": "Feature", "geometry": POINT, "properties": {"score": float("nan")}},
+        ],
+    }
+    outcome = validate_feature_collection(document, max_features=100)
+    assert codes(outcome.errors) == ["unsupported_property_value"]
+
+
+def test_rejects_a_nan_nested_inside_an_object_property() -> None:
+    document = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": POINT,
+                "properties": {"stats": {"mean": float("nan")}},
+            },
+        ],
+    }
+    outcome = validate_feature_collection(document, max_features=100)
+    assert codes(outcome.errors) == ["unsupported_property_value"]
+
+
+def test_rejects_a_nan_nested_inside_a_list_property() -> None:
+    document = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": POINT,
+                "properties": {"samples": [1, 2, float("nan")]},
+            },
         ],
     }
     outcome = validate_feature_collection(document, max_features=100)

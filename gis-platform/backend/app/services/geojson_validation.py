@@ -206,7 +206,7 @@ def _validate_properties(properties: Any, index: int, errors: list[Issue]) -> di
         return {}
     for key, value in properties.items():
         try:
-            json.dumps(value)
+            json.dumps(value, allow_nan=False)
         except (TypeError, ValueError):
             errors.append(
                 Issue(
