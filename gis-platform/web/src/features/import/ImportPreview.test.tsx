@@ -177,6 +177,34 @@ describe('ImportPreview', () => {
     expect(onClose).toHaveBeenCalled()
   })
 
+  it('offers a way out when the limits request fails', async () => {
+    vi.spyOn(importsApi, 'getImportLimits').mockRejectedValue(new Error('boom'))
+    const { onClose } = renderPreview(fileOf(DOCUMENT))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/import limits/i)
+    await userEvent.click(screen.getByRole('button', { name: /close/i }))
+    expect(onClose).toHaveBeenCalled()
+  })
+
+  it('re-enables confirm when the row holding a cell error is deleted', async () => {
+    renderPreview(fileOf(DOCUMENT))
+    const cell = await screen.findByTestId('cell-0-pop')
+
+    // A rejected edit parks an error on the cell and blocks confirm.
+    await userEvent.dblClick(cell)
+    await userEvent.keyboard('lots{Enter}')
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /confirm import/i })).toBeDisabled(),
+    )
+
+    // Deleting the whole row must take its error with it.
+    await userEvent.click(screen.getAllByRole('checkbox')[1]!)
+    await userEvent.click(screen.getByRole('button', { name: /delete selected/i }))
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /confirm import/i })).toBeEnabled(),
+    )
+  })
+
   it('prompts when cancelling after an edit and leaves the server untouched', async () => {
     const spy = vi.spyOn(importsApi, 'confirmImportDraft')
     const { onClose } = renderPreview(fileOf(DOCUMENT))

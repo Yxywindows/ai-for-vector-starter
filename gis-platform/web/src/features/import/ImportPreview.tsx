@@ -86,7 +86,14 @@ export function ImportPreview({ projectId, file, onClose }: ImportPreviewProps) 
     }
   }, [file, limits.data, parse, sizeFailure])
 
-  const failure = sizeFailure ?? parseFailure
+  // Every early branch keeps a way out: this is a fixed full-screen overlay,
+  // so a branch without a Close button would trap the user behind it.
+  const failure =
+    sizeFailure ??
+    parseFailure ??
+    (limits.isError
+      ? `Could not load the import limits: ${(limits.error as Error).message}`
+      : null)
   if (failure) {
     return (
       <div className="import-preview" role="dialog" aria-label="Import preview">
@@ -102,6 +109,9 @@ export function ImportPreview({ projectId, file, onClose }: ImportPreviewProps) 
     return (
       <div className="import-preview" role="dialog" aria-label="Import preview">
         <p>Reading {file.name}…</p>
+        <button type="button" onClick={onClose}>
+          Cancel
+        </button>
       </div>
     )
   }
@@ -194,9 +204,28 @@ function ImportWorkspace({
     })
   }, [])
 
+  // An error belongs to a cell, and a cell can vanish: deleting its row or
+  // renaming its column would otherwise leave a stale entry that keeps
+  // Confirm disabled with nothing visible to explain why. Derive the live
+  // set from the draft instead of trying to prune on every mutation path.
+  // Keys are `${featureId}:${column}`; feature ids never contain a colon,
+  // column names may, so split at the first one.
+  const activeCellErrors = useMemo(() => {
+    if (!draft) return cellErrors
+    const ids = new Set(draft.features.map((feature) => feature.id))
+    const columns = new Set(draft.columns.map((column) => column.name))
+    const entries = Object.entries(cellErrors).filter(([key]) => {
+      const separator = key.indexOf(':')
+      return ids.has(key.slice(0, separator)) && columns.has(key.slice(separator + 1))
+    })
+    return entries.length === Object.keys(cellErrors).length
+      ? cellErrors
+      : Object.fromEntries(entries)
+  }, [cellErrors, draft])
+
   if (!draft) return null
 
-  const blockingErrors = validation.errors.length > 0 || Object.keys(cellErrors).length > 0
+  const blockingErrors = validation.errors.length > 0 || Object.keys(activeCellErrors).length > 0
   const numericColumns = draft.columns.filter((column) => column.type === 'number')
 
   return (
@@ -344,7 +373,7 @@ function ImportWorkspace({
         features={draft.features}
         selectedIds={selectedIds}
         search={search}
-        cellErrors={cellErrors}
+        cellErrors={activeCellErrors}
         onSelectionChange={setSelectedIds}
         onCellEdit={editor.setCellValue}
         onCellError={setCellError}

@@ -209,7 +209,7 @@ async def test_failed_import_drops_the_table_when_indexing_fails_after_the_bulk_
     and asserts the table is still dropped rather than left behind
     half-built (no primary key, no geometry index). This is deliberately a
     *different* failure point from `test_failed_import_drops_the_orphan_table`
-    above, which fails only after `_read_and_write` has already succeeded
+    above, which fails only after `write_frame_and_register` has already succeeded
     end to end; a test that fails during or after `_create_indexes` cannot
     be satisfied by that other test's coverage."""
     from sqlalchemy import text
