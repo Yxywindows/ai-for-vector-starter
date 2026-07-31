@@ -64,6 +64,22 @@ describe('parseGeoJson root shapes', () => {
     expect(result.lonColumn).toBeNull()
     expect(result.features[0]!.geometry).toBeNull()
   })
+
+  it('skips a decoy empty array and parses via the one real unnamed candidate', () => {
+    const wrapper = { a: [], b: [{ y: 1 }] }
+    const result = parseGeoJson(JSON.stringify(wrapper))
+    expect(result.detectedFormat).toBe('records')
+    expect(result.features).toHaveLength(1)
+    expect(result.features[0]!.properties.y).toBe(1)
+  })
+
+  it('skips an empty features array and parses via a populated, non-conventional key', () => {
+    const wrapper = { features: [], items: [{ x: 1 }] }
+    const result = parseGeoJson(JSON.stringify(wrapper))
+    expect(result.detectedFormat).toBe('records')
+    expect(result.features).toHaveLength(1)
+    expect(result.features[0]!.properties.x).toBe(1)
+  })
 })
 
 describe('parseGeoJson failures', () => {
@@ -145,6 +161,15 @@ describe('parseGeoJson failures', () => {
     } catch (error) {
       expect(error).toBeInstanceOf(ParseError)
       expect((error as ParseError).code).toBe('unsupported_root')
+    }
+  })
+
+  it('reports empty_document when every candidate array is empty, regardless of which is picked', () => {
+    try {
+      parseGeoJson(JSON.stringify({ a: [], b: [] }))
+    } catch (error) {
+      expect(error).toBeInstanceOf(ParseError)
+      expect((error as ParseError).code).toBe('empty_document')
     }
   })
 })

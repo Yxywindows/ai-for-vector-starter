@@ -73,6 +73,42 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
 const isObjectArray = (value: unknown): value is Record<string, unknown>[] =>
   Array.isArray(value) && value.every(isObject)
 
+const isNonEmptyObjectArray = (value: unknown): value is Record<string, unknown>[] =>
+  isObjectArray(value) && value.length > 0
+
+const isEmptyObjectArray = (value: unknown): value is Record<string, unknown>[] =>
+  isObjectArray(value) && value.length === 0
+
+/**
+ * Named-key search, then sole-candidate rule, restricted to keys whose value
+ * satisfies `predicate`. Returns `key: undefined` when nothing is named and
+ * there is more than one (or zero) matching candidate — the caller decides
+ * whether that ambiguity is fatal or just means "try a wider search".
+ */
+function findNamedOrSoleKey(
+  root: Record<string, unknown>,
+  predicate: (value: unknown) => boolean,
+): { key: string | undefined; candidates: string[] } {
+  const named = RECORD_ARRAY_KEYS.find((key) => predicate(root[key]))
+  const candidates = Object.keys(root).filter((key) => predicate(root[key]))
+  const key = named ?? (candidates.length === 1 ? candidates[0] : undefined)
+  return { key, candidates }
+}
+
+/**
+ * Named-key search, then simply the first matching key — used only for the
+ * empty-array fallback, where picking among several equally-empty candidates
+ * is harmless: whichever is chosen yields the same zero-row result and the
+ * same `empty_document` outcome.
+ */
+function findNamedOrFirstKey(
+  root: Record<string, unknown>,
+  predicate: (value: unknown) => boolean,
+): string | undefined {
+  const named = RECORD_ARRAY_KEYS.find((key) => predicate(root[key]))
+  return named ?? Object.keys(root).find((key) => predicate(root[key]))
+}
+
 function valueType(value: unknown): DraftColumnType {
   if (typeof value === 'number') return 'number'
   if (typeof value === 'boolean') return 'boolean'
@@ -183,13 +219,16 @@ export function parseGeoJson(text: string): ParseResult {
     features = toDraftFeatures(root.map((entry) => ({ geometry: null, properties: entry })))
     derivesGeometry = true
   } else if (isObject(root)) {
-    const named = RECORD_ARRAY_KEYS.find((key) => isObjectArray(root[key]))
-    const candidates = Object.keys(root).filter((key) => isObjectArray(root[key]))
-    const key = named ?? (candidates.length === 1 ? candidates[0] : undefined)
+    // Prefer a real, non-empty records array over a decoy empty one (e.g. an
+    // API envelope carrying both `features: []` and the real data under
+    // another key). Only fall back to an empty array when nothing non-empty
+    // is available to select at all.
+    const nonEmpty = findNamedOrSoleKey(root, isNonEmptyObjectArray)
+    const key = nonEmpty.key ?? findNamedOrFirstKey(root, isEmptyObjectArray)
     if (!key) {
       throw new ParseError(
         'unsupported_root',
-        candidates.length > 1
+        nonEmpty.candidates.length > 1
           ? 'The file has more than one candidate records array; none is named recognisably'
           : 'The file has no recognisable records array',
       )
