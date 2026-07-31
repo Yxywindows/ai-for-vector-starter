@@ -277,7 +277,12 @@ function ImportWorkspace({
           </div>
         )}
 
-        <button type="button" aria-label="Close import preview" onClick={requestClose}>
+        <button
+          type="button"
+          className="icon-btn"
+          aria-label="Close import preview"
+          onClick={requestClose}
+        >
           ×
         </button>
       </header>
@@ -407,6 +412,7 @@ function ImportWorkspace({
           </button>
           <button
             type="button"
+            className="btn--primary"
             disabled={confirm.isPending || blockingErrors || needsCoordinates}
             onClick={() => confirm.mutate()}
           >

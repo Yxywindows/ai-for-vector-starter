@@ -69,6 +69,7 @@ export function App() {
     <MapProvider center={view?.center ?? [0, 0]} zoom={view?.zoom ?? 2}>
       <SelectionSync />
       <AppShell
+        context={project.data?.name}
         sidebar={
           projectId ? (
             <LayerPanel projectId={projectId} layers={layers} />

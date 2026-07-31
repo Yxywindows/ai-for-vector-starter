@@ -15,6 +15,16 @@ interface EditingCell {
   draft: string
 }
 
+const NUMERIC_TYPES = new Set([
+  'integer',
+  'bigint',
+  'smallint',
+  'numeric',
+  'real',
+  'double precision',
+  'float',
+])
+
 export function AttributeTable({ layerId }: AttributeTableProps) {
   const selectedLayerId = useLayerStore((state) => state.selectedLayerId)
   const effectiveLayerId = layerId ?? selectedLayerId
@@ -56,9 +66,11 @@ export function AttributeTable({ layerId }: AttributeTableProps) {
     <div className="attribute-table">
       <header className="attribute-table__header">
         <span>{table.page.total} features</span>
-        <span>
+        <span className="attribute-table__pager">
           <button
             type="button"
+            className="icon-btn"
+            aria-label="Previous page"
             disabled={table.pageNumber <= 1}
             onClick={() => table.setPage(table.pageNumber - 1)}
           >
@@ -67,6 +79,8 @@ export function AttributeTable({ layerId }: AttributeTableProps) {
           Page {table.pageNumber} / {totalPages}
           <button
             type="button"
+            className="icon-btn"
+            aria-label="Next page"
             disabled={table.pageNumber >= totalPages}
             onClick={() => table.setPage(table.pageNumber + 1)}
           >
@@ -75,7 +89,11 @@ export function AttributeTable({ layerId }: AttributeTableProps) {
         </span>
       </header>
 
-      {cellError ? <p role="alert">{cellError}</p> : null}
+      {cellError ? (
+        <p role="alert" className="attribute-table__alert">
+          {cellError}
+        </p>
+      ) : null}
 
       <table>
         <thead>
@@ -84,6 +102,7 @@ export function AttributeTable({ layerId }: AttributeTableProps) {
               <th
                 key={column}
                 scope="col"
+                className={NUMERIC_TYPES.has(byName.get(column)?.dataType ?? '') ? 'num' : undefined}
                 onClick={() => table.setSort(column)}
                 aria-sort={
                   table.sortBy === column
@@ -115,6 +134,9 @@ export function AttributeTable({ layerId }: AttributeTableProps) {
                   return (
                     <td
                       key={column}
+                      className={
+                        NUMERIC_TYPES.has(byName.get(column)?.dataType ?? '') ? 'num' : undefined
+                      }
                       data-testid={`cell-${featureId}-${column}`}
                       onDoubleClick={() => {
                         if (!editable) return
@@ -146,6 +168,7 @@ export function AttributeTable({ layerId }: AttributeTableProps) {
                 <td>
                   <button
                     type="button"
+                    className="icon-btn icon-btn--danger"
                     aria-label={`Delete feature ${featureId}`}
                     onClick={(event) => {
                       event.stopPropagation()

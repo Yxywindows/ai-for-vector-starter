@@ -13,6 +13,8 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\""
   },
   "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
     "@tanstack/react-query": "^5.101.4",
     "ag-grid-community": "^36.0.2",
     "ag-grid-react": "^36.0.2",

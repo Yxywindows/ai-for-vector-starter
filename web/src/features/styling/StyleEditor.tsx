@@ -100,7 +100,7 @@ export function StyleEditor({ projectId, layer }: StyleEditorProps) {
           From statistics
         </button>
 
-        <button type="button" onClick={apply}>
+        <button type="button" className="btn--primary" onClick={apply}>
           Apply
         </button>
       </section>
@@ -353,7 +353,7 @@ export function StyleEditor({ projectId, layer }: StyleEditorProps) {
 
       {problem ? <p role="alert">{problem}</p> : null}
 
-      <button type="button" onClick={apply}>
+      <button type="button" className="btn--primary" onClick={apply}>
         Apply
       </button>
     </section>

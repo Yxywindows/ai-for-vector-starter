@@ -31,7 +31,7 @@ export function LayerPanel({ projectId, layers }: LayerPanelProps) {
     <div className="layer-panel">
       <header className="layer-panel__header">
         <h2>Layers</h2>
-        <button type="button" onClick={() => setDialogOpen(true)}>
+        <button type="button" className="btn--primary" onClick={() => setDialogOpen(true)}>
           Add layer
         </button>
       </header>
@@ -69,6 +69,7 @@ export function LayerPanel({ projectId, layers }: LayerPanelProps) {
                 </button>
                 <button
                   type="button"
+                  className="icon-btn"
                   aria-label={`Move layer up: ${layer.name}`}
                   disabled={index === 0}
                   onClick={() => move(index, -1)}
@@ -77,6 +78,7 @@ export function LayerPanel({ projectId, layers }: LayerPanelProps) {
                 </button>
                 <button
                   type="button"
+                  className="icon-btn"
                   aria-label={`Move layer down: ${layer.name}`}
                   disabled={index === ordered.length - 1}
                   onClick={() => move(index, 1)}
@@ -85,6 +87,7 @@ export function LayerPanel({ projectId, layers }: LayerPanelProps) {
                 </button>
                 <button
                   type="button"
+                  className="icon-btn icon-btn--danger"
                   aria-label={`Remove layer: ${layer.name}`}
                   onClick={() => mutations.remove.mutate(layer.id)}
                 >

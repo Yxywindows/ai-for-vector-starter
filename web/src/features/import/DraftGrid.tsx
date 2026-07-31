@@ -138,6 +138,8 @@ export function DraftGrid({
       colId: column.name,
       headerName: column.mixed ? `${column.name} (mixed)` : column.name,
       field: `properties.${column.name}` as never,
+      flex: 1,
+      minWidth: 140,
       sortable: true,
       filter: true,
       resizable: true,

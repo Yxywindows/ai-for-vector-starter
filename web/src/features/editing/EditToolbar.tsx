@@ -38,6 +38,7 @@ export function EditToolbar({ layer }: EditToolbarProps) {
 
       <button
         type="button"
+        className="btn--primary"
         disabled={session.pendingCount === 0 || session.isSaving}
         onClick={() => void session.save()}
       >

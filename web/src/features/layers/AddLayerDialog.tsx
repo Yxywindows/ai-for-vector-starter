@@ -27,6 +27,7 @@ export function AddLayerDialog({ projectId, open, onClose }: AddLayerDialogProps
 
   return (
     <div className="dialog" role="dialog" aria-label="Add layer">
+      <h2 className="dialog__title">Add layer</h2>
       <div className="dialog__tabs">
         <button type="button" onClick={() => setTab('file')} aria-pressed={tab === 'file'}>
           Upload file

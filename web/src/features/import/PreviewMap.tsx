@@ -24,20 +24,21 @@ import type { DraftFeature } from './parseGeoJson'
 
 const FEATURE_ID = 'draftId'
 
+/* Theme colors (bathymetric teal / contour brown), mirrored from index.css. */
 const BASE_STYLE = new Style({
-  image: new Circle({ radius: 5, fill: new Fill({ color: '#2563eb' }) }),
-  stroke: new Stroke({ color: '#2563eb', width: 2 }),
-  fill: new Fill({ color: 'rgba(37, 99, 235, 0.15)' }),
+  image: new Circle({ radius: 5, fill: new Fill({ color: '#16655a' }) }),
+  stroke: new Stroke({ color: '#16655a', width: 2 }),
+  fill: new Fill({ color: 'rgba(22, 101, 90, 0.15)' }),
 })
 
 const SELECTED_STYLE = new Style({
   image: new Circle({
     radius: 7,
-    fill: new Fill({ color: '#b45309' }),
+    fill: new Fill({ color: '#9a5b22' }),
     stroke: new Stroke({ color: '#fff', width: 2 }),
   }),
-  stroke: new Stroke({ color: '#b45309', width: 3 }),
-  fill: new Fill({ color: 'rgba(180, 83, 9, 0.2)' }),
+  stroke: new Stroke({ color: '#9a5b22', width: 3 }),
+  fill: new Fill({ color: 'rgba(154, 91, 34, 0.2)' }),
 })
 
 interface PreviewMapProps {
