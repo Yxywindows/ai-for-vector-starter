@@ -197,3 +197,26 @@ export interface BandStatistics {
 export interface RasterStatistics {
   bands: BandStatistics[]
 }
+
+export interface ImportLimits {
+  allowedExtensions: string[]
+  maxFileBytes: number
+  maxFeatures: number
+  previewMaxFeatures: number
+}
+
+export interface FeatureIssue {
+  featureIndex: number
+  field: string | null
+  code: string
+  message: string
+}
+
+export interface ImportResult {
+  layer: Layer
+  importedCount: number
+  rejectedCount: number
+  warningCount: number
+  errors: FeatureIssue[]
+  warnings: FeatureIssue[]
+}

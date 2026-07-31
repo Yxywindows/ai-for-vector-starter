@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { listPostgisTables } from '../../api/catalog'
+import { getImportLimits } from '../../api/imports'
+import { ImportPreview } from '../import/ImportPreview'
 import { useLayerMutations } from './useLayerMutations'
 
 interface AddLayerDialogProps {
@@ -13,6 +15,8 @@ interface AddLayerDialogProps {
 export function AddLayerDialog({ projectId, open, onClose }: AddLayerDialogProps) {
   const mutations = useLayerMutations(projectId)
   const [tab, setTab] = useState<'file' | 'postgis'>('file')
+  const [staged, setStaged] = useState<File | null>(null)
+  const limits = useQuery({ queryKey: ['import-limits'], queryFn: getImportLimits })
   const tables = useQuery({
     queryKey: ['postgis-tables'],
     queryFn: listPostgisTables,
@@ -40,7 +44,16 @@ export function AddLayerDialog({ projectId, open, onClose }: AddLayerDialogProps
             accept=".geojson,.json,.gpkg,.zip,.shp,.tif,.tiff"
             onChange={(event) => {
               const file = event.target.files?.[0]
-              if (file) mutations.importFile.mutate({ file }, { onSuccess: onClose })
+              if (!file) return
+              // A staged format opens the preview; nothing is imported until
+              // the user confirms there. Every other format keeps the existing
+              // immediate path -- they have no preview implementation.
+              const extensions = limits.data?.allowedExtensions ?? ['.json', '.geojson']
+              const staging = extensions.some((extension) =>
+                file.name.toLowerCase().endsWith(extension),
+              )
+              if (staging) setStaged(file)
+              else mutations.importFile.mutate({ file }, { onSuccess: onClose })
             }}
           />
         </label>
@@ -81,6 +94,17 @@ export function AddLayerDialog({ projectId, open, onClose }: AddLayerDialogProps
       <button type="button" onClick={onClose}>
         Close
       </button>
+
+      {staged ? (
+        <ImportPreview
+          projectId={projectId}
+          file={staged}
+          onClose={() => {
+            setStaged(null)
+            onClose()
+          }}
+        />
+      ) : null}
     </div>
   )
 }
