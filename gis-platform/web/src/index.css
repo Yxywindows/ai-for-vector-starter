@@ -105,3 +105,11 @@ body {
 }
 .draft-grid__cell--error { background: #fee2e2; }
 .draft-grid .ag-large-text-input textarea { font-family: ui-monospace, monospace; font-size: 12px; }
+
+.preview-map { position: relative; height: 100%; min-height: 220px; }
+.preview-map__canvas { position: absolute; inset: 0; }
+.preview-map__note {
+  position: absolute; bottom: 6px; left: 6px; margin: 0;
+  padding: 3px 8px; font-size: 12px;
+  background: rgba(255, 255, 255, 0.9); border: 1px solid var(--panel-border);
+}
