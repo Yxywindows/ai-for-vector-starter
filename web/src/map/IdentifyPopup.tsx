@@ -1,6 +1,7 @@
 import type Feature from 'ol/Feature'
 import { unByKey } from 'ol/Observable'
 import VectorLayer from 'ol/layer/Vector'
+import VectorTileLayer from 'ol/layer/VectorTile'
 import { useEffect, useState } from 'react'
 
 import { useLayerStore } from '../state/layerStore'
@@ -14,8 +15,10 @@ interface Identified {
   pixel: [number, number]
 }
 
-/** Feature properties that are map plumbing, not user data. */
-const INTERNAL_KEYS = new Set(['geometry', '__selected', 'layer_id'])
+/** Feature properties that are map plumbing, not user data. `fid` rides in
+ * MVT tiles as an ordinary attribute; it is shown as the popup's id, not as
+ * an attribute row. */
+const INTERNAL_KEYS = new Set(['geometry', '__selected', 'layer_id', 'fid'])
 
 const display = (value: unknown): string => {
   if (value === undefined || value === null) return '—'
@@ -57,7 +60,10 @@ export function IdentifyPopup({ names }: { names: Map<string, string> }) {
           }
           return true // first (topmost) feature wins
         },
-        { layerFilter: (layer) => layer instanceof VectorLayer },
+        {
+          layerFilter: (layer) =>
+            layer instanceof VectorLayer || layer instanceof VectorTileLayer,
+        },
       )
 
       const store = useLayerStore.getState()

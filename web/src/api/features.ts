@@ -8,10 +8,23 @@ import type {
   GeoFeature,
 } from './types'
 
-export const getFeatures = (layerId: string, bbox: Extent, limit?: number) => {
+export interface GetFeaturesOptions {
+  limit?: number
+  /** ST_SimplifyPreserveTopology tolerance in degrees; omit for full detail. */
+  simplify?: number
+  /** Max coordinate decimal digits (server default 6). */
+  precision?: number
+  signal?: AbortSignal
+}
+
+export const getFeatures = (layerId: string, bbox: Extent, options: GetFeaturesOptions = {}) => {
   const params = new URLSearchParams({ bbox: bbox.join(',') })
-  if (limit) params.set('limit', String(limit))
-  return apiFetch<FeatureCollection>(`/layers/${layerId}/features?${params}`)
+  if (options.limit) params.set('limit', String(options.limit))
+  if (options.simplify) params.set('simplify', String(options.simplify))
+  if (options.precision !== undefined) params.set('precision', String(options.precision))
+  return apiFetch<FeatureCollection>(`/layers/${layerId}/features?${params}`, {
+    signal: options.signal ?? null,
+  })
 }
 
 export const getFields = (layerId: string) => apiFetch<FieldList>(`/layers/${layerId}/fields`)

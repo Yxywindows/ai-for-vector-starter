@@ -100,6 +100,40 @@ describe('createOlLayer', () => {
   })
 })
 
+describe('adaptive loading tiers', () => {
+  it('keeps a small PostGIS layer on a plain vector source, editable', () => {
+    const small: Layer = { ...postgisLayer, featureCount: 1500 }
+    const olLayer = createOlLayer(small, {})
+    expect(olLayer).toBeInstanceOf(VectorLayer)
+    expect(olLayer.get('editable')).toBe(true)
+  })
+
+  it('keeps a medium PostGIS layer on the bbox vector source, editable', () => {
+    const medium: Layer = { ...postgisLayer, featureCount: 25_000 }
+    const olLayer = createOlLayer(medium, {})
+    expect(olLayer).toBeInstanceOf(VectorLayer)
+    expect(olLayer.get('editable')).toBe(true)
+  })
+
+  it('serves a large PostGIS layer as vector tiles from the app MVT endpoint', () => {
+    const large: Layer = { ...postgisLayer, featureCount: 120_000 }
+    const olLayer = createOlLayer(large, {})
+    expect(olLayer).toBeInstanceOf(VectorTileLayer)
+    const source = (olLayer as VectorTileLayer).getSource()
+    expect(source).toBeInstanceOf(VectorTileSource)
+    expect((source as VectorTileSource).getUrls()?.[0]).toBe(
+      '/api/v1/layers/l1/tiles/{z}/{x}/{y}.mvt',
+    )
+    // MVT geometries are tile-clipped copies: not an editing surface.
+    expect(olLayer.get('editable')).toBe(false)
+  })
+
+  it('treats an unknown feature count as the medium tier', () => {
+    const unknown: Layer = { ...postgisLayer, featureCount: null }
+    expect(createOlLayer(unknown, {})).toBeInstanceOf(VectorLayer)
+  })
+})
+
 describe('applyLayerProperties', () => {
   it('mirrors visibility, opacity and z-index onto the OL layer', () => {
     const olLayer = createOlLayer(postgisLayer, {})

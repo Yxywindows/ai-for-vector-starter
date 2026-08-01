@@ -3,6 +3,7 @@ import type BaseLayer from 'ol/layer/Base'
 
 import type { Layer } from '../api/types'
 import { applyLayerProperties, createOlLayer, type LayerFactoryDeps } from './layerFactory'
+import { tierFor } from './loadingTiers'
 
 /**
  * Reconcile the map's layer collection against the server's list.
@@ -10,10 +11,12 @@ import { applyLayerProperties, createOlLayer, type LayerFactoryDeps } from './la
  * Recreating every OL layer on each render would throw away loaded features
  * and tile caches — the exact memory the platform works hardest to manage.
  * So a layer is rebuilt only when its *source* changes; everything else
- * (visibility, opacity, order, style) is applied in place.
+ * (visibility, opacity, order, style) is applied in place. The loading
+ * tier is part of the fingerprint: a re-import that pushes a layer across
+ * a tier threshold must rebuild it onto the right source type.
  */
 function sourceFingerprint(layer: Layer): string {
-  return JSON.stringify(layer.source)
+  return `${tierFor(layer)}|${JSON.stringify(layer.source)}`
 }
 
 function styleFingerprint(layer: Layer): string {

@@ -1,4 +1,5 @@
 import type { Layer } from '../../api/types'
+import { tierFor } from '../../map/loadingTiers'
 import { useEditSession, type EditMode } from './useEditSession'
 
 const MODES: { value: EditMode; label: string }[] = [
@@ -14,7 +15,10 @@ interface EditToolbarProps {
 
 export function EditToolbar({ layer }: EditToolbarProps) {
   const session = useEditSession(layer)
-  const editable = layer?.source.type === 'postgis'
+  // Tile-served (large-tier) layers render clipped MVT geometries, not the
+  // row geometries an edit session mutates — same rule as layerFactory.
+  const editable =
+    layer !== null && layer.source.type === 'postgis' && tierFor(layer) !== 'large'
 
   if (!layer) return null
   if (!editable) {
