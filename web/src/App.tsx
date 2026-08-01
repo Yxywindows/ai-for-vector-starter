@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { getProject, listProjects } from './api/layers'
 import { AppShell } from './app/AppShell'
@@ -8,8 +8,10 @@ import { EditToolbar } from './features/editing/EditToolbar'
 import { LayerPanel } from './features/layers/LayerPanel'
 import { MemoryPanel } from './features/memory/MemoryPanel'
 import { StyleEditor } from './features/styling/StyleEditor'
+import { IdentifyPopup } from './map/IdentifyPopup'
 import { MapCanvas } from './map/MapCanvas'
 import { MapProvider, useMap } from './map/MapProvider'
+import { StatusBar } from './map/StatusBar'
 import type { LayerFactoryDeps } from './map/layerFactory'
 import { useLayerMemory } from './map/memory/useLayerMemory'
 import { highlightFeatures } from './map/selection'
@@ -39,10 +41,22 @@ export function App() {
 
   const { manager, usage, totalBytes, budgetBytes } = useLayerMemory()
   const selectedLayerId = useLayerStore((state) => state.selectedLayerId)
+  const [tableOpen, setTableOpen] = useState(false)
 
   useEffect(() => {
     useLayerStore.getState().setProjectId(projectId ?? null)
   }, [projectId])
+
+  // Selecting a layer is a request to inspect it: bring the drawer up.
+  useEffect(
+    () =>
+      useLayerStore.subscribe((state, previous) => {
+        if (state.selectedLayerId && state.selectedLayerId !== previous.selectedLayerId) {
+          setTableOpen(true)
+        }
+      }),
+    [],
+  )
 
   useEffect(() => {
     if (!selectedLayerId) return
@@ -70,6 +84,9 @@ export function App() {
       <SelectionSync />
       <AppShell
         context={project.data?.name}
+        status={<StatusBar layerCount={layers.length} />}
+        tableOpen={tableOpen}
+        onToggleTable={() => setTableOpen((open) => !open)}
         sidebar={
           projectId ? (
             <LayerPanel projectId={projectId} layers={layers} />
@@ -81,6 +98,7 @@ export function App() {
           <>
             <EditToolbar layer={selectedLayer ?? null} />
             <MapCanvas layers={layers} deps={deps} />
+            <IdentifyPopup names={names} />
           </>
         }
         bottom={<AttributeTable layerId={selectedLayerId} />}
