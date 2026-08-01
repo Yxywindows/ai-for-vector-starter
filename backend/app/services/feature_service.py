@@ -8,7 +8,7 @@ from app.core.config import get_settings
 from app.core.errors import InvalidRequestError
 from app.repositories import feature_repository
 from app.schemas.feature import BBox, Feature, FeatureCollection
-from app.services import catalog_service, layer_service
+from app.services import layer_service, source_snapshot
 
 
 def clamp_limit(requested: int | None) -> int:
@@ -25,14 +25,22 @@ def clamp_limit(requested: int | None) -> int:
 
 
 async def get_features(
-    session: AsyncSession, layer_id: uuid.UUID, bbox: BBox, limit: int | None
+    session: AsyncSession,
+    layer_id: uuid.UUID,
+    bbox: BBox,
+    limit: int | None,
+    simplify: float | None = None,
+    precision: int | None = None,
 ) -> FeatureCollection:
     layer = await layer_service.get_layer_or_404(session, layer_id)
     source = layer_service.require_postgis_source(layer)
-    await catalog_service.verify_source(session, source)
+    snapshot = await source_snapshot.get(session, layer, source)
 
     effective = clamp_limit(limit)
-    rows = await feature_repository.read_in_bbox(session, source, bbox, effective)
+    digits = precision if precision is not None else get_settings().geojson_default_precision
+    rows = await feature_repository.read_in_bbox(
+        session, snapshot.source, bbox, effective, simplify=simplify, precision=digits
+    )
     truncated = len(rows) > effective
     visible = rows[:effective]
 

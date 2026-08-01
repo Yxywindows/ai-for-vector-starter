@@ -6,28 +6,26 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.core.errors import InvalidRequestError
-from app.repositories import catalog_repository, feature_repository
+from app.repositories import feature_repository
 from app.schemas.attribute import AttributeFilter, AttributePage, FieldList
-from app.schemas.source import PostgisSource
-from app.services import catalog_service, layer_service
+from app.services import layer_service, source_snapshot
+from app.services.source_snapshot import SourceSnapshot
 
 
-async def _verified_source(session: AsyncSession, layer_id: uuid.UUID) -> PostgisSource:
+async def _snapshot(session: AsyncSession, layer_id: uuid.UUID) -> SourceSnapshot:
     layer = await layer_service.get_layer_or_404(session, layer_id)
     source = layer_service.require_postgis_source(layer)
-    await catalog_service.verify_source(session, source)
-    return source
+    return await source_snapshot.get(session, layer, source)
 
 
 async def get_fields(session: AsyncSession, layer_id: uuid.UUID) -> FieldList:
-    source = await _verified_source(session, layer_id)
-    all_columns = await catalog_repository.list_columns(
-        session, source.schema_name, source.table_name
-    )
+    snapshot = await _snapshot(session, layer_id)
     return FieldList(
-        fields=[column for column in all_columns if column.name != source.geometry_column],
-        id_column=source.id_column,
-        geometry_column=source.geometry_column,
+        fields=[
+            column for column in snapshot.columns if column.name != snapshot.source.geometry_column
+        ],
+        id_column=snapshot.source.id_column,
+        geometry_column=snapshot.source.geometry_column,
     )
 
 
@@ -40,8 +38,9 @@ async def get_page(
     sort_order: str,
     filters_raw: str | None,
 ) -> AttributePage:
-    source = await _verified_source(session, layer_id)
-    columns = await feature_repository.attribute_columns(session, source)
+    snapshot = await _snapshot(session, layer_id)
+    source = snapshot.source
+    columns = snapshot.attribute_names
 
     cap = get_settings().attribute_page_max
     if page < 1 or page_size < 1 or page_size > cap:
@@ -60,7 +59,14 @@ async def get_page(
         )
 
     filters = AttributeFilter.parse_list(filters_raw)
-    rows, total = await feature_repository.read_attribute_page(
+    rows, total, estimated = await feature_repository.read_attribute_page(
         session, source, columns, filters, effective_sort, sort_order, page, page_size
     )
-    return AttributePage(columns=columns, rows=rows, page=page, page_size=page_size, total=total)
+    return AttributePage(
+        columns=columns,
+        rows=rows,
+        page=page,
+        page_size=page_size,
+        total=total,
+        total_estimated=estimated,
+    )

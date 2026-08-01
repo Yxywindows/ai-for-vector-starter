@@ -34,6 +34,16 @@ class Settings(BaseSettings):
 
     # Memory guard rails
     feature_bbox_limit: int = 2000
+    # Performance fast-path knobs (see docs/superpowers/plans/
+    # 2026-08-01-gis-performance-and-completeness-plan.md, Phase 1).
+    snapshot_cache_max_entries: int = 512
+    tile_cache_max_bytes: int = 64 * 1024 * 1024
+    geojson_default_precision: int = 6
+    # The unfiltered attribute total uses the planner estimate only above
+    # this row count: small tables count exactly (cheap, and edits make a
+    # stale estimate visibly wrong there), large tables take the fast path
+    # where drift of a few rows is imperceptible and count(*) is the cost.
+    attribute_count_estimate_min: int = 100_000
     attribute_page_max: int = 500
     raster_pool_max_open: int = 8
     raster_pool_idle_ttl_seconds: float = 300.0

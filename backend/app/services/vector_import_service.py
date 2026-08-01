@@ -125,6 +125,10 @@ def _create_indexes(engine: Engine, schema: str, table_name: str) -> None:
                 f"ON {qualified_name} USING GIST ({quote(GEOMETRY_COLUMN)})"
             )
         )
+        # Fresh statistics make the planner's reltuples estimate exact for
+        # a just-imported table -- the attribute page's unfiltered total
+        # reads it instead of running count(*) per page view.
+        conn.execute(text(f"ANALYZE {qualified_name}"))
 
 
 def _read_frame(path: Path) -> gpd.GeoDataFrame:

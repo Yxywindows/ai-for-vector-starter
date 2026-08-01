@@ -25,6 +25,7 @@ from typing import Any
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import get_settings
 from app.core.errors import InvalidRequestError
 from app.db.identifiers import (
     qualified,
@@ -45,16 +46,31 @@ async def attribute_columns(session: AsyncSession, source: PostgisSource) -> lis
 
 
 async def read_in_bbox(
-    session: AsyncSession, source: PostgisSource, bbox: BBox, limit: int
+    session: AsyncSession,
+    source: PostgisSource,
+    bbox: BBox,
+    limit: int,
+    simplify: float | None = None,
+    precision: int = 6,
 ) -> list[dict[str, Any]]:
     geom = quote(source.geometry_column)
     fid = quote(source.id_column)
     table = qualified(source.schema_name, source.table_name)
 
+    # Simplification happens on the *output* geometry, after the transform
+    # to 4326 (tolerance is therefore in degrees, matching what the client
+    # derives from its view resolution) -- the `&&` predicate below stays on
+    # the bare indexed column either way. Precision caps ST_AsGeoJSON's
+    # coordinate decimals: 6 ≈ 0.11 m at the equator, plenty for display,
+    # and routinely 30-40% smaller payloads than the 15-digit default.
+    geometry_expr = f"ST_Transform(t.{geom}, 4326)"
+    if simplify is not None and simplify > 0:
+        geometry_expr = f"ST_SimplifyPreserveTopology({geometry_expr}, :simplify)"
+
     sql = text(
         f"""
         SELECT t.{fid}::text AS fid,
-               ST_AsGeoJSON(ST_Transform(t.{geom}, 4326)) AS geometry,
+               ST_AsGeoJSON({geometry_expr}, :digits) AS geometry,
                to_jsonb(t) - :geom_key - :id_key AS properties
         FROM {table} AS t
         WHERE t.{geom} && ST_Transform(
@@ -69,8 +85,11 @@ async def read_in_bbox(
         "srid": source.srid,
         "geom_key": source.geometry_column,
         "id_key": source.id_column,
+        "digits": precision,
         "limit": limit + 1,  # one extra row is how truncation is detected
     }
+    if simplify is not None and simplify > 0:
+        params["simplify"] = simplify
     rows = (await session.execute(sql, params)).mappings().all()
     return [
         {
@@ -118,6 +137,30 @@ def build_where(filters: list[AttributeFilter], allowed: set[str]) -> tuple[str,
     return (" AND ".join(clauses) if clauses else "TRUE"), params
 
 
+async def estimated_row_count(session: AsyncSession, source: PostgisSource) -> int | None:
+    """The planner's row estimate — free, refreshed by ANALYZE/autovacuum.
+
+    Returns None when Postgres has no estimate yet (`reltuples = -1` for a
+    table never analyzed), in which case the caller must count exactly.
+    """
+    value = (
+        await session.execute(
+            text(
+                """
+                SELECT c.reltuples::bigint
+                FROM pg_class AS c
+                JOIN pg_namespace AS n ON n.oid = c.relnamespace
+                WHERE n.nspname = :schema AND c.relname = :table
+                """
+            ),
+            {"schema": source.schema_name, "table": source.table_name},
+        )
+    ).scalar_one_or_none()
+    if value is None or value < 0:
+        return None
+    return int(value)
+
+
 async def read_attribute_page(
     session: AsyncSession,
     source: PostgisSource,
@@ -127,7 +170,7 @@ async def read_attribute_page(
     sort_order: str,
     page: int,
     page_size: int,
-) -> tuple[list[dict[str, Any]], int]:
+) -> tuple[list[dict[str, Any]], int, bool]:
     table = qualified(source.schema_name, source.table_name)
     where, params = build_where(filters, set(columns))
     # `attribute_service.get_page` already checks `sort_by` against the same
@@ -142,11 +185,25 @@ async def read_attribute_page(
     direction = "DESC" if sort_order.lower() == "desc" else "ASC"
     order = f"{quote_catalog_name(sort_by)} {direction}"
 
-    total = int(
-        (
-            await session.execute(text(f"SELECT count(*) FROM {table} WHERE {where}"), params)
-        ).scalar_one()
-    )
+    # Unfiltered totals come from the planner estimate, but only above a
+    # size threshold: `count(*)` over a large table is a full scan per page
+    # view for a number the header only displays, while on a small,
+    # actively-edited table an estimate that lags by the rows just added is
+    # visibly wrong and the exact count is cheap anyway. Filtered pages
+    # always count exactly: the estimate knows nothing about the WHERE.
+    estimated = False
+    total: int | None = None
+    if not filters:
+        estimate = await estimated_row_count(session, source)
+        if estimate is not None and estimate >= get_settings().attribute_count_estimate_min:
+            total = estimate
+            estimated = True
+    if total is None:
+        total = int(
+            (
+                await session.execute(text(f"SELECT count(*) FROM {table} WHERE {where}"), params)
+            ).scalar_one()
+        )
     rows = (
         (
             await session.execute(
@@ -165,7 +222,7 @@ async def read_attribute_page(
         .mappings()
         .all()
     )
-    return [dict(row) for row in rows], total
+    return [dict(row) for row in rows], total, estimated
 
 
 GEOMETRY_SQL = (
@@ -175,9 +232,21 @@ GEOMETRY_SQL = (
 _INTEGER_TYPES = {"smallint", "integer", "bigint"}
 
 
+_id_type_cache: dict[tuple[str, str, str], str] = {}
+
+
 async def _id_column_type(session: AsyncSession, source: PostgisSource) -> str:
+    """Memoized: an id column's type only changes via DDL on the table,
+    which also invalidates every running assumption about it. A process
+    restart clears the memo; nothing else needs to."""
+    key = (source.schema_name, source.table_name, source.id_column)
+    cached = _id_type_cache.get(key)
+    if cached is not None:
+        return cached
     columns = await catalog_repository.list_columns(session, source.schema_name, source.table_name)
-    return next(column.data_type for column in columns if column.name == source.id_column)
+    data_type = next(column.data_type for column in columns if column.name == source.id_column)
+    _id_type_cache[key] = data_type
+    return data_type
 
 
 def _id_predicate(fid: str, data_type: str, alias: str | None = None) -> str:

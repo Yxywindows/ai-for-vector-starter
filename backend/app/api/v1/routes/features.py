@@ -19,8 +19,16 @@ async def read_features(
     session: SessionDep,
     bbox: str = Query(..., description="minx,miny,maxx,maxy in EPSG:4326"),
     limit: int | None = Query(default=None, ge=1),
+    simplify: float | None = Query(
+        default=None, ge=0, description="ST_SimplifyPreserveTopology tolerance in degrees"
+    ),
+    precision: int | None = Query(
+        default=None, ge=0, le=9, description="Max coordinate decimal digits"
+    ),
 ) -> FeatureCollection:
-    return await feature_service.get_features(session, layer_id, BBox.parse(bbox), limit)
+    return await feature_service.get_features(
+        session, layer_id, BBox.parse(bbox), limit, simplify=simplify, precision=precision
+    )
 
 
 @router.get("/fields", response_model=FieldList)

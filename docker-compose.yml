@@ -2,6 +2,17 @@ services:
   postgres:
     image: postgis/postgis:16-3.4
     container_name: gis-platform-postgres
+    # Modest tuning for a spatial workload: bigger shared cache for tile
+    # queries, more sort memory for attribute pages, SSD-shaped planner
+    # costs. Applied on next container recreation.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=512MB
+      - -c
+      - work_mem=32MB
+      - -c
+      - random_page_cost=1.1
     environment:
       POSTGRES_DB: gis_platform
       POSTGRES_USER: gis

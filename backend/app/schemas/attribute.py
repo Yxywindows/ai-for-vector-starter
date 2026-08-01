@@ -66,3 +66,6 @@ class AttributePage(APIModel):
     page: int
     page_size: int
     total: int
+    # True when `total` is the planner's estimate rather than an exact
+    # count -- the unfiltered fast path over large tables.
+    total_estimated: bool = False
