@@ -38,6 +38,10 @@ async def get_features(
 
     effective = clamp_limit(limit)
     digits = precision if precision is not None else get_settings().geojson_default_precision
+    # Simplifying a point moves nothing and costs a function call per row;
+    # only line/polygon layers can benefit from a tolerance.
+    if simplify is not None and "POINT" in (layer.geometry_type or "").upper():
+        simplify = None
     rows = await feature_repository.read_in_bbox(
         session, snapshot.source, bbox, effective, simplify=simplify, precision=digits
     )
