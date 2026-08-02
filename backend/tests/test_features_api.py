@@ -114,6 +114,24 @@ async def test_features_on_a_dropped_table_is_a_404(
     assert response.json()["error"]["code"] == "not_found"
 
 
+async def test_features_conditional_get(client: AsyncClient, cities_layer: dict) -> None:
+    url = f"/api/v1/layers/{cities_layer['id']}/features"
+    first = await client.get(url, params={"bbox": "-180,-90,180,90"})
+    assert first.status_code == 200
+    assert first.headers["cache-control"] == "no-cache"
+    etag = first.headers["etag"]
+
+    again = await client.get(
+        url, params={"bbox": "-180,-90,180,90"}, headers={"if-none-match": etag}
+    )
+    assert again.status_code == 304
+    assert again.content == b""
+    assert again.headers["etag"] == etag
+
+    other_bbox = await client.get(url, params={"bbox": "0,0,1,1"}, headers={"if-none-match": etag})
+    assert other_bbox.status_code == 200  # different query -> different ETag
+
+
 async def test_reprojects_from_a_non_4326_table(
     client: AsyncClient, db_session: AsyncSession
 ) -> None:

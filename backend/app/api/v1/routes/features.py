@@ -1,20 +1,41 @@
 from __future__ import annotations
 
+import hashlib
 import uuid
 
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Query, Request, Response, status
 
 from app.db.session import SessionDep
+from app.models.layer import Layer
 from app.schemas.attribute import AttributePage, FieldList
 from app.schemas.feature import BBox, Feature, FeatureCollection, FeaturePatch, FeatureWrite
 from app.schemas.system import RasterStatistics
-from app.services import attribute_service, edit_service, feature_service, raster_tile_service
+from app.services import (
+    attribute_service,
+    edit_service,
+    feature_service,
+    layer_service,
+    raster_tile_service,
+)
 
 router = APIRouter(prefix="/layers/{layer_id}", tags=["features"])
 
 
-@router.get("/features", response_model=FeatureCollection)
+def _features_etag(
+    layer: Layer, bbox: str, simplify: float | None, precision: int | None, limit: int | None
+) -> str:
+    """Mirrors tile_service.tile_etag: weak ETag from layer identity, freshness and query."""
+    seed = f"{layer.id}:{layer.updated_at.isoformat()}:{bbox}:{simplify}:{precision}:{limit}"
+    return f'W/"{hashlib.sha256(seed.encode()).hexdigest()[:32]}"'
+
+
+@router.get(
+    "/features",
+    response_model=FeatureCollection,
+    responses={304: {"description": "Not modified"}},
+)
 async def read_features(
+    request: Request,
     layer_id: uuid.UUID,
     session: SessionDep,
     bbox: str = Query(..., description="minx,miny,maxx,maxy in EPSG:4326"),
@@ -25,9 +46,19 @@ async def read_features(
     precision: int | None = Query(
         default=None, ge=0, le=9, description="Max coordinate decimal digits"
     ),
-) -> FeatureCollection:
-    return await feature_service.get_features(
+) -> Response:
+    layer = await layer_service.get_layer_or_404(session, layer_id)
+    etag = _features_etag(layer, bbox, simplify, precision, limit)
+    if request.headers.get("if-none-match") == etag:
+        return Response(status_code=status.HTTP_304_NOT_MODIFIED, headers={"ETag": etag})
+
+    collection = await feature_service.get_features(
         session, layer_id, BBox.parse(bbox), limit, simplify=simplify, precision=precision
+    )
+    return Response(
+        content=collection.model_dump_json(by_alias=True),
+        media_type="application/json",
+        headers={"ETag": etag, "Cache-Control": "no-cache"},
     )
 
 
