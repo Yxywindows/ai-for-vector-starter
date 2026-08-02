@@ -1,10 +1,26 @@
 import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import { Link } from 'react-router'
 
+import { API_BASE } from '../api/client'
 import { getProject, listProjects } from '../api/layers'
 import { getOverview } from '../api/system'
 import type { Extent } from '../api/types'
 import { ExtentSketch } from './ExtentSketch'
+
+/** Captured workspace snapshot when one exists; extent sketch otherwise. */
+function ProjectThumb({ id, extent }: { id: string; extent: Extent | null }) {
+  const [failed, setFailed] = useState(false)
+  if (failed) return <ExtentSketch extent={extent} />
+  return (
+    <img
+      className="extent-sketch"
+      src={`${API_BASE}/projects/${id}/thumbnail`}
+      alt=""
+      onError={() => setFailed(true)}
+    />
+  )
+}
 
 /** Union of a project's layer extents — the card sketch, no map engine. */
 function ProjectCard({ id, name, layerCount }: { id: string; name: string; layerCount: number }) {
@@ -27,7 +43,7 @@ function ProjectCard({ id, name, layerCount }: { id: string; name: string; layer
 
   return (
     <article className="card">
-      <ExtentSketch extent={union} />
+      <ProjectThumb id={id} extent={union} />
       <h3 className="card__title">{name}</h3>
       <p className="card__meta">
         {layerCount} {layerCount === 1 ? 'layer' : 'layers'}

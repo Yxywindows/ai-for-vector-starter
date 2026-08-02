@@ -1934,3 +1934,16 @@ ul {
   border-radius: var(--r-surface);
   background: var(--panel);
 }
+
+/* R3: user-resizable workspace panels */
+.float-panel {
+  resize: horizontal;
+  min-width: 200px;
+  max-width: min(520px, 40vw);
+}
+
+.app-shell__drawer {
+  resize: vertical;
+  min-height: 140px;
+  max-height: 60vh;
+}

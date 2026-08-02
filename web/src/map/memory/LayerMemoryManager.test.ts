@@ -147,3 +147,21 @@ describe('LayerMemoryManager', () => {
     expect(manager.usage().map((entry) => entry.layerId)).toEqual(['b', 'a'])
   })
 })
+
+describe('clearAll', () => {
+  it('releases every layer including pinned ones and reports what it cleared', () => {
+    const manager = new LayerMemoryManager({ budgetBytes: 1000, clock: () => 1 })
+    const evicted: string[] = []
+    manager.register('a', () => evicted.push('a'))
+    manager.register('b', () => evicted.push('b'))
+    manager.record('a', 400)
+    manager.record('b', 300)
+    manager.setPinned('a', true)
+
+    const cleared = manager.clearAll()
+
+    expect(cleared.sort()).toEqual(['a', 'b'])
+    expect(evicted.sort()).toEqual(['a', 'b'])
+    expect(manager.totalBytes).toBe(0)
+  })
+})

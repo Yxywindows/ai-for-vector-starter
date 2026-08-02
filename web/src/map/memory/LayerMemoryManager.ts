@@ -96,6 +96,21 @@ export class LayerMemoryManager {
       .sort((a, b) => b.bytes - a.bytes)
   }
 
+  /**
+   * Release every layer's cached data unconditionally — leaving the map
+   * workspace must return the memory it borrowed (IA acceptance §9.4).
+   * Pinning is ignored: there is no "in use" after the map unmounts.
+   */
+  clearAll(): string[] {
+    const cleared: string[] = []
+    for (const [layerId, entry] of this.entries) {
+      if (entry.bytes > 0) cleared.push(layerId)
+      entry.bytes = 0
+      entry.onEvict()
+    }
+    return cleared
+  }
+
   /** Evict LRU-first until under budget. Returns the ids that were evicted. */
   enforce(): string[] {
     const evicted: string[] = []
