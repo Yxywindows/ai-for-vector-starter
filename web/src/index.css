@@ -1952,3 +1952,122 @@ ul {
   color: var(--ink-faint);
   font-size: var(--fs-micro);
 }
+
+/* ============================================================
+   Tasks page (R6)
+   ============================================================ */
+
+.page--wide {
+  max-width: 1240px;
+}
+
+.task-row__kind {
+  font-weight: 500;
+}
+
+.task-row__retry-tag {
+  margin-left: var(--s-2);
+  padding: 1px var(--s-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  color: var(--ink-muted);
+}
+
+.task-row__source {
+  display: block;
+  color: var(--ink-muted);
+  font-size: var(--fs-micro);
+}
+
+.task-state {
+  display: inline-block;
+  padding: 1px var(--s-2);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  border: 1px solid var(--line-strong);
+  color: var(--ink-muted);
+}
+
+.task-state--running,
+.task-state--queued {
+  border-color: var(--accent-ring);
+  background: var(--accent-wash);
+  color: var(--accent-strong);
+}
+
+.task-state--succeeded {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.task-state--failed {
+  border-color: var(--danger-line);
+  background: var(--danger-wash);
+  color: var(--danger);
+}
+
+.task-state--cancelling,
+.task-state--cancelled {
+  border-color: var(--contour);
+  background: var(--contour-wash);
+  color: var(--contour);
+}
+
+.task-row__progress-cell {
+  min-width: 170px;
+}
+
+.task-progress {
+  width: 120px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--panel-raised);
+  overflow: hidden;
+}
+
+.task-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width var(--t-med);
+}
+
+.task-row__percent {
+  color: var(--ink-muted);
+  font-size: var(--fs-micro);
+}
+
+.task-row__actions {
+  display: flex;
+  gap: var(--s-2);
+  align-items: center;
+  justify-content: flex-end;
+  white-space: nowrap;
+}
+
+.task-detail-row td {
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+
+.task-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: var(--fs-data);
+}
+
+.task-logs {
+  max-height: 180px;
+  overflow-y: auto;
+  font-size: var(--fs-data);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.task-logs__error {
+  color: var(--danger);
+}

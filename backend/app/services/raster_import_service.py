@@ -26,7 +26,12 @@ from rio_cogeo.profiles import cog_profiles
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
-from app.core.errors import InvalidRequestError, UnsupportedFormatError, UpstreamDataError
+from app.core.errors import (
+    AppError,
+    InvalidRequestError,
+    UnsupportedFormatError,
+    UpstreamDataError,
+)
 from app.models.layer import Layer
 from app.repositories import layer_repository
 from app.schemas.layer import LayerCreate
@@ -139,6 +144,10 @@ async def import_raster_file(
     stored_name = f"{uuid.uuid4().hex}.tif"
     target = settings.raster_dir / stored_name
 
+    from app.services import task_service
+
+    started = task_service._now()
+    provenance = {"sourceFilename": original_name, "submittedVia": "sync-import"}
     try:
         saved = await save_upload(upload, work_dir, settings.upload_max_bytes)
         # One guard spans every step from here on: `_inspect_and_normalise`
@@ -168,7 +177,29 @@ async def import_raster_file(
                     style=style,
                 ),
             )
-            return await layer_repository.update(session, layer, srid=4326, extent=info["extent"])
+            updated = await layer_repository.update(
+                session, layer, srid=4326, extent=info["extent"]
+            )
+            await task_service.record_finished(
+                session,
+                project_id=project_id,
+                kind="raster_import",
+                provenance=provenance,
+                started_at=started,
+                layer_id=updated.id,
+                result={"layerId": str(updated.id), "layerName": updated.name},
+            )
+            return updated
+        except AppError as exc:
+            target.unlink(missing_ok=True)
+            await task_service.record_failure_detached(
+                project_id=project_id,
+                kind="raster_import",
+                provenance=provenance,
+                started_at=started,
+                error=task_service.error_envelope(exc),
+            )
+            raise
         except Exception:
             target.unlink(missing_ok=True)
             raise

@@ -23,6 +23,10 @@ from app.main import create_app
 
 TEST_DATABASE_URL = get_settings().database_url
 
+# Tests drive `task_worker.run_once` directly with their own transactional
+# session; the lifespan's polling loop would race them on another engine.
+get_settings().task_worker_enabled = False
+
 if not TEST_DATABASE_URL.endswith("/gis_platform_test"):
     raise RuntimeError(
         "Refusing to run the suite against a non-test database. "

@@ -44,6 +44,10 @@ class Settings(BaseSettings):
     # stale estimate visibly wrong there), large tables take the fast path
     # where drift of a few rows is imperceptible and count(*) is the cost.
     attribute_count_estimate_min: int = 100_000
+    # Background task worker (R6): one in-process asyncio loop.
+    task_worker_enabled: bool = True
+    task_poll_seconds: float = 1.0
+    task_page_max: int = 100
     attribute_page_max: int = 500
     raster_pool_max_open: int = 8
     raster_pool_idle_ttl_seconds: float = 300.0

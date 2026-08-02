@@ -19,6 +19,8 @@ from app.resources.dataset_pool import DatasetPool, get_raster_pool, set_raster_
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    import asyncio
+
     settings: Settings = get_settings()
     settings.raster_dir.mkdir(parents=True, exist_ok=True)
     settings.upload_tmp_dir.mkdir(parents=True, exist_ok=True)
@@ -43,9 +45,30 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             ),
         )
     )
+    # The background-task worker: recover anything interrupted by the last
+    # shutdown, then run the claim loop until shutdown. Tests disable it and
+    # drive `task_worker.run_once` directly for determinism.
+    worker_stop = asyncio.Event()
+    worker_task: asyncio.Task[None] | None = None
+    if settings.task_worker_enabled:
+        from app.db.session import SessionLocal
+        from app.services import task_worker
+
+        async with SessionLocal() as session:
+            await task_worker.recover_interrupted(session)
+        worker_task = asyncio.create_task(
+            task_worker.run_worker(worker_stop, settings.task_poll_seconds)
+        )
+
     try:
         yield
     finally:
+        if worker_task is not None:
+            worker_stop.set()
+            from app.services import task_worker
+
+            task_worker.notify()  # wake it so it can observe the stop event
+            await worker_task
         await get_raster_pool().close_all()
 
 

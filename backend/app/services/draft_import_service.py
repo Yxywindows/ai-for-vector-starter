@@ -13,6 +13,7 @@ There is one bulk insert, not one insert per feature.
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 from typing import Any
 
 import anyio
@@ -22,7 +23,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
-from app.core.errors import ConflictError, InvalidRequestError
+from app.core.errors import AppError, ConflictError, InvalidRequestError
 from app.schemas.import_draft import FeatureIssue, ImportDraftRequest, ImportResult
 from app.schemas.layer import LayerRead
 from app.services import vector_import_service
@@ -50,6 +51,32 @@ def _build_frame(features: list[dict[str, Any]]) -> gpd.GeoDataFrame:
 async def import_draft(
     session: AsyncSession, project_id: uuid.UUID, request: ImportDraftRequest
 ) -> ImportResult:
+    from app.services import task_service
+
+    started = task_service._now()
+    provenance = {"sourceFilename": request.source_filename, "submittedVia": "draft-import"}
+    try:
+        return await _import_draft_inner(session, project_id, request, started, provenance)
+    except AppError as exc:
+        await task_service.record_failure_detached(
+            project_id=project_id,
+            kind="draft_import",
+            provenance=provenance,
+            started_at=started,
+            error=task_service.error_envelope(exc),
+        )
+        raise
+
+
+async def _import_draft_inner(
+    session: AsyncSession,
+    project_id: uuid.UUID,
+    request: ImportDraftRequest,
+    started: datetime,
+    provenance: dict[str, Any],
+) -> ImportResult:
+    from app.services import task_service
+
     outcome = validate_feature_collection(request.feature_collection, max_features=_max_features())
     if outcome.errors:
         raise InvalidRequestError(
@@ -80,6 +107,19 @@ async def import_draft(
         ) from exc
 
     warnings = [FeatureIssue.of(issue) for issue in outcome.warnings]
+    await task_service.record_finished(
+        session,
+        project_id=project_id,
+        kind="draft_import",
+        provenance=provenance,
+        started_at=started,
+        layer_id=layer.id,
+        result={
+            "layerId": str(layer.id),
+            "featureCount": len(outcome.features),
+            "layerName": layer.name,
+        },
+    )
     return ImportResult(
         layer=LayerRead.model_validate(layer),
         imported_count=len(outcome.features),

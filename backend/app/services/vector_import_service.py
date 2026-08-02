@@ -27,7 +27,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
-from app.core.errors import UnsupportedFormatError, UpstreamDataError
+from app.core.errors import AppError, UnsupportedFormatError, UpstreamDataError
 from app.db.identifiers import qualified, quote
 from app.db.sync_engine import get_sync_engine
 from app.models.layer import Layer
@@ -310,10 +310,17 @@ async def import_vector_file(
 
     work_dir = settings.upload_tmp_dir / uuid.uuid4().hex
     table_name = slugify_table_name(original_name)
+    # Synchronous imports still belong to the shared task history: success
+    # is recorded in the request transaction (atomic with the layer),
+    # failure on a detached session (the request session is rolling back).
+    from app.services import task_service
+
+    started = task_service._now()
+    provenance = {"sourceFilename": original_name, "submittedVia": "sync-import"}
     try:
         saved = await save_upload(upload, work_dir, settings.upload_max_bytes)
         frame = await anyio.to_thread.run_sync(_read_frame, saved)
-        return await write_frame_and_register(
+        layer = await write_frame_and_register(
             session,
             project_id,
             frame,
@@ -321,5 +328,28 @@ async def import_vector_file(
             table_name=table_name,
             source_filename=original_name,
         )
+        await task_service.record_finished(
+            session,
+            project_id=project_id,
+            kind="vector_import",
+            provenance=provenance,
+            started_at=started,
+            layer_id=layer.id,
+            result={
+                "layerId": str(layer.id),
+                "featureCount": layer.feature_count,
+                "layerName": layer.name,
+            },
+        )
+        return layer
+    except AppError as exc:
+        await task_service.record_failure_detached(
+            project_id=project_id,
+            kind="vector_import",
+            provenance=provenance,
+            started_at=started,
+            error=task_service.error_envelope(exc),
+        )
+        raise
     finally:
         shutil.rmtree(work_dir, ignore_errors=True)

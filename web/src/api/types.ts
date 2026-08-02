@@ -240,3 +240,53 @@ export interface SystemOverview {
   featureTotal: number
   recentLayers: OverviewLayer[]
 }
+
+export type TaskState =
+  | 'queued'
+  | 'running'
+  | 'succeeded'
+  | 'failed'
+  | 'cancelling'
+  | 'cancelled'
+
+export interface TaskError {
+  code: string
+  message: string
+  details?: unknown
+}
+
+export interface Task {
+  id: string
+  projectId: string
+  projectName: string | null
+  layerId: string | null
+  kind: string
+  state: TaskState
+  progress: number
+  stage: string | null
+  params: Record<string, unknown>
+  result: Record<string, unknown> | null
+  error: TaskError | null
+  retryOf: string | null
+  retryable: boolean
+  cancelRequested: boolean
+  provenance: Record<string, unknown>
+  createdAt: string
+  startedAt: string | null
+  finishedAt: string | null
+  updatedAt: string
+  durationMs: number | null
+}
+
+export interface TaskPage {
+  items: Task[]
+  total: number
+  page: number
+  pageSize: number
+}
+
+export interface TaskLogEntry {
+  ts: string
+  level: string
+  message: string
+}
