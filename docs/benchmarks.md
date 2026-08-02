@@ -45,17 +45,33 @@ same shape the real import path produces.
 Server-side (from `backend/`, venv active, backend already running):
 
 ```sh
+./.venv/Scripts/python.exe scripts/bench.py seed      # idempotent; already run before this task, not re-run here
 ./.venv/Scripts/python.exe scripts/bench.py measure
 ```
 
-This hits `/api/v1/layers/{id}/tiles/{z}/{x}/{y}.mvt` (6 tiles at z=5 over
-the seeded extent, once for "cold" then 5x for "warm"), `/features`
-(10x, bbox `95,25,115,40`, `simplify=0.01`), and `/attributes` (10x) per
-layer, and prints p50/p95 per metric. Run once; percentiles come from the
-fixed in-script sample counts above, not from repeating the whole command.
+`seed` creates/refreshes the `Benchmarks` project and its 3 layers (see
+Dataset above) and is safe to re-run — it was already applied before this
+task started, so this task only ran `measure`. This hits
+`/api/v1/layers/{id}/tiles/{z}/{x}/{y}.mvt` (6 tiles at z=5 over the seeded
+extent, once for "cold" then 5x for "warm"), `/features` (10x, bbox
+`95,25,115,40`, `simplify=0.01`), and `/attributes` (10x) per layer, and
+prints p50/p95 per metric. Run once; percentiles come from the fixed
+in-script sample counts above, not from repeating the whole command.
 
 Browser harness (from `web/`, backend + Vite already running, Chromium
-installed via `npx playwright install chromium`):
+installed via `npx playwright install chromium`). **Before the first run**,
+clear any stale state from a previous session — both dirs are gitignored
+scratch space, safe to wipe — so the `warm` scenario's populate run below
+genuinely starts from an empty profile rather than silently reusing a
+profile some earlier session already warmed (a stale-profile failure mode
+observed while producing this baseline: `bench/.profiles/warm` had leftover
+state from an earlier harness-verification run):
+
+```sh
+rm -rf bench/results/*.json bench/.profiles/*
+```
+
+Then run each scenario:
 
 ```sh
 npm run bench -- --scenario cold   # x3, fresh profile per run
@@ -173,7 +189,9 @@ The warm populate run is essentially a cold run over the network (same
 byte count as cold, as expected for an empty HTTP cache). Of the 3 measured
 warm runs, the first transferred 79,355 B versus 15,788 B for the other
 two — some extra revalidation/traffic beyond pure cache hits on the first
-truly-warm invocation, still ~140x smaller than a cold load either way. Pan
+truly-warm invocation, still ~140x–~710x smaller than a cold load depending
+on the run (140.9x for the noisier first measured run, 708.4x for the other
+two). Pan
 transfers ~6x a cold load's bytes, consistent with the scripted moves
 pulling fresh tiles/features for previously-unseen viewport area across all
 three layers.
