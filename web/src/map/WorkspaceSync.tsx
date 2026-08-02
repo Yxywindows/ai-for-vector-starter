@@ -1,6 +1,6 @@
 import { unByKey } from 'ol/Observable'
 import { toLonLat } from 'ol/proj'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router'
 
 import { API_BASE } from '../api/client'
@@ -63,9 +63,27 @@ export function WorkspaceSync({ projectId }: { projectId: string }) {
   const map = useMap()
   const [, setSearchParams] = useSearchParams()
 
+  // setSearchParams is not referentially stable across renders — and this
+  // component re-renders on every param write it makes. Binding the map
+  // listeners to it directly would tear them (and the pending capture
+  // timer) down after every pan; the ref keeps one stable subscription
+  // per map while always calling the current setter.
+  const setParamsRef = useRef(setSearchParams)
+  useEffect(() => {
+    setParamsRef.current = setSearchParams
+  })
+
   useEffect(() => {
     if (!map) return
     let thumbTimer: ReturnType<typeof setTimeout> | undefined
+
+    const scheduleCapture = () => {
+      clearTimeout(thumbTimer)
+      const target = map.getTargetElement()
+      if (target) {
+        thumbTimer = setTimeout(() => captureThumbnail(target, projectId), THUMBNAIL_DEBOUNCE_MS)
+      }
+    }
 
     const moveKey = map.on('moveend', () => {
       const view = map.getView()
@@ -73,7 +91,7 @@ export function WorkspaceSync({ projectId }: { projectId: string }) {
       const zoom = view.getZoom()
       if (!center || zoom === undefined) return
       const [lon, lat] = toLonLat(center)
-      setSearchParams(
+      setParamsRef.current(
         (previous) => {
           const next = new URLSearchParams(previous)
           next.set('view', `${zoom.toFixed(2)}/${lon!.toFixed(5)}/${lat!.toFixed(5)}`)
@@ -81,19 +99,20 @@ export function WorkspaceSync({ projectId }: { projectId: string }) {
         },
         { replace: true },
       )
-
-      clearTimeout(thumbTimer)
-      const target = map.getTargetElement()
-      if (target) {
-        thumbTimer = setTimeout(() => captureThumbnail(target, projectId), THUMBNAIL_DEBOUNCE_MS)
-      }
+      scheduleCapture()
     })
+
+    // A user who opens a workspace and never pans still deserves a
+    // thumbnail: moveend never fires when the restored view equals the
+    // constructed one, so the first completed render also schedules one.
+    const renderKey = map.once('rendercomplete', scheduleCapture)
 
     return () => {
       unByKey(moveKey)
+      unByKey(renderKey)
       clearTimeout(thumbTimer)
     }
-  }, [map, projectId, setSearchParams])
+  }, [map, projectId])
 
   useEffect(
     () =>
@@ -104,7 +123,7 @@ export function WorkspaceSync({ projectId }: { projectId: string }) {
         ) {
           return
         }
-        setSearchParams(
+        setParamsRef.current(
           (current) => {
             const next = new URLSearchParams(current)
             if (state.selectedLayerId) {
@@ -118,7 +137,7 @@ export function WorkspaceSync({ projectId }: { projectId: string }) {
           { replace: true },
         )
       }),
-    [setSearchParams],
+    [],
   )
 
   return null

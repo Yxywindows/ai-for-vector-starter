@@ -1947,3 +1947,8 @@ ul {
   min-height: 140px;
   max-height: 60vh;
 }
+
+.page__note {
+  color: var(--ink-faint);
+  font-size: var(--fs-micro);
+}
