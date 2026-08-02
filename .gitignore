@@ -1,6 +1,6 @@
 # Python
 # Unanchored so these match at any depth — the repo holds several modules,
-# each with its own virtualenv (backend/, web/, ...).
+# each with its own virtualenv (backend/, ...).
 .venv/
 __pycache__/
 *.pyc
