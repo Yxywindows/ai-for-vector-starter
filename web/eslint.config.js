@@ -3,7 +3,12 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage'] },
+  // bench.mjs is a plain Node script run directly with `node`, not part of
+  // the Vite/vitest build — it mixes Node globals (process, fetch) with
+  // browser globals used inside page.evaluate() callbacks (window,
+  // performance), which no single env captures cleanly. It's measurement
+  // tooling, not shipped app code, so it's excluded rather than contorted.
+  { ignores: ['dist', 'coverage', 'bench/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
