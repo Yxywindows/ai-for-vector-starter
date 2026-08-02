@@ -40,8 +40,28 @@ function round(value) {
   return value === null || value === undefined ? null : Math.round(value * 100) / 100
 }
 
+/** Rejects with `message` after `ms` if `promise` hasn't settled — so a stall
+ * anywhere in an awaited chain (in-page or over the network) fails loudly
+ * and exits nonzero instead of hanging the harness forever. */
+function withTimeout(promise, ms, message) {
+  let timer
+  const timeout = new Promise((_resolve, reject) => {
+    timer = setTimeout(() => reject(new Error(message)), ms)
+  })
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer))
+}
+
 async function resolveProjectId(baseUrl, projectName) {
-  const res = await fetch(`${baseUrl}/api/v1/projects`)
+  const projectsUrl = `${baseUrl}/api/v1/projects`
+  let res
+  try {
+    res = await fetch(projectsUrl, { signal: AbortSignal.timeout(10_000) })
+  } catch (error) {
+    throw new Error(
+      `GET ${projectsUrl} did not respond (${error.name}: ${error.message}). ` +
+        `Is the dev server running at ${baseUrl}, and the backend it proxies /api to?`,
+    )
+  }
   if (!res.ok) {
     throw new Error(`GET /api/v1/projects failed: ${res.status} ${res.statusText}`)
   }
@@ -208,7 +228,18 @@ async function main() {
     let panP95FrameMs = null
     let moveSettleP95Ms = null
     if (scenario === 'pan') {
-      const { frameDeltas, moveSettleTimes } = await runPanScript(page)
+      // The in-page promise chain (view.animate() completions, the
+      // moveend/rendercomplete correlation) already survived one real hang
+      // during development (see the comment above runPanScript) — this
+      // outer guard is the backstop for any *other* stall in that chain,
+      // so a recurrence fails loudly instead of blocking forever.
+      const { frameDeltas, moveSettleTimes } = await withTimeout(
+        runPanScript(page),
+        120_000,
+        'pan script timed out after 120s — the in-page promise chain (view.animate() ' +
+          'completions / moveend / rendercomplete correlation) stalled. See the comment ' +
+          'above runPanScript() in bench.mjs and bench/README.md.',
+      )
       panP95FrameMs = round(p95(frameDeltas))
       moveSettleP95Ms = round(p95(moveSettleTimes))
     }
