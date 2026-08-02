@@ -100,6 +100,16 @@ describe('TasksPage', () => {
     )
   })
 
+  it('shows a readable error instead of crashing when the list cannot load', async () => {
+    vi.spyOn(tasksApi, 'listTasks').mockRejectedValue(
+      new Error('The API returned a non-JSON response — is the backend reachable?'),
+    )
+    renderPage()
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent(/could not load tasks/i)
+    expect(alert).toHaveTextContent(/non-JSON/)
+  })
+
   it('gives succeeded exports a download link instead of a dataset link', async () => {
     vi.spyOn(tasksApi, 'listTasks').mockResolvedValue({
       items: [

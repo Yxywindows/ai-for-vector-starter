@@ -71,7 +71,7 @@ export function ExportsPage() {
       )
         ? 1500
         : 8000,
-    select: (page) => page.items.filter(isExportTask),
+    select: (page) => (page.items ?? []).filter(isExportTask),
   })
 
   const submit = useMutation({

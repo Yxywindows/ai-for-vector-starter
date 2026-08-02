@@ -66,5 +66,18 @@ export async function apiFetch<T>(path: string, init: ApiRequestInit = {}): Prom
     )
   }
 
+  // A 2xx that isn't JSON is not data — it's a misrouted request (e.g. a
+  // dev server without the /api proxy answering with index.html). Handing
+  // that string to callers as `T` crashes far from the cause; fail here,
+  // loudly and typed, so pages render their error state instead.
+  if (typeof payload === 'string') {
+    throw new ApiError(
+      response.status,
+      'bad_response',
+      'The API returned a non-JSON response — is the backend reachable?',
+      payload.slice(0, 200),
+    )
+  }
+
   return payload as T
 }

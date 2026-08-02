@@ -56,6 +56,21 @@ describe('apiFetch', () => {
     expect(error.message).toContain('502')
   })
 
+  it('rejects a 200 that is not JSON instead of returning HTML as data', async () => {
+    // A dev server without the /api proxy answers API GETs with the SPA's
+    // index.html and status 200 — the exact shape that once crashed the
+    // Tasks page with "Cannot read properties of undefined".
+    const response = new Response('<!doctype html><html><body>app</body></html>', {
+      status: 200,
+      headers: { 'content-type': 'text/html' },
+    })
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(response)
+    const error = (await apiFetch('/tasks').catch((caught: unknown) => caught)) as ApiError
+    expect(error).toBeInstanceOf(ApiError)
+    expect(error.code).toBe('bad_response')
+    expect(error.message).toContain('non-JSON')
+  })
+
   it('sends JSON bodies with the right content type', async () => {
     const spy = mockFetch(200, {})
     await apiFetch('/projects', { method: 'POST', json: { name: 'P' } })

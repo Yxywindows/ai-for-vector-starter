@@ -133,7 +133,7 @@ function TaskRow({ task }: { task: Task }) {
         <tr className="task-detail-row">
           <td colSpan={7}>
             <div className="task-logs" data-testid={`task-logs-${task.id}`}>
-              {logs.data?.entries.length ? (
+              {logs.data?.entries?.length ? (
                 logs.data.entries.map((entry, index) => (
                   <p key={index} className={entry.level === 'error' ? 'task-logs__error' : undefined}>
                     <span className="mono">{new Date(entry.ts).toLocaleTimeString()}</span>{' '}
@@ -173,7 +173,10 @@ export function TasksPage() {
     },
   })
 
-  const kinds = [...new Set((tasks.data?.items ?? []).map((task) => task.kind))]
+  // Belt to apiFetch's suspenders: never trust the payload shape enough
+  // to crash the page over it.
+  const items = tasks.data?.items ?? []
+  const kinds = [...new Set(items.map((task) => task.kind))]
   const totalPages = Math.max(1, Math.ceil((tasks.data?.total ?? 0) / 20))
 
   return (
@@ -216,7 +219,11 @@ export function TasksPage() {
         </button>
       </div>
 
-      {tasks.data && tasks.data.items.length === 0 ? (
+      {tasks.isError ? (
+        <p className="task-error" role="alert">
+          Could not load tasks: {(tasks.error as Error).message}
+        </p>
+      ) : tasks.data && items.length === 0 ? (
         <p className="page__empty">
           No tasks yet. Imports create them — start one from the map workspace's <em>Add layer</em>.
         </p>
@@ -234,7 +241,7 @@ export function TasksPage() {
             </tr>
           </thead>
           <tbody>
-            {tasks.data?.items.map((task) => (
+            {items.map((task) => (
               <TaskRow key={task.id} task={task} />
             ))}
           </tbody>

@@ -92,7 +92,7 @@ export function AnalysisPage() {
       )
         ? 1500
         : 8000,
-    select: (page) => page.items.filter(isAnalysisTask),
+    select: (page) => (page.items ?? []).filter(isAnalysisTask),
   })
 
   const needsSecondary = tool === 'clip' || tool === 'intersection' || tool === 'spatial-join'

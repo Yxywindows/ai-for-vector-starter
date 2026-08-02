@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react'
-import { Navigate, createBrowserRouter } from 'react-router'
+import { Link, Navigate, createBrowserRouter, useRouteError } from 'react-router'
 
 import { DashboardPage } from '../pages/DashboardPage'
 import { DataCatalogPage } from '../pages/DataCatalogPage'
@@ -15,9 +15,32 @@ import { PlatformShell } from './PlatformShell'
 // lazy boundary may import `ol` or `ag-grid` (IA acceptance §9.3).
 const App = lazy(() => import('../App').then((module) => ({ default: module.App })))
 
+/** A render error shows a way out, not a stack trace (React Router's
+ * default error screen). The error still reaches the console for us. */
+function RouteError() {
+  const error = useRouteError()
+  return (
+    <div className="page">
+      <header className="page__header">
+        <h1>Something went wrong</h1>
+      </header>
+      <p className="task-error" role="alert">
+        {error instanceof Error ? error.message : 'An unexpected error interrupted this page.'}
+      </p>
+      <p className="page__note">
+        <button type="button" onClick={() => window.location.reload()}>
+          Reload
+        </button>{' '}
+        or go back to the <Link to="/">dashboard</Link>.
+      </p>
+    </div>
+  )
+}
+
 export const router = createBrowserRouter([
   {
     element: <PlatformShell />,
+    errorElement: <RouteError />,
     children: [
       { path: '/', element: <DashboardPage /> },
       { path: '/projects', element: <ProjectsPage /> },
@@ -33,6 +56,7 @@ export const router = createBrowserRouter([
   // sibling of the platform shell, not a child.
   {
     path: '/projects/:projectId/map',
+    errorElement: <RouteError />,
     element: (
       <Suspense fallback={<div className="route-fallback">Loading workspace…</div>}>
         <App />
