@@ -387,6 +387,26 @@ ul {
   font-size: var(--fs-base);
 }
 
+.project-switcher,
+:where(select).project-switcher {
+  border-color: transparent;
+  background: transparent;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.project-switcher:hover {
+  border-color: var(--line-strong);
+}
+
+.route-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: var(--ink-muted);
+}
+
 /* The map is the canvas; everything else floats over it. */
 .app-shell__stage {
   position: relative;

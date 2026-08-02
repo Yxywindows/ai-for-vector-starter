@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router'
 
-import { getProject, listProjects } from './api/layers'
+import { getProject } from './api/layers'
 import { AppShell } from './app/AppShell'
+import { ProjectSwitcher } from './app/ProjectSwitcher'
 import { AttributeTable } from './features/attributes/AttributeTable'
 import { EditToolbar } from './features/editing/EditToolbar'
 import { LayerPanel } from './features/layers/LayerPanel'
@@ -31,8 +33,8 @@ function SelectionSync() {
 }
 
 export function App() {
-  const projects = useQuery({ queryKey: ['projects'], queryFn: listProjects })
-  const projectId = projects.data?.[0]?.id
+  // The project is route state, not store state: /projects/:projectId/map.
+  const { projectId } = useParams<{ projectId: string }>()
   const project = useQuery({
     queryKey: ['project', projectId],
     queryFn: () => getProject(projectId!),
@@ -83,7 +85,7 @@ export function App() {
     <MapProvider center={view?.center ?? [0, 0]} zoom={view?.zoom ?? 2}>
       <SelectionSync />
       <AppShell
-        context={project.data?.name}
+        context={projectId ? <ProjectSwitcher projectId={projectId} /> : null}
         status={<StatusBar layerCount={layers.length} />}
         tableOpen={tableOpen}
         onToggleTable={() => setTableOpen((open) => !open)}
