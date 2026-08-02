@@ -103,6 +103,7 @@ export interface Layer {
   featureCount: number | null
   srid: number | null
   geometryType: string | null
+  sourceFilename?: string | null
 }
 
 export interface MapView {
@@ -219,4 +220,23 @@ export interface ImportResult {
   warningCount: number
   errors: FeatureIssue[]
   warnings: FeatureIssue[]
+}
+
+export interface OverviewLayer {
+  id: string
+  name: string
+  kind: string
+  geometryType: string | null
+  featureCount: number | null
+  projectId: string
+  projectName: string
+  createdAt: string
+}
+
+export interface SystemOverview {
+  projectCount: number
+  layerCount: number
+  layersByKind: Record<string, number>
+  featureTotal: number
+  recentLayers: OverviewLayer[]
 }

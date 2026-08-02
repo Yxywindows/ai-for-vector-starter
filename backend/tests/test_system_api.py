@@ -41,3 +41,23 @@ async def test_import_limits_reports_the_configured_values(client: AsyncClient) 
     assert body["maxFileBytes"] == 64 * 1024 * 1024
     assert body["maxFeatures"] == 50_000
     assert body["previewMaxFeatures"] == 5_000
+
+
+async def test_overview_counts_projects_layers_and_features(client) -> None:
+    project_id = (await client.post("/api/v1/projects", json={"name": "Ov"})).json()["id"]
+    await client.post(
+        f"/api/v1/projects/{project_id}/layers",
+        json={
+            "name": "Base",
+            "kind": "basemap",
+            "source": {"type": "xyz", "url": "https://t/{z}/{x}/{y}.png", "attribution": None},
+        },
+    )
+
+    body = (await client.get("/api/v1/system/overview")).json()
+    assert body["projectCount"] >= 1
+    assert body["layerCount"] >= 1
+    assert body["layersByKind"].get("basemap", 0) >= 1
+    assert isinstance(body["featureTotal"], int)
+    recent = body["recentLayers"]
+    assert any(layer["name"] == "Base" and layer["projectName"] == "Ov" for layer in recent)

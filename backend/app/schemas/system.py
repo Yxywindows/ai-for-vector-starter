@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import uuid
+from datetime import datetime
+
 from app.schemas.base import APIModel
 
 
@@ -39,3 +42,22 @@ class BandStatistics(APIModel):
 
 class RasterStatistics(APIModel):
     bands: list[BandStatistics]
+
+
+class OverviewLayer(APIModel):
+    id: uuid.UUID
+    name: str
+    kind: str
+    geometry_type: str | None
+    feature_count: int | None
+    project_id: uuid.UUID
+    project_name: str
+    created_at: datetime
+
+
+class SystemOverview(APIModel):
+    project_count: int
+    layer_count: int
+    layers_by_kind: dict[str, int]
+    feature_total: int
+    recent_layers: list[OverviewLayer]

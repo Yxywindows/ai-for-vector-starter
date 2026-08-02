@@ -47,6 +47,8 @@ export function App() {
 
   useEffect(() => {
     useLayerStore.getState().setProjectId(projectId ?? null)
+    // The platform rail's "Open map workspace" jump target.
+    if (projectId) localStorage.setItem('graticule:lastProject', projectId)
   }, [projectId])
 
   // Selecting a layer is a request to inspect it: bring the drawer up.

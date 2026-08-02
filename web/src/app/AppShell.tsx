@@ -1,4 +1,5 @@
 import { type ReactNode, useState } from 'react'
+import { Link } from 'react-router'
 
 interface AppShellProps {
   sidebar: ReactNode
@@ -79,8 +80,10 @@ export function AppShell({
   return (
     <div className="app-shell">
       <header className="app-shell__header">
-        <Monogram />
-        <span className="app-header__name">Graticule</span>
+        <Link to="/" className="platform__brand" aria-label="Back to dashboard">
+          <Monogram />
+          <span className="app-header__name">Graticule</span>
+        </Link>
         {context ? (
           <>
             <span className="app-header__divider" aria-hidden="true" />

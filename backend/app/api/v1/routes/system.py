@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
-from app.schemas.system import ImportLimits, MemoryReport
+from app.db.session import SessionDep
+from app.schemas.system import ImportLimits, MemoryReport, SystemOverview
 from app.services import system_service
 
 router = APIRouter(prefix="/system", tags=["system"])
@@ -14,3 +15,8 @@ def memory() -> MemoryReport:
 @router.get("/import-limits", response_model=ImportLimits)
 def import_limits() -> ImportLimits:
     return system_service.import_limits()
+
+
+@router.get("/overview", response_model=SystemOverview)
+async def overview(session: SessionDep) -> SystemOverview:
+    return await system_service.overview(session)

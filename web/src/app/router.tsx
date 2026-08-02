@@ -1,23 +1,30 @@
-import { useQuery } from '@tanstack/react-query'
 import { Navigate, createBrowserRouter } from 'react-router'
 
 import { App } from '../App'
-import { listProjects } from '../api/layers'
-
-/**
- * `/` preserves the pre-router behavior explicitly: open the first
- * project's map. It becomes the dashboard in R1.
- */
-function HomeRedirect() {
-  const projects = useQuery({ queryKey: ['projects'], queryFn: listProjects })
-  if (projects.isLoading) return <div className="route-fallback">Loading projects…</div>
-  const first = projects.data?.[0]
-  if (!first) return <div className="route-fallback">No projects yet.</div>
-  return <Navigate to={`/projects/${first.id}/map`} replace />
-}
+import { DashboardPage } from '../pages/DashboardPage'
+import { DataCatalogPage } from '../pages/DataCatalogPage'
+import { DatasetDetailsPage } from '../pages/DatasetDetailsPage'
+import { ProjectOverviewPage } from '../pages/ProjectOverviewPage'
+import { ProjectsPage } from '../pages/ProjectsPage'
+import { AnalysisPage, ExportsPage, TasksPage } from '../pages/stubs'
+import { PlatformShell } from './PlatformShell'
 
 export const router = createBrowserRouter([
-  { path: '/', element: <HomeRedirect /> },
+  {
+    element: <PlatformShell />,
+    children: [
+      { path: '/', element: <DashboardPage /> },
+      { path: '/projects', element: <ProjectsPage /> },
+      { path: '/projects/:projectId', element: <ProjectOverviewPage /> },
+      { path: '/data', element: <DataCatalogPage /> },
+      { path: '/data/:layerId/*', element: <DatasetDetailsPage /> },
+      { path: '/tasks', element: <TasksPage /> },
+      { path: '/analysis', element: <AnalysisPage /> },
+      { path: '/exports', element: <ExportsPage /> },
+    ],
+  },
+  // The map workspace keeps its own chrome (WorkspaceShell in R3); it is a
+  // sibling of the platform shell, not a child.
   { path: '/projects/:projectId/map', element: <App /> },
   { path: '*', element: <Navigate to="/" replace /> },
 ])
