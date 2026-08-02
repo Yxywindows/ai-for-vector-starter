@@ -14,6 +14,8 @@ export const updateProject = (projectId: string, patch: { name?: string; view?: 
 export const createLayer = (projectId: string, body: Record<string, unknown>) =>
   apiFetch<Layer>(`/projects/${projectId}/layers`, { method: 'POST', json: body })
 
+export const getLayer = (layerId: string) => apiFetch<Layer>(`/layers/${layerId}`)
+
 export const updateLayer = (
   layerId: string,
   patch: { name?: string; visible?: boolean; opacity?: number; style?: StyleSpec },

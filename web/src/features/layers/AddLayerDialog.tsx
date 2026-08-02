@@ -1,10 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
 
 import { listPostgisTables } from '../../api/catalog'
 import { getImportLimits } from '../../api/imports'
-import { ImportPreview } from '../import/ImportPreview'
 import { useLayerMutations } from './useLayerMutations'
+
+// The staged-import workspace drags ag-grid and a second map along with
+// it; neither belongs in this dialog's chunk until a file is actually
+// staged.
+const ImportPreview = lazy(() =>
+  import('../import/ImportPreview').then((module) => ({ default: module.ImportPreview })),
+)
 
 interface AddLayerDialogProps {
   projectId: string
@@ -97,14 +103,16 @@ export function AddLayerDialog({ projectId, open, onClose }: AddLayerDialogProps
       </button>
 
       {staged ? (
-        <ImportPreview
-          projectId={projectId}
-          file={staged}
-          onClose={() => {
-            setStaged(null)
-            onClose()
-          }}
-        />
+        <Suspense fallback={null}>
+          <ImportPreview
+            projectId={projectId}
+            file={staged}
+            onClose={() => {
+              setStaged(null)
+              onClose()
+            }}
+          />
+        </Suspense>
       ) : null}
     </div>
   )

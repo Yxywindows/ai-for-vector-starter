@@ -54,7 +54,11 @@ describe('AddLayerDialog file routing', () => {
 
     await userEvent.upload(screen.getByLabelText(/geojson/i), file)
 
-    expect(await screen.findByRole('dialog', { name: /import preview/i })).toBeInTheDocument()
+    // The preview is a lazy chunk now; first evaluation can exceed the
+    // default findBy timeout on a busy machine.
+    expect(
+      await screen.findByRole('dialog', { name: /import preview/i }, { timeout: 5000 }),
+    ).toBeInTheDocument()
     expect(importSpy).not.toHaveBeenCalled()
   })
 
