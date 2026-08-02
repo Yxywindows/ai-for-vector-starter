@@ -558,6 +558,112 @@ ul {
   top: calc(50% - var(--h-drawer) / 2 + var(--s-3) / 2);
 }
 
+/* R10: Mapbox basemap themes. The two derived looks are CSS filters on
+   the basemap layer's own canvas; data layers render above, unfiltered. */
+.mapbox-basemap--mapbox-muted-gray {
+  filter: grayscale(1) contrast(0.95);
+}
+
+.mapbox-basemap--mapbox-high-contrast {
+  filter: contrast(1.35) brightness(1.05);
+}
+
+.basemap-selector {
+  position: absolute;
+  left: var(--s-3);
+  bottom: var(--s-3);
+  z-index: calc(var(--z-toolbar) + 1);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-1);
+}
+
+/* keep clear of the attribute drawer */
+.app-shell__stage--drawer .basemap-selector {
+  bottom: calc(var(--h-drawer) + var(--s-3) * 2);
+}
+
+.basemap-selector__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: 3px var(--s-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-surface);
+  background: var(--panel);
+  box-shadow: var(--shadow-1);
+  color: var(--ink-muted);
+  font-size: var(--fs-micro);
+  cursor: pointer;
+}
+
+.basemap-selector__trigger:hover {
+  color: var(--ink);
+}
+
+.basemap-selector__panel {
+  width: 196px;
+  padding: var(--s-1);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-surface);
+  box-shadow: var(--shadow-1);
+}
+
+.basemap-selector__option {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  width: 100%;
+  padding: var(--s-1) var(--s-2);
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--ink);
+  font-size: var(--fs-data);
+  text-align: left;
+  cursor: pointer;
+}
+
+.basemap-selector__option:hover:not(:disabled) {
+  background: var(--panel-raised);
+}
+
+.basemap-selector__option[aria-pressed='true'] {
+  background: var(--panel-raised);
+  font-weight: 500;
+}
+
+.basemap-selector__option:disabled {
+  color: var(--ink-faint);
+  cursor: not-allowed;
+}
+
+.basemap-swatch {
+  display: inline-flex;
+  width: 30px;
+  height: 14px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+  flex: none;
+}
+
+.basemap-swatch span {
+  flex: 1;
+}
+
+.basemap-selector__note {
+  margin: var(--s-1) var(--s-2);
+  color: var(--ink-faint);
+  font-size: var(--fs-micro);
+}
+
+.basemap-selector__note code {
+  font-family: var(--font-mono);
+}
+
 /* R9: the layout preset menu in the workspace header. */
 .layout-menu {
   position: relative;

@@ -20,6 +20,12 @@ import { StyleEditor } from './features/styling/StyleEditor'
 import { IdentifyPopup } from './map/IdentifyPopup'
 import { MapCanvas } from './map/MapCanvas'
 import { MapProvider, useMap } from './map/MapProvider'
+import { BasemapSelector, MapboxBasemap } from './map/basemaps/BasemapSelector'
+import {
+  loadBasemapChoice,
+  saveBasemapChoice,
+  type BasemapTheme,
+} from './map/basemaps/themes'
 import { StatusBar } from './map/StatusBar'
 import { WorkspaceSync, parseSelParam, parseViewParam } from './map/WorkspaceSync'
 import type { LayerFactoryDeps } from './map/layerFactory'
@@ -155,6 +161,36 @@ export function App() {
     })
   }, [])
 
+  // R10: the Mapbox theme is per-project workspace state, like layout.
+  const [basemapId, setBasemapId] = useState<string | null>(() =>
+    loadBasemapChoice(projectId ?? ''),
+  )
+  const [basemapNotice, setBasemapNotice] = useState<string | null>(null)
+  // Switching projects re-reads that project's stored choice (App does
+  // not remount on a param change) — the render-time reset pattern.
+  const [basemapProject, setBasemapProject] = useState(projectId)
+  if (basemapProject !== projectId) {
+    setBasemapProject(projectId)
+    setBasemapId(loadBasemapChoice(projectId ?? ''))
+    setBasemapNotice(null)
+  }
+  const chooseBasemap = useCallback(
+    (themeId: string | null) => {
+      setBasemapId(themeId)
+      setBasemapNotice(null)
+      if (projectId) saveBasemapChoice(projectId, themeId)
+    },
+    [projectId],
+  )
+  const onBasemapBroken = useCallback(
+    (theme: BasemapTheme) => {
+      setBasemapId(null)
+      setBasemapNotice(`${theme.name} tiles are not loading (bad token?) — using the project basemap.`)
+      if (projectId) saveBasemapChoice(projectId, null)
+    },
+    [projectId],
+  )
+
   // R9: dock to a side (clearing any float) or float at a position.
   const onPanelMove = useCallback((panel: DockablePanel, placement: PanelPlacement) => {
     setLayout((current) => {
@@ -222,6 +258,12 @@ export function App() {
             <EditToolbar layer={selectedLayer ?? null} />
             <MapCanvas layers={layers} deps={deps} />
             <IdentifyPopup names={names} />
+            <MapboxBasemap themeId={basemapId} onBroken={onBasemapBroken} />
+            <BasemapSelector
+              value={basemapId}
+              onChange={chooseBasemap}
+              notice={basemapNotice}
+            />
           </>
         }
         bottom={<AttributeTable layerId={selectedLayerId} />}
