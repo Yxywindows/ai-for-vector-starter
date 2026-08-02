@@ -100,6 +100,31 @@ describe('TasksPage', () => {
     )
   })
 
+  it('gives succeeded exports a download link instead of a dataset link', async () => {
+    vi.spyOn(tasksApi, 'listTasks').mockResolvedValue({
+      items: [
+        makeTask({
+          id: 't-export',
+          kind: 'export_vector',
+          state: 'succeeded',
+          layerId: 'layer-source',
+          result: { downloadName: 'cities.geojson', sizeBytes: 10 },
+        }),
+      ],
+      total: 1,
+      page: 1,
+      pageSize: 20,
+    })
+    renderPage()
+    await screen.findByTestId('task-t-export')
+    const table = screen.getByRole('table')
+    expect(within(table).getByText('Vector export')).toBeInTheDocument()
+    const download = within(table).getByRole('link', { name: /download/ })
+    expect(download).toHaveAttribute('href', '/api/v1/tasks/t-export/download')
+    expect(download).toHaveAttribute('download')
+    expect(screen.queryByRole('link', { name: /result/ })).not.toBeInTheDocument()
+  })
+
   it('offers cancel only where the lifecycle allows it', async () => {
     renderPage()
     await screen.findByTestId('task-t-queued')

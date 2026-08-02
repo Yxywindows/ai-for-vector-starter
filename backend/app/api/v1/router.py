@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from app.api.v1.routes import (
     analysis,
     catalog,
+    exports,
     features,
     health,
     imports,
@@ -24,3 +25,4 @@ api_router.include_router(tiles.router)
 api_router.include_router(system.router)
 api_router.include_router(tasks.router)
 api_router.include_router(analysis.router)
+api_router.include_router(exports.router)

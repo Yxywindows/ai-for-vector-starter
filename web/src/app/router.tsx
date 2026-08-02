@@ -8,7 +8,7 @@ import { ProjectOverviewPage } from '../pages/ProjectOverviewPage'
 import { ProjectsPage } from '../pages/ProjectsPage'
 import { TasksPage } from '../pages/TasksPage'
 import { AnalysisPage } from '../pages/AnalysisPage'
-import { ExportsPage } from '../pages/stubs'
+import { ExportsPage } from '../pages/ExportsPage'
 import { PlatformShell } from './PlatformShell'
 
 // The workspace chunk carries the whole map engine; nothing outside this

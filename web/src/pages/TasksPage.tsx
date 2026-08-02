@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { useState } from 'react'
 import { Link } from 'react-router'
 
+import { exportDownloadUrl } from '../api/exports'
 import { cancelTask, getTaskLogs, listTasks, retryTask } from '../api/tasks'
 import type { Task, TaskState } from '../api/types'
 
@@ -12,6 +13,15 @@ const KIND_LABELS: Record<string, string> = {
   vector_import: 'Vector import',
   draft_import: 'Staged import',
   raster_import: 'Raster import',
+  export_vector: 'Vector export',
+  export_raster: 'Raster export',
+  analysis_buffer: 'Buffer',
+  analysis_clip: 'Clip',
+  analysis_intersection: 'Intersection',
+  analysis_dissolve: 'Dissolve',
+  analysis_spatial_join: 'Spatial join',
+  analysis_validate_repair: 'Validate & repair',
+  analysis_point_in_polygon: 'Point in polygon',
 }
 
 /** Poll fast while anything is executing, slowly when the list is settled.
@@ -90,7 +100,11 @@ function TaskRow({ task }: { task: Task }) {
               Retry
             </button>
           ) : null}
-          {task.state === 'succeeded' && layerId ? (
+          {task.state === 'succeeded' && task.kind.startsWith('export_') ? (
+            <a className="row-list__action" href={exportDownloadUrl(task.id)} download>
+              download ▸
+            </a>
+          ) : task.state === 'succeeded' && layerId ? (
             <Link className="row-list__action" to={`/data/${layerId}`}>
               result ▸
             </Link>

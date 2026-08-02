@@ -2110,6 +2110,33 @@ ul {
   font-size: var(--fs-data);
 }
 
+/* R8: export field picker — a compact checkbox grid. */
+.export-fields {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: var(--s-2);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--s-1) var(--s-2);
+  color: var(--ink-muted);
+  font-size: var(--fs-data);
+}
+
+.export-fields legend {
+  padding: 0 var(--s-1);
+  font-size: var(--fs-micro, 11px);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.export-fields__item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  font-family: var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
 .analysis-actions {
   display: flex;
   align-items: center;
