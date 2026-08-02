@@ -1,6 +1,6 @@
 # Python
 # Unanchored so these match at any depth — the repo holds several modules,
-# each with its own virtualenv (backend/, gis-platform/backend/, ...).
+# each with its own virtualenv (backend/, web/, ...).
 .venv/
 __pycache__/
 *.pyc
@@ -14,7 +14,15 @@ node_modules/
 dist/
 
 # Local data written at runtime (uploaded rasters, temp uploads)
-gis-platform/backend/var/
+backend/var/
+
+# Captured screenshots and playwright artifacts
+/*.png
+.playwright-mcp/
+
+# Benchmark results and profiles
+web/bench/results/
+web/bench/.profiles/
 
 # Editor / OS
 .DS_Store

@@ -17,7 +17,7 @@ docker compose up -d postgres
 docker compose exec postgres psql -U gis -d postgres -c "CREATE DATABASE gis_platform_test OWNER gis;"
 
 # 3. Backend API (port 1316)
-cd gis-platform/backend
+cd backend
 python -m venv .venv
 .venv/Scripts/activate          # Windows;  source .venv/bin/activate on POSIX
 pip install -e ".[dev]"
@@ -25,7 +25,7 @@ alembic upgrade head
 uvicorn app.main:app --reload --port 1316
 
 # 4. Web frontend (port 1317; proxies /api to the backend on 1316)
-cd gis-platform/web
+cd web
 npm install
 npm run dev
 ```
@@ -52,7 +52,7 @@ Run the backend test suite (Task 2 onward) against the dedicated test
 database, never the dev one:
 
 ```bash
-cd gis-platform/backend
+cd backend
 export GIS_DATABASE_URL=postgresql+asyncpg://gis:gis@localhost:5401/gis_platform_test
 pytest
 ```
@@ -67,64 +67,67 @@ with `pip freeze | grep -v -E "^-e |gis[_-]platform[_-]backend" > requirements.l
 ## Directory structure
 
 ```
-gis-platform/
-├── README.md
-├── docker-compose.yml                # PostGIS 16-3.4 (5401) + pgAdmin (5051)
-├── .env.example                      # docker-compose POSTGRES_* vars
-├── backend/                          # FastAPI + SQLAlchemy + PostGIS
-│   ├── app/
-│   │   ├── core/                    # Settings, logging, error envelope
-│   │   ├── db/                      # engine/session, identifier quoting, sync engine
-│   │   ├── models/                  # Project, Layer ORM
-│   │   ├── schemas/                 # wire contracts: LayerSource, StyleSpec, …
-│   │   ├── repositories/            # SQL: features, attributes, tiles, catalog
-│   │   ├── services/                # import, editing, tiles, raster pool, system
-│   │   └── api/v1/routes/           # projects, layers, features, tiles, system
-│   ├── migrations/                  # Alembic (async env)
-│   └── tests/                       # pytest against gis_platform_test
-└── web/                              # React + OpenLayers + TanStack Query + zustand
-    └── src/
-        ├── api/                     # typed API layer mirroring the wire contracts
-        ├── app/                     # shell layout, query client
-        ├── map/                     # MapProvider, layer factory, sync, memory manager
-        ├── features/
-        │   ├── layers/              # layer panel, add-layer dialog
-        │   ├── attributes/          # attribute table with inline editing
-        │   ├── styling/             # style editor, colour ramps
-        │   ├── editing/             # draw/modify/delete with a buffered edit session
-        │   └── memory/              # browser + server memory panel
-        └── state/                   # UI-only zustand store
+backend/                             # FastAPI + SQLAlchemy + PostGIS
+├── app/
+│   ├── core/                        # Settings, logging, error envelope
+│   ├── db/                          # engine/session, identifier quoting, sync engine
+│   ├── models/                      # Project, Layer ORM
+│   ├── schemas/                     # wire contracts: LayerSource, StyleSpec, …
+│   ├── repositories/                # SQL: features, attributes, tiles, catalog
+│   ├── services/                    # import, editing, tiles, raster pool, system
+│   └── api/v1/routes/               # projects, layers, features, tiles, system
+├── migrations/                      # Alembic (async env)
+└── tests/                           # pytest against gis_platform_test
+
+web/                                 # React + OpenLayers + TanStack Query + zustand
+└── src/
+    ├── api/                         # typed API layer mirroring the wire contracts
+    ├── app/                         # shell layout, query client
+    ├── map/                         # MapProvider, layer factory, sync, memory manager
+    ├── features/
+    │   ├── layers/                  # layer panel, add-layer dialog
+    │   ├── attributes/              # attribute table with inline editing
+    │   ├── styling/                 # style editor, colour ramps
+    │   ├── editing/                 # draw/modify/delete with a buffered edit session
+    │   └── memory/                  # browser + server memory panel
+    └── state/                       # UI-only zustand store
+
+docs/
+├── learning/                        # Nine numbered architecture chapters
+└── superpowers/                     # Claude Code skills and workflows
 ```
 
 ## Documentation
 
-Nine numbered chapters in [`docs/`](docs/), written to teach the concepts the
+Nine numbered chapters in [`docs/learning/`](docs/learning/), written to teach the concepts the
 code embodies, in reading order:
 
 | Doc | Covers |
 |---|---|
-| [`01-architecture-overview.md`](docs/01-architecture-overview.md) | The three tiers, the layered backend, the error envelope, configuration. |
-| [`02-spatial-data-model.md`](docs/02-spatial-data-model.md) | The `gis`/`gis_data` schema split, the `layer` table, migrations. |
-| [`03-postgis-and-dynamic-sql.md`](docs/03-postgis-and-dynamic-sql.md) | Safe dynamic SQL over user-named tables; catalog introspection. |
-| [`04-feature-streaming.md`](docs/04-feature-streaming.md) | BBOX windowing, reprojection that keeps indexes usable, truncation honesty. |
-| [`05-vector-tiles-mvt.md`](docs/05-vector-tiles-mvt.md) | `ST_AsMVT` tiles, ETags, empty-tile 204s. |
-| [`06-raster-tiling-and-cog.md`](docs/06-raster-tiling-and-cog.md) | GeoTIFF import, COG conversion, rio-tiler XYZ tiles and statistics. |
-| [`07-memory-management.md`](docs/07-memory-management.md) | All three memory layers: server handle pool, response caps, browser budget. |
-| [`08-styling-and-renderers.md`](docs/08-styling-and-renderers.md) | The engine-neutral `StyleSpec` and its OpenLayers compiler. |
-| [`09-editing-and-transactions.md`](docs/09-editing-and-transactions.md) | Write-path transactions, geometry validation, the client edit buffer. |
+| [`01-architecture-overview.md`](docs/learning/01-architecture-overview.md) | The three tiers, the layered backend, the error envelope, configuration. |
+| [`02-spatial-data-model.md`](docs/learning/02-spatial-data-model.md) | The `gis`/`gis_data` schema split, the `layer` table, migrations. |
+| [`03-postgis-and-dynamic-sql.md`](docs/learning/03-postgis-and-dynamic-sql.md) | Safe dynamic SQL over user-named tables; catalog introspection. |
+| [`04-feature-streaming.md`](docs/learning/04-feature-streaming.md) | BBOX windowing, reprojection that keeps indexes usable, truncation honesty. |
+| [`05-vector-tiles-mvt.md`](docs/learning/05-vector-tiles-mvt.md) | `ST_AsMVT` tiles, ETags, empty-tile 204s. |
+| [`06-raster-tiling-and-cog.md`](docs/learning/06-raster-tiling-and-cog.md) | GeoTIFF import, COG conversion, rio-tiler XYZ tiles and statistics. |
+| [`07-memory-management.md`](docs/learning/07-memory-management.md) | All three memory layers: server handle pool, response caps, browser budget. |
+| [`08-styling-and-renderers.md`](docs/learning/08-styling-and-renderers.md) | The engine-neutral `StyleSpec` and its OpenLayers compiler. |
+| [`09-editing-and-transactions.md`](docs/learning/09-editing-and-transactions.md) | Write-path transactions, geometry validation, the client edit buffer. |
 
 ## Quality gates
 
-Backend — run from `gis-platform/backend/` with the venv active:
+Backend — run from `backend/` with the venv active:
 
 ```bash
 ruff check . && ruff format --check . && mypy app && pytest
 ```
 
-Web — run from `gis-platform/web/`:
+Web — run from `web/`:
 
 ```bash
 npm run lint && npm run typecheck && npm run test -- --run
 ```
 
 All must pass before any change to this module is considered done.
+
+Benchmarks: see `docs/benchmarks.md`
