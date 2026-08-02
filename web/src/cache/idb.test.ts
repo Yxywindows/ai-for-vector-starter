@@ -44,6 +44,17 @@ describe('openGeoDB', () => {
     db!.close()
   })
 
+  it('applies a net byte delta when overwriting a key with a different size', async () => {
+    const db = await openGeoDB(vi.fn())
+    await db!.put('tiles', entry({ key: 'k', size: 100 }))
+    await expect(db!.totalBytes('tiles')).resolves.toBe(100)
+
+    await db!.put('tiles', entry({ key: 'k', size: 40 }))
+
+    await expect(db!.totalBytes('tiles')).resolves.toBe(40)
+    db!.close()
+  })
+
   it('deleteByLayer removes only matching-layer keys', async () => {
     const db = await openGeoDB(vi.fn())
     await db!.put('features', entry({ key: 'a', layerId: 'L1' }))
