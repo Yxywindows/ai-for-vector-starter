@@ -1,0 +1,63 @@
+from __future__ import annotations
+
+import uuid
+from datetime import datetime
+
+from app.schemas.base import APIModel
+
+
+class PoolStats(APIModel):
+    open_handles: int
+    max_open: int
+    idle_ttl_seconds: float
+    hits: int
+    misses: int
+    evictions: int
+    keys: list[str]
+
+
+class MemoryReport(APIModel):
+    raster_pool: PoolStats
+    feature_bbox_limit: int
+    attribute_page_max: int
+    process_rss_bytes: int
+
+
+class ImportLimits(APIModel):
+    allowed_extensions: list[str]
+    max_file_bytes: int
+    max_features: int
+    preview_max_features: int
+
+
+class BandStatistics(APIModel):
+    band: int
+    min: float
+    max: float
+    mean: float
+    std: float
+    percentile2: float
+    percentile98: float
+
+
+class RasterStatistics(APIModel):
+    bands: list[BandStatistics]
+
+
+class OverviewLayer(APIModel):
+    id: uuid.UUID
+    name: str
+    kind: str
+    geometry_type: str | None
+    feature_count: int | None
+    project_id: uuid.UUID
+    project_name: str
+    created_at: datetime
+
+
+class SystemOverview(APIModel):
+    project_count: int
+    layer_count: int
+    layers_by_kind: dict[str, int]
+    feature_total: int
+    recent_layers: list[OverviewLayer]
