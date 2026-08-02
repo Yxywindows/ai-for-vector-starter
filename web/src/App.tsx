@@ -3,9 +3,15 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router'
 
 import { getProject } from './api/layers'
-import { AppShell, type ResizablePanel } from './app/AppShell'
+import { AppShell, type PanelPlacement, type ResizablePanel } from './app/AppShell'
+import { LayoutMenu } from './app/LayoutMenu'
 import { ProjectSwitcher } from './app/ProjectSwitcher'
-import { loadLayout, saveLayout, type WorkspaceLayout } from './app/workspaceLayout'
+import {
+  loadLayout,
+  saveLayout,
+  type DockablePanel,
+  type WorkspaceLayout,
+} from './app/workspaceLayout'
 import { AttributeTable } from './features/attributes/AttributeTable'
 import { EditToolbar } from './features/editing/EditToolbar'
 import { LayerPanel } from './features/layers/LayerPanel'
@@ -149,6 +155,22 @@ export function App() {
     })
   }, [])
 
+  // R9: dock to a side (clearing any float) or float at a position.
+  const onPanelMove = useCallback((panel: DockablePanel, placement: PanelPlacement) => {
+    setLayout((current) => {
+      if (panel === 'sidebar') {
+        return 'side' in placement
+          ? { ...current, sidebarSide: placement.side, sidebarFloat: null }
+          : { ...current, sidebarFloat: placement.float }
+      }
+      return 'side' in placement
+        ? { ...current, inspectorSide: placement.side, inspectorFloat: null }
+        : { ...current, inspectorFloat: placement.float }
+    })
+  }, [])
+
+  const applyLayout = useCallback((next: WorkspaceLayout) => setLayout(next), [])
+
   // Side effects stay OUT of updaters — StrictMode double-invokes them
   // (the useImportDraft lesson). The closure value is current for a user
   // click; concurrent toggles in one tick don't exist for a button.
@@ -172,6 +194,11 @@ export function App() {
       {projectId ? <WorkspaceSync projectId={projectId} /> : null}
       <AppShell
         context={projectId ? <ProjectSwitcher projectId={projectId} /> : null}
+        tools={
+          projectId ? (
+            <LayoutMenu projectId={projectId} layout={layout} onApply={applyLayout} />
+          ) : null
+        }
         status={<StatusBar layerCount={layers.length} />}
         layout={layout}
         onToggleSidebar={() =>
@@ -182,6 +209,7 @@ export function App() {
         }
         onToggleTable={toggleTable}
         onPanelResize={onPanelResize}
+        onPanelMove={onPanelMove}
         sidebar={
           projectId ? (
             <LayerPanel projectId={projectId} layers={layers} />

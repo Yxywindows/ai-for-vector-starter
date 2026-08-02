@@ -437,22 +437,226 @@ ul {
   z-index: var(--z-toolbar);
 }
 
-.float-panel--left {
+.float-panel--inspector {
+  width: var(--w-inspector);
+}
+
+/* R9: panels dock on either side, stack when they share one, or float. */
+.float-panel--dock-left {
   left: var(--s-3);
 }
 
-.float-panel--right {
+.float-panel--dock-right {
   right: var(--s-3);
-  width: var(--w-inspector);
+}
+
+.float-panel--stack-first {
+  max-height: calc(50% - var(--s-3) * 1.5);
+}
+
+.float-panel--stack-second {
+  top: calc(50% + var(--s-3) / 2);
+  max-height: calc(50% - var(--s-3) * 1.5);
+}
+
+.float-panel--floating {
+  z-index: calc(var(--z-toolbar) + 2);
+  box-shadow: var(--shadow-2, 0 12px 32px rgb(15 20 25 / 0.28));
+}
+
+.float-panel--dragging {
+  z-index: calc(var(--z-toolbar) + 3);
+  opacity: 0.92;
+  cursor: grabbing;
 }
 
 .float-panel[hidden] {
   display: none;
 }
 
+.panel-titlebar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: 3px var(--s-2);
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.float-panel--dragging .panel-titlebar {
+  cursor: grabbing;
+}
+
+.panel-titlebar__grip {
+  color: var(--ink-faint);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.panel-titlebar__title {
+  flex: 1;
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-muted);
+}
+
+.panel-titlebar__actions {
+  display: flex;
+  gap: 2px;
+}
+
+.icon-btn--panel {
+  width: 22px;
+  height: 22px;
+  color: var(--ink-faint);
+}
+
+.icon-btn--panel:hover {
+  color: var(--ink);
+}
+
+/* Edge strips that light up while a panel is being dragged. */
+.app-shell__dockhint {
+  position: absolute;
+  top: var(--s-3);
+  bottom: var(--s-3);
+  width: 72px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-surface);
+  background: rgb(90 130 170 / 0.08);
+  z-index: var(--z-toolbar);
+  pointer-events: none;
+}
+
+.app-shell__dockhint--left {
+  left: var(--s-2);
+}
+
+.app-shell__dockhint--right {
+  right: var(--s-2);
+}
+
 /* with the drawer up, panels stop above it instead of sliding under */
 .app-shell__stage--drawer .float-panel {
   max-height: calc(100% - var(--h-drawer) - var(--s-3) * 3);
+}
+
+.app-shell__stage--drawer .float-panel--stack-first,
+.app-shell__stage--drawer .float-panel--stack-second {
+  max-height: calc(50% - var(--h-drawer) / 2 - var(--s-3) * 1.5);
+}
+
+.app-shell__stage--drawer .float-panel--stack-second {
+  top: calc(50% - var(--h-drawer) / 2 + var(--s-3) / 2);
+}
+
+/* R9: the layout preset menu in the workspace header. */
+.layout-menu {
+  position: relative;
+}
+
+.layout-menu__popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 248px;
+  padding: var(--s-2);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-surface);
+  box-shadow: var(--shadow-1);
+  z-index: var(--z-popover, 60);
+}
+
+.layout-menu__empty {
+  margin: var(--s-1) var(--s-1) var(--s-2);
+  color: var(--ink-faint);
+  font-size: var(--fs-micro);
+}
+
+.layout-menu__list {
+  list-style: none;
+  margin: 0 0 var(--s-2);
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.layout-menu__row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+}
+
+.layout-menu__apply {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-2);
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--ink);
+  font-size: var(--fs-data);
+  text-align: left;
+  cursor: pointer;
+}
+
+.layout-menu__apply:hover {
+  background: var(--panel-raised);
+}
+
+.layout-menu__scope {
+  color: var(--ink-faint);
+  font-size: var(--fs-micro);
+}
+
+.layout-menu__save {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--line);
+}
+
+.layout-menu__save input[type='text'] {
+  flex: 1;
+  min-width: 0;
+}
+
+.layout-menu__global {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--ink-muted);
+  font-size: var(--fs-micro);
+  white-space: nowrap;
+}
+
+.layout-menu__reset {
+  width: 100%;
+  margin-top: var(--s-2);
+  padding: var(--s-1);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: none;
+  color: var(--ink-muted);
+  font-size: var(--fs-micro);
+  cursor: pointer;
+}
+
+.layout-menu__reset:hover {
+  color: var(--ink);
 }
 
 .app-shell__drawer {
