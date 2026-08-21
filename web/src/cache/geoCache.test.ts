@@ -18,16 +18,19 @@ import { featureKey, tileKey } from './keys'
 // since it's an implementation constant, not part of the public contract.
 const FRESH_MS = 60_000
 
-// NOTE: unlike idb.test.ts, this file deliberately does NOT delete the real
-// (fake) IndexedDB database between tests. `resetForTests()` drops geoCache's
-// own references (including the cached `dbPromise`) without closing the
-// underlying GeoDB connection it wrapped — by design, per the task brief.
-// Calling `indexedDB.deleteDatabase()` while an old, never-closed connection
-// is still open makes the delete block forever (per the IDB spec), which in
-// turn blocks every subsequent `indexedDB.open()` for the same name behind
-// it in the per-database request queue — a real deadlock, not just slowness.
-// Every test below uses a distinct key prefix, so leftover entries from
-// earlier tests in the same file never collide with a later test's reads.
+const DB_NAME = 'graticule-geocache'
+
+// `resetForTests()` now closes the IDB connection it was using (rather than
+// just dropping the reference), so it's safe to delete the real (fake)
+// database between tests here — same pattern as idb.test.ts.
+function deleteRealDb(): Promise<void> {
+  return new Promise((resolve) => {
+    const request = indexedDB.deleteDatabase(DB_NAME)
+    request.onsuccess = () => resolve()
+    request.onerror = () => resolve()
+    request.onblocked = () => resolve()
+  })
+}
 
 function smallBuf(n: number, fill: number): ArrayBuffer {
   const b = new ArrayBuffer(n)
@@ -69,9 +72,14 @@ beforeEach(() => {
   resetForTests()
 })
 
-afterEach(() => {
+afterEach(async () => {
   vi.restoreAllMocks()
   vi.useRealTimers()
+  // Close this test's IDB connection (resetForTests aborts in-flight work
+  // and closes the connection) before deleting the database, so the delete
+  // doesn't block behind a still-open connection.
+  resetForTests()
+  await deleteRealDb()
 })
 
 describe('keys', () => {
@@ -256,6 +264,66 @@ describe('cachedTile', () => {
     expect(fetchSpy).toHaveBeenCalledTimes(2)
   })
 
+  it('a 204 revalidation response refreshes metadata without discarding the cached value', async () => {
+    const buf1 = smallBuf(4, 12)
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(tileResponse(200, buf1, { ETag: '"v1"' }))
+
+    await cachedTile('k-reval-204', '/tiles/reval-204', 'layerA')
+
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(Date.now() + FRESH_MS + 1_000)
+    fetchSpy.mockResolvedValueOnce(tileResponse(204, null, { ETag: '"v1"' }))
+
+    const stale = await cachedTile('k-reval-204', '/tiles/reval-204', 'layerA')
+    // The 204 must not discard the cached (non-empty) value — it's treated
+    // the same as a 304, refreshing metadata only.
+    expect(new Uint8Array(stale.value as ArrayBuffer)).toEqual(new Uint8Array(buf1))
+
+    await _pendingRevalidations()
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+    expect(getMetrics().revalidated304).toBe(1)
+    expect(getMetrics().revalidated200).toBe(0)
+
+    vi.useRealTimers()
+    const after = await cachedTile('k-reval-204', '/tiles/reval-204', 'layerA')
+    expect(new Uint8Array(after.value as ArrayBuffer)).toEqual(new Uint8Array(buf1))
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+  })
+
+  it('a network error during revalidation is swallowed and keeps serving the stale cached value', async () => {
+    const buf1 = smallBuf(4, 11)
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(tileResponse(200, buf1, { ETag: '"v1"' }))
+
+    await cachedTile('k-offline', '/tiles/offline', 'layerA')
+
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(Date.now() + FRESH_MS + 1_000)
+    fetchSpy.mockRejectedValueOnce(new TypeError('network error'))
+
+    const stale = await cachedTile('k-offline', '/tiles/offline', 'layerA')
+    expect(stale.source).toBe('mem')
+    expect(new Uint8Array(stale.value as ArrayBuffer)).toEqual(new Uint8Array(buf1))
+
+    await _pendingRevalidations()
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+    expect(getMetrics().revalidated200).toBe(0)
+    expect(getMetrics().revalidated304).toBe(0)
+
+    // The failed revalidation must not have corrupted anything — the stale
+    // value keeps serving fine afterward too.
+    vi.useRealTimers()
+    const stillCached = await cachedTile('k-offline', '/tiles/offline', 'layerA')
+    expect(stillCached.source).toBe('mem')
+    expect(new Uint8Array(stillCached.value as ArrayBuffer)).toEqual(new Uint8Array(buf1))
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+  })
+
   it('dedupes concurrent requests for the same key', async () => {
     const fetchSpy = vi
       .spyOn(globalThis, 'fetch')
@@ -312,6 +380,49 @@ describe('cachedTile', () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1)
     expect(getMetrics().dedupedRequests).toBe(1)
   })
+
+  it('a caller joining right after the shared fetch aborts gets a fresh fetch, not a spurious AbortError', async () => {
+    let call = 0
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation((_url, init) => {
+      call++
+      if (call === 1) {
+        return new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener('abort', () => {
+            reject(new DOMException('The operation was aborted.', 'AbortError'))
+          })
+        })
+      }
+      return Promise.resolve(tileResponse(200, smallBuf(4, 13), { ETag: '"v2"' }))
+    })
+
+    const c1 = new AbortController()
+    const p1 = cachedTile(
+      'k-join-after-abort',
+      '/tiles/join-after-abort',
+      'layerA',
+      c1.signal,
+    ).catch((e: unknown) => e)
+    await vi.waitFor(() => {
+      if (fetchSpy.mock.calls.length !== 1) throw new Error('not started yet')
+    })
+
+    // Sole caller aborts — refcount hits 1/1, the shared controller aborts
+    // synchronously, and the doomed in-flight entry must be swept out
+    // immediately (not left for the rejection to propagate through
+    // networkPromise's `.finally`, which happens at least a macrotask later).
+    c1.abort()
+    const r1 = await p1
+    expect(r1).toBeInstanceOf(DOMException)
+
+    // A second caller for the same key, issued right after, must not join
+    // the now-doomed entry (which would reject it with a spurious
+    // AbortError despite it never aborting anything) — it should see a
+    // fresh in-flight slot and get the real second-call response.
+    const second = await cachedTile('k-join-after-abort', '/tiles/join-after-abort', 'layerA')
+    expect(second.source).toBe('network')
+    expect(new Uint8Array(second.value as ArrayBuffer)).toEqual(new Uint8Array(smallBuf(4, 13)))
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+  })
 })
 
 describe('cachedFeatures', () => {
@@ -354,6 +465,66 @@ describe('invalidateLayer', () => {
     const afterB = await cachedTile('k-inv-b', '/tiles/inv/b', 'layerB')
     expect(afterB.source).toBe('mem')
     expect(fetchSpy).toHaveBeenCalledTimes(3)
+  })
+
+  it('prevents an in-flight fetch from resurrecting the entry after invalidation', async () => {
+    let releaseFetch: ((r: Response) => void) | undefined
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(() => {
+      return new Promise<Response>((resolve) => {
+        releaseFetch = resolve
+        // Deliberately does NOT react to abort, so this specifically
+        // exercises the generation-check write-back guard rather than
+        // relying on the abort alone — both are supposed to cooperate.
+      })
+    })
+
+    const inFlightGet = cachedTile('k-inv-race', '/tiles/inv-race', 'layerRace')
+    await vi.waitFor(() => {
+      if (releaseFetch === undefined) throw new Error('not started yet')
+    })
+
+    await invalidateLayer('layerRace')
+
+    // Release the response only after invalidation — simulates a fetch that
+    // was already on the wire when the forced refresh landed.
+    releaseFetch?.(tileResponse(200, smallBuf(4, 9), { ETag: '"late"' }))
+    await inFlightGet
+
+    fetchSpy.mockReset()
+    fetchSpy.mockResolvedValueOnce(tileResponse(200, smallBuf(4, 10), { ETag: '"fresh"' }))
+    const after = await cachedTile('k-inv-race', '/tiles/inv-race', 'layerRace')
+    expect(after.source).toBe('network')
+    expect(fetchSpy).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('resetForTests', () => {
+  it('aborts in-flight fetches so a stale resolution cannot pollute the next test state', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation((_url, init) => {
+      return new Promise<Response>((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => {
+          reject(new DOMException('The operation was aborted.', 'AbortError'))
+        })
+      })
+    })
+
+    const stray = cachedTile('k-reset-stray', '/tiles/reset-stray', 'layerA').catch(
+      (e: unknown) => e,
+    )
+    await vi.waitFor(() => {
+      if (fetchSpy.mock.calls.length !== 1) throw new Error('fetch not called yet')
+    })
+
+    resetForTests()
+
+    const strayResult = await stray
+    expect(strayResult).toBeInstanceOf(DOMException)
+    expect((strayResult as DOMException).name).toBe('AbortError')
+
+    fetchSpy.mockResolvedValueOnce(tileResponse(200, smallBuf(4, 2), { ETag: '"fresh"' }))
+    const after = await cachedTile('k-reset-stray', '/tiles/reset-stray', 'layerA')
+    expect(after.source).toBe('network')
+    expect(getMetrics().misses).toBe(1)
   })
 })
 

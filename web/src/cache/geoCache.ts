@@ -82,6 +82,8 @@ function getDb(): Promise<GeoDB | null> {
 }
 
 interface InFlightEntry {
+  key: string
+  layerId: string
   controller: AbortController
   networkPromise: Promise<RawFetch>
   totalJoined: number
@@ -91,19 +93,48 @@ const inFlight = new Map<string, InFlightEntry>()
 
 // Keys currently running a background SWR revalidation, so a second stale
 // hit for the same key while one is already in flight doesn't fire another.
-const revalidating = new Set<string>()
+// Maps key -> layerId so `invalidateLayer` can find and tombstone matching
+// in-flight revalidations without a second lookup structure.
+const revalidating = new Map<string, string>()
 // Outstanding revalidation promises, exposed via `_pendingRevalidations` so
 // tests can await determinism instead of racing background work.
 const pendingRevalidations = new Set<Promise<void>>()
 
+// Bumped per key by `invalidateLayer`. A fetch or revalidation already in
+// flight when a layer is invalidated captures the generation it started
+// with and checks it again right before writing back — if it's moved on,
+// the invalidation happened mid-flight and the write-back is dropped so a
+// forced refresh can't be silently undone by a late-arriving response.
+const keyGeneration = new Map<string, number>()
+function currentGeneration(key: string): number {
+  return keyGeneration.get(key) ?? 0
+}
+function bumpGeneration(key: string): void {
+  keyGeneration.set(key, currentGeneration(key) + 1)
+}
+
 export function resetForTests(): void {
+  // Abort every in-flight fetch before dropping the map: without this, an
+  // unsettled fetch from a prior test can still resolve later and write
+  // into the *next* test's fresh mem/metrics via persistFetched.
+  for (const entry of inFlight.values()) {
+    entry.controller.abort()
+  }
+  inFlight.clear()
+
+  // Close the IDB connection this generation of state was using rather than
+  // just dropping the reference — otherwise the connection leaks and (e.g.)
+  // a later `indexedDB.deleteDatabase()` call blocks forever behind it.
+  const closingDb = dbPromise
+  dbPromise = null
+  void closingDb?.then((db) => db?.close())
+
   metrics = freshMetrics()
   mem.clear()
   memBytes = 0
-  dbPromise = null
-  inFlight.clear()
   revalidating.clear()
   pendingRevalidations.clear()
+  keyGeneration.clear()
 }
 
 export function getMetrics(): GeoCacheMetrics {
@@ -283,7 +314,15 @@ function joinCaller(entry: InFlightEntry, signal?: AbortSignal): Promise<RawFetc
 
   const onAbort = (): void => {
     entry.abortedJoined++
-    if (entry.abortedJoined >= entry.totalJoined) entry.controller.abort()
+    if (entry.abortedJoined >= entry.totalJoined) {
+      entry.controller.abort()
+      // Remove the doomed entry from `inFlight` right now, synchronously —
+      // not when the rejection eventually propagates through networkPromise's
+      // `.finally` (at least a macrotask later for a real fetch). Otherwise
+      // a caller that calls startOrJoinFetch in that window would join this
+      // entry and get a spurious AbortError despite never aborting itself.
+      if (inFlight.get(entry.key) === entry) inFlight.delete(entry.key)
+    }
   }
 
   if (signal.aborted) {
@@ -319,15 +358,26 @@ function startOrJoinFetch(
   signal?: AbortSignal,
 ): Promise<RawFetch> {
   let entry = inFlight.get(key)
+  // Defensive bypass: a doomed entry should already have been swept out of
+  // `inFlight` synchronously by `onAbort` (see joinCaller), but if one is
+  // ever found here with its controller already aborted, treat it as if it
+  // weren't there rather than joining a fetch that's already dead.
+  if (entry?.controller.signal.aborted) entry = undefined
   if (entry) {
     metrics.dedupedRequests++
   } else {
     const controller = new AbortController()
+    const gen = currentGeneration(key)
     const networkPromise = doFetch(url, null, store, controller.signal)
       .then(async (raw) => {
         // A miss-path fetch never sends If-None-Match, so it can only ever
-        // come back 200 or 204 here (304 requires a prior etag).
-        await persistFetched(store, key, layerId, raw)
+        // come back 200 or 204 here (304 requires a prior etag). Skip the
+        // write-back if the key was invalidated mid-flight (invalidateLayer
+        // bumps the generation) — a forced refresh shouldn't be silently
+        // undone by a response that was already on the wire.
+        if (currentGeneration(key) === gen) {
+          await persistFetched(store, key, layerId, raw)
+        }
         if (raw.status === 200) metrics.networkBytes += raw.size
         return raw
       })
@@ -337,7 +387,7 @@ function startOrJoinFetch(
     // Every joiner attaches its own handler via joinCaller below, but guard
     // against an unhandled rejection in the window before any of them do.
     networkPromise.catch(() => {})
-    entry = { controller, networkPromise, totalJoined: 0, abortedJoined: 0 }
+    entry = { key, layerId, controller, networkPromise, totalJoined: 0, abortedJoined: 0 }
     inFlight.set(key, entry)
   }
   entry.totalJoined++
@@ -355,7 +405,7 @@ function scheduleRevalidation(
 ): void {
   if (Date.now() - entry.storedAt <= FRESH_MS) return
   if (revalidating.has(key)) return
-  revalidating.add(key)
+  revalidating.set(key, layerId)
 
   const task: Promise<void> = revalidate(store, key, url, layerId, entry).finally(() => {
     revalidating.delete(key)
@@ -371,11 +421,21 @@ async function revalidate(
   layerId: string,
   entry: StoredEntry,
 ): Promise<void> {
+  const gen = currentGeneration(key)
   try {
     const raw = await doFetch(url, entry.etag, store)
-    if (raw.status === 304) {
+    // The key may have been invalidated (forced refresh) while this
+    // revalidation was on the wire — don't let a late response silently
+    // undo that by writing back over the (already-cleared) entry.
+    if (currentGeneration(key) !== gen) return
+    if (raw.status === 304 || raw.status === 204) {
+      // A 204 during revalidation is treated the same as a 304: refresh
+      // metadata without discarding the cached value. The tile route only
+      // ever answers a key that has a cached (non-empty) value with 304,
+      // never a bare 204, but this is a general-purpose module other
+      // callers will point at other URLs, so handle it rather than drop it.
       metrics.revalidated304++
-      const updated: StoredEntry = { ...entry, storedAt: Date.now() }
+      const updated: StoredEntry = { ...entry, storedAt: Date.now(), etag: raw.etag ?? entry.etag }
       setMem(key, updated)
       const db = await getDb()
       if (db) await db.put(store, updated)
@@ -408,7 +468,12 @@ async function getCached<T>(
     else metrics.idbHits++
     metrics.cachedBytesServed += hit.entry.size
 
-    await bumpLastAccess(store, key, hit.entry)
+    // Fire-and-forget: a hit must return immediately, not block on an IDB
+    // round-trip (which can mean re-serializing a multi-MB ArrayBuffer) just
+    // to throttle-update lastAccess. bumpLastAccess can't actually reject
+    // (idb.ts and openGeoDB swallow their own errors), but `.catch` is kept
+    // as a defensive backstop against an unhandled rejection regardless.
+    void bumpLastAccess(store, key, hit.entry).catch(() => {})
     scheduleRevalidation(store, key, url, layerId, hit.entry)
 
     return { value: hit.entry.value as T, source: hit.source }
@@ -444,8 +509,25 @@ export async function invalidateLayer(layerId: string): Promise<void> {
     if (entry.layerId === layerId) {
       mem.delete(key)
       memBytes -= entry.size
+      bumpGeneration(key)
     }
   }
+  // A fetch or revalidation already in flight for this layer must not be
+  // able to silently undo the invalidation once it lands: abort the ones we
+  // can (in-flight network fetches), and bump the generation for every
+  // matching key so any write-back still in flight — including a
+  // revalidation, which isn't cancellable mid-request — gets skipped even
+  // if it completes after this call returns (a forced-refresh case: the key
+  // itself doesn't change, so nothing else would invalidate it).
+  for (const [key, entry] of inFlight) {
+    if (entry.layerId !== layerId) continue
+    bumpGeneration(key)
+    entry.controller.abort()
+  }
+  for (const [key, revalidatingLayerId] of revalidating) {
+    if (revalidatingLayerId === layerId) bumpGeneration(key)
+  }
+
   const db = await getDb()
   if (db) {
     await db.deleteByLayer('tiles', layerId)
