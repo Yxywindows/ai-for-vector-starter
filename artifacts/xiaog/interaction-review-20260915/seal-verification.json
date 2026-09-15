@@ -1,0 +1,14 @@
+{
+  "version": "D01-R1.2",
+  "ready": true,
+  "createdAt": "2026-09-15T02:38:24.655171+00:00",
+  "passed": 29,
+  "protectedSources": 128,
+  "oldDeliveriesUnchanged": true,
+  "assetsUnchanged": true,
+  "manifestFiles": 128,
+  "zipEntries": 131,
+  "zipBytes": 27024540,
+  "zipSha256": "2449416b48ea38a0153786cba5c38535067eca1e8b1c7cf05bd1b593f0f59241",
+  "zipVerified": true
+}

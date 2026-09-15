@@ -1,0 +1,39 @@
+{
+  "version": "D01-R1.2",
+  "passed": 8,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "historical terminal snapshots are silent",
+      "pass": true
+    },
+    {
+      "name": "queued-running-succeeded emits once",
+      "pass": true
+    },
+    {
+      "name": "duplicate and stale terminal polling cannot replay",
+      "pass": true
+    },
+    {
+      "name": "running-failed emits once and preserves error data",
+      "pass": true
+    },
+    {
+      "name": "cancelled task is not failure feedback",
+      "pass": true
+    },
+    {
+      "name": "unknown and malformed states cannot produce a result",
+      "pass": true
+    },
+    {
+      "name": "new task attempt with new ID can report result",
+      "pass": true
+    },
+    {
+      "name": "snapshot tracking remains bounded without replaying evicted history",
+      "pass": true
+    }
+  ]
+}

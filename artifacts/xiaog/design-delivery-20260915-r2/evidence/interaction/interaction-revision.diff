@@ -1,0 +1,732 @@
+diff --git "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915\\app.mjs" "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915-r2\\app.mjs"
+index 17c53b3..b94ad0d 100644
+--- "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915\\app.mjs"
++++ "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915-r2\\app.mjs"
+@@ -1,4 +1,5 @@
+ import { esc, extentText, mapSVG } from "./map.mjs";
++import { TaskFeedback } from "./task-feedback.mjs";
+ export const FEATURES = [
+   {
+     id: "projects",
+@@ -44,13 +45,48 @@ export const FEATURES = [
+   },
+ ];
+ const TOOLS = [
+-  ["buffer", "缓冲区", "按米设置边界向外扩展的距离。", "先选输入图层，再设置缓冲距离（米），看看周边的影响范围。"],
+-  ["clip", "裁剪", "保留输入图层位于掩膜内的部分。", "选好输入图层和掩膜图层，保留掩膜范围内的部分。"],
+-  ["intersection", "相交", "计算两层数据的空间重叠。", "选择两层数据，看看它们在空间上重叠的部分。"],
+-  ["dissolve", "融合", "按字段合并几何，留空则融合全部。", "按共同字段融合要素；选择“融合全部”，就不再按字段分组。"],
+-  ["spatial-join", "空间连接", "按空间关系连接另一层的属性。", "先选目标图层和关联图层，再用相交、包含或位于内部来匹配属性。"],
+-  ["validate-repair", "几何修复", "检查并修复无效几何。", "选好输入图层，我们来检查并修复无效几何。"],
+-  ["point-in-polygon", "面内点计数", "统计每个面内的点数量。", "先选点图层和多边形图层，统计每个面内有多少个点。"],
++  [
++    "buffer",
++    "缓冲区",
++    "按米设置边界向外扩展的距离。",
++    "先选输入图层，再设置缓冲距离（米），看看周边的影响范围。",
++  ],
++  [
++    "clip",
++    "裁剪",
++    "保留输入图层位于掩膜内的部分。",
++    "选好输入图层和掩膜图层，保留掩膜范围内的部分。",
++  ],
++  [
++    "intersection",
++    "相交",
++    "计算两层数据的空间重叠。",
++    "选择两层数据，看看它们在空间上重叠的部分。",
++  ],
++  [
++    "dissolve",
++    "融合",
++    "按字段合并几何，留空则融合全部。",
++    "按共同字段融合要素；选择“融合全部”，就不再按字段分组。",
++  ],
++  [
++    "spatial-join",
++    "空间连接",
++    "按空间关系连接另一层的属性。",
++    "先选目标图层和关联图层，再用相交、包含或位于内部来匹配属性。",
++  ],
++  [
++    "validate-repair",
++    "几何修复",
++    "检查并修复无效几何。",
++    "选好输入图层，我们来检查并修复无效几何。",
++  ],
++  [
++    "point-in-polygon",
++    "面内点计数",
++    "统计每个面内的点数量。",
++    "先选点图层和多边形图层，统计每个面内有多少个点。",
++  ],
+ ];
+ const $ = (s) => document.querySelector(s);
+ const $$ = (s) => [...document.querySelectorAll(s)];
+@@ -121,6 +157,87 @@ const exportLayers = () =>
+       l.kind === "raster",
+   );
+ const feature = () => FEATURES.find((f) => f.id === state.feature);
++let resultDialogue = "",
++  resultTimer,
++  rehearsalTimer,
++  rehearsalSequence = 0;
++const rehearsal = {
++  state: "idle",
++  message: "移动鼠标，和小G对视；也可以体验一次任务结果反馈。",
++};
++const taskFeedback = new TaskFeedback((task) => {
++  const showResult = () => {
++    resultDialogue =
++      (task.demo === true ? "演示：" : "") +
++      (task.state === "succeeded"
++        ? "这次任务完成了。接下来，我们可以查看结果。"
++        : "这次任务没能完成。我们先看看错误信息，再决定怎样调整。");
++    renderDialogue();
++    clearTimeout(resultTimer);
++    resultTimer = setTimeout(() => {
++      resultDialogue = "";
++      renderDialogue();
++    }, 5000);
++  };
++  // Queued outcomes update speech when their gesture actually starts.
++  if (!scene?.taskResult(task.state, showResult)) showResult();
++});
++snapshot.tasks.forEach((task) => taskFeedback.observe(task));
++function clearTaskFeedback() {
++  clearTimeout(rehearsalTimer);
++  clearTimeout(resultTimer);
++  resultDialogue = "";
++  rehearsal.state = "idle";
++  rehearsal.message = "移动鼠标，和小G对视；也可以体验一次任务结果反馈。";
++  scene?.clearInteraction();
++}
++function renderRehearsal() {
++  const status = $("#rehearsal-status");
++  if (!status) return;
++  status.textContent = rehearsal.message;
++  status.dataset.state = rehearsal.state;
++  document.querySelectorAll("[data-task-demo]").forEach((button) => {
++    button.disabled = rehearsal.state === "running";
++  });
++}
++function rehearseTask(outcome) {
++  if (!window.D01?.ready) {
++    inform("小G正在准备，请稍后再试。");
++    return;
++  }
++  if (
++    !["succeeded", "failed"].includes(outcome) ||
++    rehearsal.state === "running"
++  )
++    return;
++  const id = `design-rehearsal-${++rehearsalSequence}`;
++  rehearsal.state = "running";
++  rehearsal.message = "演示任务进行中…";
++  clearTimeout(resultTimer);
++  resultDialogue = "演示任务正在进行，我和你一起等它完成。";
++  renderDialogue();
++  renderRehearsal();
++  taskFeedback.observe({ id, state: "running", demo: true });
++  rehearsalTimer = setTimeout(() => {
++    rehearsal.state = outcome;
++    rehearsal.message =
++      outcome === "succeeded"
++        ? "演示任务已完成 · 小G点头回应。没有创建实际作业或结果。"
++        : "演示任务失败 · 小G挥手提醒。没有创建实际作业或错误记录。";
++    if (
++      state.reduced ||
++      sceneFailed ||
++      scene?.staticQuality ||
++      scene?.contextLost
++    )
++      rehearsal.message =
++        outcome === "succeeded"
++          ? "演示任务已完成 · 静态文字反馈。没有创建实际结果。"
++          : "演示任务失败 · 静态文字反馈。没有创建实际错误记录。";
++    taskFeedback.observe({ id, state: outcome, demo: true });
++    renderRehearsal();
++  }, 900);
++}
+ const statusText = (s) =>
+   ({
+     succeeded: "已完成",
+@@ -178,6 +295,7 @@ function validateContext(params) {
+   state.secondary = "";
+ }
+ function restore() {
++  clearTaskFeedback();
+   clearTimeout(transitionTimer);
+   state.transitionId++;
+   const [path, query = ""] = (
+@@ -201,6 +319,7 @@ function restore() {
+     $("#workspace-title").focus({ preventScroll: true });
+ }
+ function nav(id) {
++  clearTaskFeedback();
+   clearTimeout(transitionTimer);
+   state.transitionId++;
+   const quick = state.mode === "work";
+@@ -240,6 +359,7 @@ function finishExpand(id) {
+   scrollTo(0, 0);
+ }
+ function home() {
++  clearTaskFeedback();
+   clearTimeout(transitionTimer);
+   const previous = state.feature;
+   state.transitionId++;
+@@ -271,6 +391,7 @@ function contextOptions() {
+   );
+ }
+ function setProject(id) {
++  clearTaskFeedback();
+   state.projectId = id;
+   state.layerId = "";
+   state.secondary = "";
+@@ -311,11 +432,13 @@ function refreshFallback() {
+ }
+ addEventListener("resize", refreshFallback);
+ function renderDialogue() {
+-  const method = state.feature === "analysis"
+-    ? TOOLS.find((tool) => tool[0] === state.tool)
+-    : null;
++  const method =
++    state.feature === "analysis"
++      ? TOOLS.find((tool) => tool[0] === state.tool)
++      : null;
+   $("#dialogue-text").textContent =
+-    method?.[3] ?? feature()?.dialogue ?? "你好。选一个方向，我们一起开始。";
++    resultDialogue ||
++    (method?.[3] ?? feature()?.dialogue ?? "你好。选一个方向，我们一起开始。");
+ }
+ function renderAll() {
+   refreshFallback();
+@@ -488,7 +611,7 @@ function tasksPage() {
+       (!state.taskType || t.kind.startsWith(state.taskType)),
+   );
+   const selected = tasks.find((t) => t.id === state.taskId);
+-  return `<div class="toolbar"><select id="task-state" aria-label="任务状态">${[
++  return `<section class="task-rehearsal" aria-label="小G任务反馈演示"><div><p class="eyebrow">小G · 交互演示</p><p class="hint">成功时点头，失败时挥手。这里只演示反馈，不提交任务。</p><p id="rehearsal-status" class="rehearsal-status" role="status" aria-live="polite" data-state="${rehearsal.state}">${esc(rehearsal.message)}</p></div><div class="rehearsal-actions"><button class="quiet" data-task-demo="succeeded" ${rehearsal.state === "running" ? "disabled" : ""}>演示成功流程 <span>✓</span></button><button class="quiet" data-task-demo="failed" ${rehearsal.state === "running" ? "disabled" : ""}>演示失败流程 <span>×</span></button></div></section><div class="toolbar"><select id="task-state" aria-label="任务状态">${[
+     ["", "全部状态"],
+     ["succeeded", "已完成"],
+     ["failed", "失败"],
+@@ -635,7 +758,9 @@ function validateExport() {
+ document.addEventListener("click", (e) => {
+   const button = e.target.closest("button,a");
+   if (!button) return;
+-  if (button.dataset.feature) {
++  if (button.dataset.taskDemo) {
++    rehearseTask(button.dataset.taskDemo);
++  } else if (button.dataset.feature) {
+     e.preventDefault();
+     nav(button.dataset.feature);
+   } else if (button.dataset.nav) nav(button.dataset.nav);
+@@ -774,7 +899,8 @@ addEventListener("hashchange", () => {
+ });
+ restore();
+ window.D01 = {
+-  version: "D01-R1.1",
++  version: "D01-R1.2",
++  observeTask: (task) => taskFeedback.observe(task),
+   state,
+   snapshot,
+   ready: false,
+diff --git "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915\\scene.mjs" "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915-r2\\scene.mjs"
+index 8f103c4..9fa02f1 100644
+--- "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915\\scene.mjs"
++++ "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915-r2\\scene.mjs"
+@@ -2,6 +2,7 @@ import * as THREE from "three";
+ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+ import { mapSVG } from "./map.mjs";
++import { RobotInteraction } from "./robot-interaction.mjs";
+ const normals = {
+   projects: [0, 0, 1],
+   data: [1, 0, 0],
+@@ -248,11 +249,36 @@ export class Observatory {
+     });
+     this.cube.position.set(1.12, 1.09, 0.22);
+     this.cube.rotation.set(0.18, 0.34, 0.1);
+-    this.mixer = new THREE.AnimationMixer(this.robot);
+-    const idle = r.animations.find((a) => a.name === "Idle");
+-    if (!idle) throw Error("Idle not found");
+-    this.mixer.clipAction(idle).play();
+-    this.mixer.setTime(0.8);
++    this.interaction = new RobotInteraction(this.robot, r.animations);
++    this.mixer = this.interaction.mixer;
++    this.pointer = null;
++    this.pointerMedia = matchMedia(
++      "(any-hover: hover) and (any-pointer: fine)",
++    );
++    const center = () => {
++      this.pointer = null;
++      this.interaction.center();
++      this.forceRender = true;
++    };
++    addEventListener(
++      "pointermove",
++      (event) => {
++        if (this.reduced || this.frozen || this.contextLost || this.staticQuality) return;
++        if (event.pointerType !== "mouse" || !this.pointerMedia.matches) return center();
++        this.pointer = { x: event.clientX, y: event.clientY };
++        this.forceRender = true;
++      },
++      { passive: true },
++    );
++    document.addEventListener("pointerout", (event) => {
++      if (!event.relatedTarget) center();
++    });
++    addEventListener("blur", center);
++    this.pointerMedia.addEventListener("change", center);
++    document.addEventListener("visibilitychange", () => {
++      center();
++      if (document.hidden) this.interaction.cancel();
++    });
+     this.loaded = true;
+     this.renderNow(0);
+   }
+@@ -296,6 +322,8 @@ export class Observatory {
+   }
+   setReduced(value) {
+     this.reduced = value;
++    this.interaction?.setReduced(value);
++    if (value) this.pointer = null;
+     this.forceRender = true;
+     if (value && this.mode === "preview")
+       this.started = performance.now() - 850;
+@@ -305,6 +333,7 @@ export class Observatory {
+     this.mode = state.mode;
+     this.feature = state.feature;
+     this.reduced = state.reduced;
++    this.interaction?.setReduced(this.reduced);
+     this.started =
+       performance.now() -
+       (immediate ? (state.mode === "expanding" ? 560 : 850) : 0);
+@@ -343,9 +372,13 @@ export class Observatory {
+     if (this.cube && !work)
+       this.cube.position.set(mobile ? 0.94 : 1.12, mobile ? 1.12 : 1.09, 0.22);
+     if (work) {
+-      this.camera.fov = 22;
+-      this.camera.position.set(0, 1.7, 3.2);
+-      this.camera.lookAt(0, 1.62, 0);
++      const wave =
++        this.interaction?.reaction?.name === "No"
++          ? this.interaction.reaction.weight
++          : 0;
++      this.camera.fov = mix(22, mobile ? 38 : 29, wave);
++      this.camera.position.set(-0.23 * wave, 1.7, 3.2);
++      this.camera.lookAt(-0.23 * wave, 1.62, 0);
+       this.scene.background = null;
+       this.scene.fog = null;
+     } else if (mobile) {
+@@ -575,6 +608,22 @@ export class Observatory {
+     this.renderer.render(this.scene, this.camera);
+     this.rendered++;
+   }
++  taskResult(status, onStart) {
++    if (
++      this.contextLost ||
++      this.staticQuality ||
++      this.frozen ||
++      document.hidden
++    )
++      return false;
++    const played = this.interaction?.react(status, onStart) ?? false;
++    if (played) this.forceRender = true;
++    return played;
++  }
++  clearInteraction() {
++    this.interaction?.cancel();
++    this.forceRender = true;
++  }
+   frame(t) {
+     const dt = t - this.last;
+     this.last = t;
+@@ -592,16 +641,33 @@ export class Observatory {
+       this.mode === "home" ||
+       (this.mode === "preview" && ms < 870) ||
+       this.mode === "expanding";
+-    if (!animationActive && !this.forceRender) return;
++    if (!animationActive && !this.forceRender && !this.interaction.active)
++      return;
+     if (!this.reduced && this.mode === "home") {
+       this.cube.rotateOnWorldAxis(
+         new THREE.Vector3(0, 1, 0),
+         (Math.min(dt, 50) / 1000) *
+           (0.45 + 0.2 * Math.sin((this.elapsed * Math.PI) / 4)),
+       );
+-      this.mixer.update(Math.min(dt, 50) / 1000);
+     }
+     if (this.reduced && !this.forceRender) return;
++    if (this.pointer && !this.reduced && this.mode !== "expanding") {
++      const rect = this.container.getBoundingClientRect();
++      const head = this.interaction.head
++        .getWorldPosition(new THREE.Vector3())
++        .project(this.camera);
++      const x = rect.left + ((head.x + 1) / 2) * rect.width;
++      const y = rect.top + ((1 - head.y) / 2) * rect.height;
++      this.interaction.look(
++        (this.pointer.x - x) / Math.max(320, innerWidth * 0.5),
++        (y - this.pointer.y) / Math.max(240, innerHeight * 0.5),
++      );
++    }
++    this.interaction.update(
++      Math.min(dt, 50) / 1000,
++      this.camera,
++      this.mode === "home",
++    );
+     this.forceRender = false;
+     const start = performance.now();
+     this.renderNow(ms);
+@@ -634,6 +700,8 @@ export class Observatory {
+   captureAt(state, ms) {
+     this.setState(state, false);
+     this.frozen = true;
++    this.interaction?.cancel();
++    this.pointer = null;
+     this.mixer?.setTime(0.8);
+     this.cube.rotation.set(0.18, 0.34, 0.1);
+     this.fromQ.copy(this.cube.quaternion);
+@@ -661,7 +729,8 @@ export class Observatory {
+     const gl = this.renderer.getContext(),
+       ext = gl.getExtension("WEBGL_debug_renderer_info");
+     return {
+-      version: "D01-R1",
++      version: "D01-R1.2",
++      interaction: this.interaction?.metrics(),
+       mode: this.mode,
+       feature: this.feature,
+       ready: this.loaded,
+diff --git "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915\\styles.css" "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915-r2\\styles.css"
+index c29b93b..7d9ef22 100644
+--- "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915\\styles.css"
++++ "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915-r2\\styles.css"
+@@ -529,6 +529,7 @@ body[data-mode="work"] {
+   background: #11191f;
+ }
+ body[data-mode="work"] #stage {
++  z-index: 3;
+   height: 100px;
+   width: 165px;
+   left: 22px;
+@@ -927,6 +928,25 @@ td .mono {
+   grid-template-columns: 1.4fr 0.85fr;
+   gap: 32px;
+ }
++.task-rehearsal {
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++  gap: 24px;
++  padding: 20px 0 22px;
++  margin-bottom: 24px;
++  border-bottom: 1px solid var(--line, #45565c);
++}
++.task-rehearsal .eyebrow { margin: 0 0 8px; }
++.task-rehearsal .hint { margin: 0; }
++.rehearsal-status { color: #9fbdc1; font-size: 12px; line-height: 1.7; margin: 9px 0 0; min-height: 21px; }
++.rehearsal-status[data-state="failed"] { color: #ddb5a6; }
++.rehearsal-actions { display: flex; gap: 10px; flex-shrink: 0; }
++.rehearsal-actions button { white-space: nowrap; }
++@media (max-width: 1150px) {
++  .task-rehearsal { align-items: flex-start; flex-direction: column; gap: 12px; }
++  .rehearsal-actions { flex-wrap: wrap; }
++}
+ .timeline-row {
+   display: grid;
+   grid-template-columns: 70px 1fr auto;
+diff --git "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\interaction-review-20260915\\empty-file.txt" "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915-r2\\robot-interaction.mjs"
+index e69de29..a8cb25f 100644
+--- "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\interaction-review-20260915\\empty-file.txt"
++++ "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915-r2\\robot-interaction.mjs"
+@@ -0,0 +1,248 @@
++import * as THREE from "three";
++
++const clamp = (n, limit = 1) => Math.max(-limit, Math.min(limit, n));
++const smooth = (n) => {
++  n = Math.max(0, Math.min(1, n));
++  return n * n * (3 - 2 * n);
++};
++
++export class RobotInteraction {
++  constructor(robot, clips) {
++    this.robot = robot;
++    this.mixer = new THREE.AnimationMixer(robot);
++    this.head = null;
++    const bones = [];
++    robot.traverse((node) => {
++      if (node.isBone && /^(Head|Neck)(_|$)/.test(node.name)) bones.push(node);
++      if (node.isBone && /^Head(_|$)/.test(node.name)) this.head = node;
++    });
++    if (!this.head || bones.length !== 2)
++      throw Error("Head and Neck bones required");
++    const isHeadTrack = (track) =>
++      bones.some(
++        (bone) =>
++          THREE.PropertyBinding.parseTrackName(track.name).nodeName ===
++          bone.name,
++      );
++    const armBones = [];
++    robot.traverse((node) => {
++      if (node.isBone && /^Shoulder[._]?R$/.test(node.name))
++        node.traverse((child) => {
++          if (child.isBone) armBones.push(child);
++        });
++    });
++    if (!armBones.length) throw Error("Right arm bones required");
++    const isArmTrack = (track) =>
++      armBones.some(
++        (bone) =>
++          THREE.PropertyBinding.parseTrackName(track.name).nodeName ===
++          bone.name,
++      );
++    const idle = clips.find((clip) => clip.name === "Idle");
++    if (!idle) throw Error("Idle clip required");
++    this.bodyIdle = this.mixer
++      .clipAction(
++        new THREE.AnimationClip(
++          "BodyIdle",
++          idle.duration,
++          idle.tracks.filter((t) => !isHeadTrack(t) && !isArmTrack(t)),
++        ),
++      )
++      .play();
++    this.headIdle = this.mixer
++      .clipAction(
++        new THREE.AnimationClip(
++          "HeadIdle",
++          idle.duration,
++          idle.tracks.filter(isHeadTrack),
++        ),
++      )
++      .play();
++    this.armIdle = this.mixer
++      .clipAction(
++        new THREE.AnimationClip(
++          "ArmIdle",
++          idle.duration,
++          idle.tracks.filter(isArmTrack),
++        ),
++      )
++      .play();
++    this.actions = {};
++    for (const name of ["Yes", "No"]) {
++      const source = clips.find(
++        (clip) => clip.name === (name === "No" ? "Wave" : "Yes"),
++      );
++      const tracks = source?.tracks.filter(
++        name === "No" ? isArmTrack : isHeadTrack,
++      );
++      if (!tracks?.length) throw Error(`${name} gesture tracks required`);
++      const action = this.mixer.clipAction(
++        new THREE.AnimationClip(`${name}Gesture`, source.duration, tracks),
++      );
++      action.setLoop(THREE.LoopOnce, 1);
++      action.clampWhenFinished = true;
++      this.actions[name] = action;
++    }
++    this.eyes = [];
++    for (const side of ["L", "R"])
++      for (const part of ["Iris", "Pupil", "Catchlight"]) {
++        const node = robot.getObjectByName(`Eye_${side}_${part}`);
++        if (!node) throw Error(`Eye_${side}_${part} required`);
++        this.eyes.push({ node, rest: node.position.clone() });
++      }
++    this.target = new THREE.Vector2();
++    this.gaze = new THREE.Vector2();
++    this.baseHead = this.head.quaternion.clone();
++    this.applied = false;
++    this.reduced = false;
++    this.reaction = null;
++    this.pending = null;
++    this.played = { Yes: 0, No: 0 };
++    this.mixer.setTime(0.8);
++  }
++  restoreGaze() {
++    if (this.applied) this.head.quaternion.copy(this.baseHead);
++    this.applied = false;
++    for (const { node, rest } of this.eyes) node.position.copy(rest);
++  }
++  look(x, y) {
++    if (!this.reduced) this.target.set(clamp(x), clamp(y));
++  }
++  center() {
++    this.target.set(0, 0);
++  }
++  cancel() {
++    this.restoreGaze();
++    for (const action of Object.values(this.actions)) action.stop();
++    this.headIdle.setEffectiveWeight(1);
++    this.headIdle.paused = false;
++    this.armIdle.setEffectiveWeight(1);
++    this.reaction = this.pending = null;
++    this.center();
++    this.gaze.set(0, 0);
++    this.mixer.update(0);
++  }
++  setReduced(value) {
++    this.reduced = value;
++    if (value) {
++      const showPendingResult = this.pending?.onStart;
++      this.cancel();
++      showPendingResult?.();
++    }
++  }
++  react(state, onStart = () => {}) {
++    const name =
++      state === "succeeded" ? "Yes" : state === "failed" ? "No" : null;
++    if (!name || this.reduced) return false;
++    if (this.reaction) {
++      this.pending = { name, onStart };
++      return true;
++    }
++    this.start(name, onStart);
++    return true;
++  }
++  start(name, onStart) {
++    const action = this.actions[name];
++    this.headIdle.paused = name === "No";
++    action.reset().setEffectiveWeight(0).play();
++    this.reaction = {
++      name,
++      sourceClip: name === "No" ? "Wave" : "Yes",
++      elapsed: 0,
++      duration: action.getClip().duration,
++      weight: 0,
++    };
++    this.played[name]++;
++    onStart();
++  }
++  get active() {
++    return (
++      !!this.reaction || this.gaze.distanceToSquared(this.target) > 0.000001
++    );
++  }
++  update(dt, camera, animateIdle = true) {
++    this.restoreGaze();
++    if (this.reduced) return;
++    dt = Math.max(0, Math.min(dt, 0.05));
++    const reaction = this.reaction;
++    let weight = 0;
++    if (reaction) {
++      reaction.elapsed += dt;
++      weight =
++        smooth(reaction.elapsed / 0.18) *
++        smooth((reaction.duration - reaction.elapsed) / 0.28);
++      reaction.weight = weight;
++      this.actions[reaction.name].setEffectiveWeight(weight);
++      this.headIdle.setEffectiveWeight(
++        reaction.name === "Yes" ? 1 - weight : 1,
++      );
++      this.armIdle.setEffectiveWeight(reaction.name === "No" ? 1 - weight : 1);
++    }
++    this.mixer.update(animateIdle || reaction ? dt : 0);
++    if (reaction && reaction.elapsed >= reaction.duration) {
++      this.actions[reaction.name].stop();
++      this.headIdle.setEffectiveWeight(1);
++      this.headIdle.paused = false;
++      this.armIdle.setEffectiveWeight(1);
++      this.reaction = null;
++      this.mixer.update(0);
++      if (this.pending) {
++        const next = this.pending;
++        this.pending = null;
++        this.start(next.name, next.onStart);
++      }
++    }
++    // Gestures take priority over gaze. No keeps the head still and waves the right arm.
++    const target = reaction ? new THREE.Vector2() : this.target;
++    this.gaze.lerp(target, 1 - Math.exp(-dt / 0.16));
++    if (this.gaze.distanceToSquared(target) < 0.000001) this.gaze.copy(target);
++    this.baseHead.copy(this.head.quaternion);
++    this.robot.updateMatrixWorld(true);
++    const parentWorld = this.head.parent.getWorldQuaternion(
++      new THREE.Quaternion(),
++    );
++    const cameraWorld = camera.getWorldQuaternion(new THREE.Quaternion());
++    const yawAxis = new THREE.Vector3(0, 1, 0).applyQuaternion(cameraWorld);
++    const pitchAxis = new THREE.Vector3(1, 0, 0).applyQuaternion(cameraWorld);
++    const gazeGain = 1 - weight;
++    const offset = new THREE.Quaternion()
++      .setFromAxisAngle(
++        yawAxis,
++        this.gaze.x * THREE.MathUtils.degToRad(8) * gazeGain,
++      )
++      .multiply(
++        new THREE.Quaternion().setFromAxisAngle(
++          pitchAxis,
++          -this.gaze.y * THREE.MathUtils.degToRad(5) * gazeGain,
++        ),
++      );
++    const localOffset = parentWorld
++      .clone()
++      .invert()
++      .multiply(offset)
++      .multiply(parentWorld);
++    this.head.quaternion.premultiply(localOffset);
++    this.applied = true;
++    // These six meshes share Head_DetailMount: local X/Y is the lens plane, +Z is outward.
++    for (const { node } of this.eyes) {
++      node.position.x += this.gaze.x * 0.07;
++      node.position.y += this.gaze.y * 0.045;
++    }
++  }
++  metrics() {
++    return {
++      reaction: this.reaction ? { ...this.reaction } : null,
++      pending: this.pending?.name ?? null,
++      played: { ...this.played },
++      gaze: this.gaze.toArray(),
++      target: this.target.toArray(),
++      headBone: this.head.name,
++      headQuaternion: this.head.quaternion.toArray(),
++      eyeOffsets: this.eyes.map(({ node, rest }) => ({
++        name: node.name,
++        offset: node.position.clone().sub(rest).toArray(),
++      })),
++      reduced: this.reduced,
++    };
++  }
++}
+diff --git "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\interaction-review-20260915\\empty-file.txt" "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915-r2\\task-feedback.mjs"
+index e69de29..bf881e8 100644
+--- "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\interaction-review-20260915\\empty-file.txt"
++++ "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915-r2\\task-feedback.mjs"
+@@ -0,0 +1,36 @@
++// Seed historical snapshots silently; react only to a new terminal transition.
++export class TaskFeedback {
++  constructor(onResult) {
++    this.onResult = onResult;
++    this.tasks = new Map();
++  }
++  observe(task) {
++    if (
++      !task?.id ||
++      ![
++        "queued",
++        "running",
++        "cancelling",
++        "succeeded",
++        "failed",
++        "cancelled",
++      ].includes(task.state)
++    )
++      return false;
++    const previous = this.tasks.get(task.id);
++    // A task ID describes one attempt. Ignore stale polling and duplicate terminal events.
++    if (previous && !["queued", "running", "cancelling"].includes(previous))
++      return false;
++    if (previous === "running" && task.state === "queued") return false;
++    if (previous === "cancelling" && ["queued", "running"].includes(task.state))
++      return false;
++    this.tasks.set(task.id, task.state);
++    if (this.tasks.size > 512)
++      this.tasks.delete(this.tasks.keys().next().value);
++    if (previous && ["succeeded", "failed"].includes(task.state)) {
++      this.onResult(task);
++      return true;
++    }
++    return false;
++  }
++}

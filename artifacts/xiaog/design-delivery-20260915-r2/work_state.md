@@ -1,6 +1,5 @@
-# D01 R1.1 · ready
+# D01 R1.2 · ready
 
-2026-09-15，由主协调完成方法对白补订。原69f6工作树及20260914封存目录未修改。
-当前目录为 artifacts/xiaog/design-delivery-20260915；预览18405。实现、差异审阅、9项DOM集成检查已完成。
-以 stage_manifest.json、SHA256SUMS.txt、REVISION.md 和 evidence/dialogue-verification.json 为当前补订依据；其他原R1报告/样片是保留的历史基线。
-无正式应用源码修改、数据库写入、Git提交或推送。
+2026-09-15。已完成上一项方法对白验收与本次结果动作、鼠标注视设计及实现。失败使用挥手，保持头部稳定。主协调已检查实际差异、修正问题并完成29项验证与新影片解码/视觉核对。
+
+目录 artifacts/xiaog/design-delivery-20260915-r2；交付地址18405。18406仅用于本次隔离验收，封存后关闭。正式业务接入仍按docs/xiaog-game/05及06后续任务进行。当前行为以INTERACTIONS.md为准。

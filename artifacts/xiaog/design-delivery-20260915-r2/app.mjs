@@ -45,13 +45,48 @@ export const FEATURES = [
   },
 ];
 const TOOLS = [
-  ["buffer", "缓冲区", "按米设置边界向外扩展的距离。", "先选输入图层，再设置缓冲距离（米），看看周边的影响范围。"],
-  ["clip", "裁剪", "保留输入图层位于掩膜内的部分。", "选好输入图层和掩膜图层，保留掩膜范围内的部分。"],
-  ["intersection", "相交", "计算两层数据的空间重叠。", "选择两层数据，看看它们在空间上重叠的部分。"],
-  ["dissolve", "融合", "按字段合并几何，留空则融合全部。", "按共同字段融合要素；选择“融合全部”，就不再按字段分组。"],
-  ["spatial-join", "空间连接", "按空间关系连接另一层的属性。", "先选目标图层和关联图层，再用相交、包含或位于内部来匹配属性。"],
-  ["validate-repair", "几何修复", "检查并修复无效几何。", "选好输入图层，我们来检查并修复无效几何。"],
-  ["point-in-polygon", "面内点计数", "统计每个面内的点数量。", "先选点图层和多边形图层，统计每个面内有多少个点。"],
+  [
+    "buffer",
+    "缓冲区",
+    "按米设置边界向外扩展的距离。",
+    "先选输入图层，再设置缓冲距离（米），看看周边的影响范围。",
+  ],
+  [
+    "clip",
+    "裁剪",
+    "保留输入图层位于掩膜内的部分。",
+    "选好输入图层和掩膜图层，保留掩膜范围内的部分。",
+  ],
+  [
+    "intersection",
+    "相交",
+    "计算两层数据的空间重叠。",
+    "选择两层数据，看看它们在空间上重叠的部分。",
+  ],
+  [
+    "dissolve",
+    "融合",
+    "按字段合并几何，留空则融合全部。",
+    "按共同字段融合要素；选择“融合全部”，就不再按字段分组。",
+  ],
+  [
+    "spatial-join",
+    "空间连接",
+    "按空间关系连接另一层的属性。",
+    "先选目标图层和关联图层，再用相交、包含或位于内部来匹配属性。",
+  ],
+  [
+    "validate-repair",
+    "几何修复",
+    "检查并修复无效几何。",
+    "选好输入图层，我们来检查并修复无效几何。",
+  ],
+  [
+    "point-in-polygon",
+    "面内点计数",
+    "统计每个面内的点数量。",
+    "先选点图层和多边形图层，统计每个面内有多少个点。",
+  ],
 ];
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -122,17 +157,30 @@ const exportLayers = () =>
       l.kind === "raster",
   );
 const feature = () => FEATURES.find((f) => f.id === state.feature);
-let resultDialogue = "", resultTimer, rehearsalTimer, rehearsalSequence = 0;
-const rehearsal = { state: "idle", message: "移动鼠标，和小G对视；也可以体验一次任务结果反馈。" };
+let resultDialogue = "",
+  resultTimer,
+  rehearsalTimer,
+  rehearsalSequence = 0;
+const rehearsal = {
+  state: "idle",
+  message: "移动鼠标，和小G对视；也可以体验一次任务结果反馈。",
+};
 const taskFeedback = new TaskFeedback((task) => {
-  const simulated = task.demo === true;
-  resultDialogue = (simulated ? "演示：" : "") + (task.state === "succeeded"
-    ? "这次任务完成了。接下来，我们可以查看结果。"
-    : "这次任务没能完成。我们先看看错误信息，再决定怎样调整。");
-  scene?.taskResult(task.state);
-  renderDialogue();
-  clearTimeout(resultTimer);
-  resultTimer = setTimeout(() => { resultDialogue = ""; renderDialogue(); }, 5000);
+  const showResult = () => {
+    resultDialogue =
+      (task.demo === true ? "演示：" : "") +
+      (task.state === "succeeded"
+        ? "这次任务完成了。接下来，我们可以查看结果。"
+        : "这次任务没能完成。我们先看看错误信息，再决定怎样调整。");
+    renderDialogue();
+    clearTimeout(resultTimer);
+    resultTimer = setTimeout(() => {
+      resultDialogue = "";
+      renderDialogue();
+    }, 5000);
+  };
+  // Queued outcomes update speech when their gesture actually starts.
+  if (!scene?.taskResult(task.state, showResult)) showResult();
 });
 snapshot.tasks.forEach((task) => taskFeedback.observe(task));
 function clearTaskFeedback() {
@@ -153,7 +201,15 @@ function renderRehearsal() {
   });
 }
 function rehearseTask(outcome) {
-  if (!["succeeded", "failed"].includes(outcome) || rehearsal.state === "running") return;
+  if (!window.D01?.ready) {
+    inform("小G正在准备，请稍后再试。");
+    return;
+  }
+  if (
+    !["succeeded", "failed"].includes(outcome) ||
+    rehearsal.state === "running"
+  )
+    return;
   const id = `design-rehearsal-${++rehearsalSequence}`;
   rehearsal.state = "running";
   rehearsal.message = "演示任务进行中…";
@@ -164,11 +220,20 @@ function rehearseTask(outcome) {
   taskFeedback.observe({ id, state: "running", demo: true });
   rehearsalTimer = setTimeout(() => {
     rehearsal.state = outcome;
-    rehearsal.message = outcome === "succeeded"
-      ? "演示任务已完成 · 小G点头回应。没有创建实际作业或结果。"
-      : "演示任务失败 · 小G摇头回应。没有创建实际作业或错误记录。";
-    if (state.reduced || sceneFailed || scene?.staticQuality || scene?.contextLost)
-      rehearsal.message = outcome === "succeeded" ? "演示任务已完成 · 静态文字反馈。没有创建实际结果。" : "演示任务失败 · 静态文字反馈。没有创建实际错误记录。";
+    rehearsal.message =
+      outcome === "succeeded"
+        ? "演示任务已完成 · 小G点头回应。没有创建实际作业或结果。"
+        : "演示任务失败 · 小G挥手提醒。没有创建实际作业或错误记录。";
+    if (
+      state.reduced ||
+      sceneFailed ||
+      scene?.staticQuality ||
+      scene?.contextLost
+    )
+      rehearsal.message =
+        outcome === "succeeded"
+          ? "演示任务已完成 · 静态文字反馈。没有创建实际结果。"
+          : "演示任务失败 · 静态文字反馈。没有创建实际错误记录。";
     taskFeedback.observe({ id, state: outcome, demo: true });
     renderRehearsal();
   }, 900);
@@ -326,6 +391,7 @@ function contextOptions() {
   );
 }
 function setProject(id) {
+  clearTaskFeedback();
   state.projectId = id;
   state.layerId = "";
   state.secondary = "";
@@ -366,11 +432,13 @@ function refreshFallback() {
 }
 addEventListener("resize", refreshFallback);
 function renderDialogue() {
-  const method = state.feature === "analysis"
-    ? TOOLS.find((tool) => tool[0] === state.tool)
-    : null;
+  const method =
+    state.feature === "analysis"
+      ? TOOLS.find((tool) => tool[0] === state.tool)
+      : null;
   $("#dialogue-text").textContent =
-    resultDialogue || (method?.[3] ?? feature()?.dialogue ?? "你好。选一个方向，我们一起开始。");
+    resultDialogue ||
+    (method?.[3] ?? feature()?.dialogue ?? "你好。选一个方向，我们一起开始。");
 }
 function renderAll() {
   refreshFallback();
@@ -543,7 +611,7 @@ function tasksPage() {
       (!state.taskType || t.kind.startsWith(state.taskType)),
   );
   const selected = tasks.find((t) => t.id === state.taskId);
-  return `<section class="task-rehearsal" aria-label="小G任务反馈演示"><div><p class="eyebrow">小G · 交互演示</p><p class="hint">成功时点头，失败时摇头。这里只演示反馈，不提交任务。</p><p id="rehearsal-status" class="rehearsal-status" role="status" aria-live="polite" data-state="${rehearsal.state}">${esc(rehearsal.message)}</p></div><div class="rehearsal-actions"><button class="quiet" data-task-demo="succeeded" ${rehearsal.state === "running" ? "disabled" : ""}>演示成功流程 <span>✓</span></button><button class="quiet" data-task-demo="failed" ${rehearsal.state === "running" ? "disabled" : ""}>演示失败流程 <span>×</span></button></div></section><div class="toolbar"><select id="task-state" aria-label="任务状态">${[
+  return `<section class="task-rehearsal" aria-label="小G任务反馈演示"><div><p class="eyebrow">小G · 交互演示</p><p class="hint">成功时点头，失败时挥手。这里只演示反馈，不提交任务。</p><p id="rehearsal-status" class="rehearsal-status" role="status" aria-live="polite" data-state="${rehearsal.state}">${esc(rehearsal.message)}</p></div><div class="rehearsal-actions"><button class="quiet" data-task-demo="succeeded" ${rehearsal.state === "running" ? "disabled" : ""}>演示成功流程 <span>✓</span></button><button class="quiet" data-task-demo="failed" ${rehearsal.state === "running" ? "disabled" : ""}>演示失败流程 <span>×</span></button></div></section><div class="toolbar"><select id="task-state" aria-label="任务状态">${[
     ["", "全部状态"],
     ["succeeded", "已完成"],
     ["failed", "失败"],

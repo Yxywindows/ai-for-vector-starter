@@ -1,0 +1,243 @@
+{
+  "version": "D01-R1.2",
+  "passed": 8,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "Mouse leaving document returns gaze to neutral",
+      "pass": true
+    },
+    {
+      "name": "Mouse gaze yields while gesture plays and resumes afterward",
+      "pass": true
+    },
+    {
+      "name": "Touch input clears mouse gaze",
+      "pass": true
+    },
+    {
+      "name": "Window blur centres gaze",
+      "pass": true
+    },
+    {
+      "name": "Work view stops rendering once pointer settles",
+      "pass": true
+    },
+    {
+      "name": "Reduced motion ignores mouse updates without redrawing",
+      "pass": true
+    },
+    {
+      "name": "Gaze remains bounded and does not accumulate bone rotation",
+      "pass": true
+    },
+    {
+      "name": "Rapid outcomes keep at most the latest pending gesture",
+      "pass": true
+    }
+  ],
+  "metrics": {
+    "settledFrames": 0,
+    "driftRadians": 0,
+    "limits": [
+      {
+        "name": "Eye_L_Iris",
+        "offset": [
+          0.07000000000000006,
+          -0.045,
+          0
+        ]
+      },
+      {
+        "name": "Eye_L_Pupil",
+        "offset": [
+          0.07000000000000006,
+          -0.045,
+          0
+        ]
+      },
+      {
+        "name": "Eye_L_Catchlight",
+        "offset": [
+          0.07000000000000006,
+          -0.045,
+          0
+        ]
+      },
+      {
+        "name": "Eye_R_Iris",
+        "offset": [
+          0.07000000000000006,
+          -0.045,
+          0
+        ]
+      },
+      {
+        "name": "Eye_R_Pupil",
+        "offset": [
+          0.07000000000000006,
+          -0.045,
+          0
+        ]
+      },
+      {
+        "name": "Eye_R_Catchlight",
+        "offset": [
+          0.07000000000000006,
+          -0.045,
+          0
+        ]
+      }
+    ]
+  },
+  "realMouse": {
+    "left": {
+      "reaction": null,
+      "pending": null,
+      "played": {
+        "Yes": 2,
+        "No": 1
+      },
+      "gaze": [
+        -0.6975821229455775,
+        -0.816295029426532
+      ],
+      "target": [
+        -0.6981631812060043,
+        -0.8123556177361163
+      ],
+      "headBone": "Head",
+      "headQuaternion": [
+        -0.0014454640211545016,
+        -0.14244007390167898,
+        0.003274803645657333,
+        0.9897969698940837
+      ],
+      "eyeOffsets": [
+        {
+          "name": "Eye_L_Iris",
+          "offset": [
+            -0.04883074860619041,
+            -0.03673327632419393,
+            0
+          ]
+        },
+        {
+          "name": "Eye_L_Pupil",
+          "offset": [
+            -0.04883074860619041,
+            -0.03673327632419393,
+            0
+          ]
+        },
+        {
+          "name": "Eye_L_Catchlight",
+          "offset": [
+            -0.04883074860619041,
+            -0.03673327632419394,
+            0
+          ]
+        },
+        {
+          "name": "Eye_R_Iris",
+          "offset": [
+            -0.04883074860619041,
+            -0.03673327632419393,
+            0
+          ]
+        },
+        {
+          "name": "Eye_R_Pupil",
+          "offset": [
+            -0.04883074860619041,
+            -0.03673327632419393,
+            0
+          ]
+        },
+        {
+          "name": "Eye_R_Catchlight",
+          "offset": [
+            -0.04883074860619041,
+            -0.03673327632419394,
+            0
+          ]
+        }
+      ],
+      "reduced": false
+    },
+    "right": {
+      "reaction": null,
+      "pending": null,
+      "played": {
+        "Yes": 2,
+        "No": 1
+      },
+      "gaze": [
+        0.9255664408734856,
+        0.4256096164299909
+      ],
+      "target": [
+        0.926887917239726,
+        0.42806408995217865
+      ],
+      "headBone": "Head",
+      "headQuaternion": [
+        -0.04629157997423841,
+        0.0619227702758965,
+        -0.0101646268052676,
+        0.9969550702974047
+      ],
+      "eyeOffsets": [
+        {
+          "name": "Eye_L_Iris",
+          "offset": [
+            0.06478965086114397,
+            0.019152432739349592,
+            0
+          ]
+        },
+        {
+          "name": "Eye_L_Pupil",
+          "offset": [
+            0.06478965086114397,
+            0.019152432739349592,
+            0
+          ]
+        },
+        {
+          "name": "Eye_L_Catchlight",
+          "offset": [
+            0.06478965086114397,
+            0.019152432739349592,
+            0
+          ]
+        },
+        {
+          "name": "Eye_R_Iris",
+          "offset": [
+            0.06478965086114397,
+            0.019152432739349592,
+            0
+          ]
+        },
+        {
+          "name": "Eye_R_Pupil",
+          "offset": [
+            0.06478965086114397,
+            0.019152432739349592,
+            0
+          ]
+        },
+        {
+          "name": "Eye_R_Catchlight",
+          "offset": [
+            0.06478965086114397,
+            0.019152432739349592,
+            0
+          ]
+        }
+      ],
+      "reduced": false
+    }
+  }
+}

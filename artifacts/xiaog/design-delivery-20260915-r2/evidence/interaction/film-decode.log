@@ -1,0 +1,29 @@
+-vsync is deprecated. Use -fps_mode
+Passing a number to -vsync is deprecated, use a string argument as described in the manual.
+[libvpx @ 000001e02ef42a00] v1.14.1
+    Last message repeated 1 times
+Input #0, matroska,webm, from 'artifacts\xiaog\interaction-review-20260915\robot-interaction.webm':
+  Metadata:
+    encoder         : Chrome
+  Duration: 00:00:07.47, start: 0.000000, bitrate: 2567 kb/s
+  Stream #0:0(eng): Video: vp8 (libvpx), yuva420p(tv), 1920x1080, SAR 1:1 DAR 16:9, 1k tbr, 1k tbn (default)
+      Metadata:
+        alpha_mode      : 1
+[libvpx @ 000001e032990780] v1.14.1
+Stream mapping:
+  Stream #0:0 -> #0:0 (vp8 (libvpx) -> png (native))
+Press [q] to stop, [?] for help
+[libvpx @ 000001e032990780] v1.14.1
+Output #0, image2, to 'artifacts\xiaog\interaction-review-20260915\film-final.png':
+  Metadata:
+    encoder         : Lavf61.1.100
+  Stream #0:0(eng): Video: png, rgba(pc, gbr/unknown/unknown, progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 1k fps, 1k tbn (default)
+      Metadata:
+        alpha_mode      : 1
+        encoder         : Lavc61.3.100 png
+frame=   42 fps=0.0 q=-0.0 size=N/A time=00:00:01.47 bitrate=N/A speed= 2.9x    
+frame=   98 fps= 97 q=-0.0 size=N/A time=00:00:03.40 bitrate=N/A speed=3.35x    
+frame=  152 fps=100 q=-0.0 size=N/A time=00:00:05.33 bitrate=N/A speed=3.49x    
+frame=  212 fps=104 q=-0.0 size=N/A time=N/A bitrate=N/A speed=N/A    
+[out#0/image2 @ 000001e02ef49000] video:96037KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=  214 fps=104 q=-0.0 Lsize=N/A time=00:00:07.47 bitrate=N/A speed=3.64x    

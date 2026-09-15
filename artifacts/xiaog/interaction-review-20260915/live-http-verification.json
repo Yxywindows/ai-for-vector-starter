@@ -1,0 +1,41 @@
+{
+  "port": 18405,
+  "version": "D01-R1.2",
+  "checks": [
+    {
+      "file": "index.html",
+      "status": 200,
+      "matchesDelivery": true
+    },
+    {
+      "file": "app.mjs",
+      "status": 200,
+      "matchesDelivery": true
+    },
+    {
+      "file": "scene.mjs",
+      "status": 200,
+      "matchesDelivery": true
+    },
+    {
+      "file": "robot-interaction.mjs",
+      "status": 200,
+      "matchesDelivery": true
+    },
+    {
+      "file": "task-feedback.mjs",
+      "status": 200,
+      "matchesDelivery": true
+    },
+    {
+      "file": "styles.css",
+      "status": 200,
+      "matchesDelivery": true
+    },
+    {
+      "file": "assets/OpenGMS_A.glb",
+      "status": 200,
+      "matchesDelivery": true
+    }
+  ]
+}

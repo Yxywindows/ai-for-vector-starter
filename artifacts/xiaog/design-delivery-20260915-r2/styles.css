@@ -529,6 +529,7 @@ body[data-mode="work"] {
   background: #11191f;
 }
 body[data-mode="work"] #stage {
+  z-index: 3;
   height: 100px;
   width: 165px;
   left: 22px;

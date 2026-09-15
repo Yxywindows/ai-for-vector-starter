@@ -1,5 +1,9 @@
 # 小G · 空间观测室完整设计交付
 
+> **2026-09-15 最新 R1.2：**上一项七种空间分析方法对白已补充真实浏览器验收。本次完成 **Yes 成功点头、No 失败挥手（头部稳定）、鼠标注视**，含任务页本地演示与减少动态处理。29项检查通过，已检查桌面与手机画面、新动作样片完整解码214帧。当前 [18405 原型](http://127.0.0.1:18405/prototype.html#/home) 指向新版；[完整交付包](C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/artifacts/xiaog/design-delivery-20260915-r2.zip)、[动作接入契约](C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/artifacts/xiaog/design-delivery-20260915-r2/INTERACTIONS.md)、[新动作样片](C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/artifacts/xiaog/design-delivery-20260915-r2/evidence/interaction/robot-interaction.webm)。
+
+当前启动目录：`C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/artifacts/xiaog/design-delivery-20260915-r2`，使用 `D01_PORT=18405`、`node server.mjs`。ZIP为27,024,540字节，SHA256：`2449416b48ea38a0153786cba5c38535067eca1e8b1c7cf05bd1b593f0f59241`。旧R1与R1.1包保持原哈希；以下旧版记录仅作历史基线。原型不提交新作业，正式业务接入仍为后续阶段。
+
 > **2026-09-15 补订 R1.1：**小G对白已跟随七种空间分析方法更新，切换方法、返回预览和重新展开均同步。当前 [18405 预览](http://127.0.0.1:18405/) 已指向新副本，刷新加载。最新包为 [design-delivery-20260915.zip](C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/artifacts/xiaog/design-delivery-20260915.zip)，[补订说明](C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/artifacts/xiaog/design-delivery-20260915/REVISION.md)。9项DOM集成检查通过；本次浏览器控制连接不可用，未重做真实浏览器视觉验收。下文20260914包、关键帧与电影保留为R1基线。
 
 新版重启目录：`C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/artifacts/xiaog/design-delivery-20260915`；仍使用 `D01_PORT=18405` 和 `node server.mjs`。新版 ZIP SHA256：`3271da56d83e2ddf3859a1cd613f94c2f9158c18b640894e097ece4b578a53c6`。

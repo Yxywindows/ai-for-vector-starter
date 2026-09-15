@@ -1,0 +1,41 @@
+{
+  "width": 1920,
+  "height": 1080,
+  "scope": "Actual GLB runtime canvas only; local demo task transitions; no business execution",
+  "sequence": "idle, look left/down, look right/up, Yes nod, No Wave, return idle",
+  "decoded": {
+    "exitCode": 0,
+    "seconds": 7.47,
+    "frameCount": 214,
+    "keyframes": [
+      {
+        "file": "film-final.png",
+        "size": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "file": "film-look.png",
+        "size": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "file": "film-wave.png",
+        "size": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "file": "film-yes.png",
+        "size": [
+          1920,
+          1080
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "version": "D01-R1.2",
+  "createdAt": "2026-09-15T02:38:24.655171+00:00",
+  "passed": 29,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "historical terminal snapshots are silent",
+      "pass": true,
+      "report": "task-feedback-verification.json"
+    },
+    {
+      "name": "queued-running-succeeded emits once",
+      "pass": true,
+      "report": "task-feedback-verification.json"
+    },
+    {
+      "name": "duplicate and stale terminal polling cannot replay",
+      "pass": true,
+      "report": "task-feedback-verification.json"
+    },
+    {
+      "name": "running-failed emits once and preserves error data",
+      "pass": true,
+      "report": "task-feedback-verification.json"
+    },
+    {
+      "name": "cancelled task is not failure feedback",
+      "pass": true,
+      "report": "task-feedback-verification.json"
+    },
+    {
+      "name": "unknown and malformed states cannot produce a result",
+      "pass": true,
+      "report": "task-feedback-verification.json"
+    },
+    {
+      "name": "new task attempt with new ID can report result",
+      "pass": true,
+      "report": "task-feedback-verification.json"
+    },
+    {
+      "name": "snapshot tracking remains bounded without replaying evicted history",
+      "pass": true,
+      "report": "task-feedback-verification.json"
+    },
+    {
+      "name": "Initial history produces no gesture",
+      "pass": true,
+      "report": "browser-verification.json"
+    },
+    {
+      "name": "succeeded: UI lifecycle, one Yes gesture, return to idle",
+      "pass": true,
+      "report": "browser-verification.json"
+    },
+    {
+      "name": "failed: UI lifecycle, one Wave gesture, return to idle",
+      "pass": true,
+      "report": "browser-verification.json"
+    },
+    {
+      "name": "Duplicate terminal events are ignored by the integration hook",
+      "pass": true,
+      "report": "browser-verification.json"
+    },
+    {
+      "name": "Reduced motion cancels active action and keeps result text",
+      "pass": true,
+      "report": "browser-verification.json"
+    },
+    {
+      "name": "Queued results keep speech aligned with their gesture",
+      "pass": true,
+      "report": "browser-verification.json"
+    },
+    {
+      "name": "Navigating away cancels pending rehearsal and restores method dialogue",
+      "pass": true,
+      "report": "browser-verification.json"
+    },
+    {
+      "name": "Parameter validation is not task execution feedback",
+      "pass": true,
+      "report": "browser-verification.json"
+    },
+    {
+      "name": "Seven method dialogues survive the interaction changes",
+      "pass": true,
+      "report": "browser-verification.json"
+    },
+    {
+      "name": "Only one canvas survives navigation and gesture transitions",
+      "pass": true,
+      "report": "browser-verification.json"
+    },
+    {
+      "name": "Mouse leaving document returns gaze to neutral",
+      "pass": true,
+      "report": "gaze-verification.json"
+    },
+    {
+      "name": "Mouse gaze yields while gesture plays and resumes afterward",
+      "pass": true,
+      "report": "gaze-verification.json"
+    },
+    {
+      "name": "Touch input clears mouse gaze",
+      "pass": true,
+      "report": "gaze-verification.json"
+    },
+    {
+      "name": "Window blur centres gaze",
+      "pass": true,
+      "report": "gaze-verification.json"
+    },
+    {
+      "name": "Work view stops rendering once pointer settles",
+      "pass": true,
+      "report": "gaze-verification.json"
+    },
+    {
+      "name": "Reduced motion ignores mouse updates without redrawing",
+      "pass": true,
+      "report": "gaze-verification.json"
+    },
+    {
+      "name": "Gaze remains bounded and does not accumulate bone rotation",
+      "pass": true,
+      "report": "gaze-verification.json"
+    },
+    {
+      "name": "Rapid outcomes keep at most the latest pending gesture",
+      "pass": true,
+      "report": "gaze-verification.json"
+    },
+    {
+      "name": "Mobile menu to task page and failure gesture",
+      "pass": true,
+      "report": "mobile-verification.json"
+    },
+    {
+      "name": "No horizontal overflow",
+      "pass": true,
+      "report": "mobile-verification.json"
+    },
+    {
+      "name": "Robot above workspace background with wider wave camera",
+      "pass": true,
+      "report": "mobile-verification.json"
+    }
+  ],
+  "realBrowserVerified": true,
+  "protectedSources": 128,
+  "protectedSourcesUnchanged": true,
+  "sourceAssetsUnchanged": true,
+  "priorSealedDeliveriesUnchanged": true,
+  "runtimeHashes": {
+    "app.mjs": "bd88040ddf83e963d10c3ab92d7be075cf1aceafe22ba14b189f0686796a4dd2",
+    "scene.mjs": "fb94896cf613cf04428ce457b98a752c9350587806a9ed62a2369f25c0271e21",
+    "styles.css": "6fb45027bb23810ac333d1bf8e17a71688aadba33536dd5817d3f5ca461da9d0",
+    "robot-interaction.mjs": "16b471762a53783b6b69e64056e4b44d7bf4b881aa7d860ced80c70a5ad024f7",
+    "task-feedback.mjs": "41934f28ae531766d5b5913b9f839671e7fafca26a2278a1ec8bea2f21c3d894"
+  },
+  "film": {
+    "width": 1920,
+    "height": 1080,
+    "scope": "Actual GLB runtime canvas only; local demo task transitions; no business execution",
+    "sequence": "idle, look left/down, look right/up, Yes nod, No Wave, return idle",
+    "decoded": {
+      "exitCode": 0,
+      "seconds": 7.47,
+      "frameCount": 214,
+      "keyframes": [
+        {
+          "file": "film-final.png",
+          "size": [
+            1920,
+            1080
+          ]
+        },
+        {
+          "file": "film-look.png",
+          "size": [
+            1920,
+            1080
+          ]
+        },
+        {
+          "file": "film-wave.png",
+          "size": [
+            1920,
+            1080
+          ]
+        },
+        {
+          "file": "film-yes.png",
+          "size": [
+            1920,
+            1080
+          ]
+        }
+      ]
+    }
+  },
+  "scope": "Current task feedback, gaze, responsive interaction; inherited R1 full-flow/map evidence is historical."
+}

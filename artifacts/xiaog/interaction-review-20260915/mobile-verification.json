@@ -1,0 +1,35 @@
+{
+  "version": "D01-R1.2",
+  "passed": 3,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "Mobile menu to task page and failure gesture",
+      "pass": true
+    },
+    {
+      "name": "No horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "Robot above workspace background with wider wave camera",
+      "pass": true
+    }
+  ],
+  "metrics": {
+    "viewport": [
+      390,
+      844
+    ],
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "canvas": [
+      70,
+      75
+    ],
+    "fov": 38,
+    "state": "failed",
+    "stageZ": "3",
+    "pointerMedia": false
+  }
+}

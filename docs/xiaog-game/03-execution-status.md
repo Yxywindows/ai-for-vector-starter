@@ -1,5 +1,7 @@
 # 小G游戏式前端 · 执行状态
 
+> 2026-09-15 最新：R1.2已完成。上一项方法对白已补充9项真实浏览器验收；本次Yes点头、No挥手（不摇头）、鼠标注视与任务演示29项检查通过，含桌面/手机视觉与7.47秒新动作样片。18405现指向 `artifacts/xiaog/design-delivery-20260915-r2`；最新ZIP、哈希、说明见07。128项受保护主应用源码及原模型源文件未变；正式业务重构未启动。
+
 > 2026-09-15：R1.1方法对白补订完成，七种方法随当前选择同步，9项DOM集成检查通过。18405已切换到主目录 `artifacts/xiaog/design-delivery-20260915`；原R1目录/ZIP及D01工作树保持封存。最新入口和压缩包见07。
 
 2026-09-14。用户已继续授权“完成全部设计内容并给出可交付结果”。完整设计原型与交接已封存交付，尚未开始正式业务代码重构。此文件由主协调维护，创建/启动不是完成证据。
@@ -11,7 +13,7 @@
 - 最新方向评审：[04-design-direction-review.md](C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/docs/xiaog-game/04-design-direction-review.md)。“空间观测室”已完成D01设计交付，入口见07；T04–T08正式实现尚未启动。00-master-design.md 和 02-task-execution.md 的旧构图与实施草案保留但不能直接续作。
 - 当前角色：④RobotExpressive，用户已选A珍珠白/青蓝方案，胸口文字明确改为OpenGMS。身体与胸标精修已交付，stage_manifest ready=true，主协调资产阶段复核通过（保留告警）；可用于设计关键帧，不代表最终页面视觉或性能验收。
 - T02 最新补充要求已完成：保持 A 整体、骨架及独立魔方，精修胸壳曲面、哑光微陶瓷 PBR 和贴合胸壳的 OpenGMS 薄浮雕。已重新导出，复核近景、实际 GLB 动态、同版六视图及源/导出几何检查；旧版只保留作历史。
-- 最新交互简化：用户明确不需要手部动作，魔方独立运动实现功能响应。取消托举/抓握/手势及手部骨骼门槛，不要求四个角色动作clips或绑定CubeSocket。
+- 最新动作要求（2026-09-15）：魔方仍独立运动，不依赖托举/抓握；用户新增成功Yes点头、失败No挥手和鼠标注视。失败只复用Wave右臂轨道并保持头部稳定，已在R1.2原型实现。此前“不需要手部动作”的简化不再排除这次明确要求的挥手反馈。
 - 原候选对照保留于7862工作树 artifacts/xiaog/T02/robot_candidates/comparison.html；A已选，B/C为历史候选。原A概念图 C:/Users/yxy/.codex/generated_images/01a09fd2-e69e-7a11-8156-3a8332754ef3/exec-d4d792b4-5678-4805-8d76-5995a7e3d833.png；A_v1已保留，最终资产以 robot/runtime_manifest.json 和 evidence/final_same_version 为准。
 - 历史选择Snow v4及亚洲人物外观、寸头、白色肤色仅保留为中止分支记录；已有源/导出不删除，不自动成为最终小G。
 - T01 工作树：C:/Users/yxy/.codex/worktrees/382b/AI_FOR_VECTOR；仅包含该阶段候选/验证产物，不作前端代码基线。

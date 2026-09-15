@@ -252,18 +252,27 @@ export class Observatory {
     this.interaction = new RobotInteraction(this.robot, r.animations);
     this.mixer = this.interaction.mixer;
     this.pointer = null;
-    this.pointerMedia = matchMedia("(any-hover: hover) and (any-pointer: fine)");
+    this.pointerMedia = matchMedia(
+      "(any-hover: hover) and (any-pointer: fine)",
+    );
     const center = () => {
       this.pointer = null;
       this.interaction.center();
       this.forceRender = true;
     };
-    addEventListener("pointermove", (event) => {
-      if (event.pointerType !== "mouse" || !this.pointerMedia.matches) return;
-      this.pointer = { x: event.clientX, y: event.clientY };
-      this.forceRender = true;
-    }, { passive: true });
-    document.addEventListener("pointerout", (event) => { if (!event.relatedTarget) center(); });
+    addEventListener(
+      "pointermove",
+      (event) => {
+        if (this.reduced || this.frozen || this.contextLost || this.staticQuality) return;
+        if (event.pointerType !== "mouse" || !this.pointerMedia.matches) return center();
+        this.pointer = { x: event.clientX, y: event.clientY };
+        this.forceRender = true;
+      },
+      { passive: true },
+    );
+    document.addEventListener("pointerout", (event) => {
+      if (!event.relatedTarget) center();
+    });
     addEventListener("blur", center);
     this.pointerMedia.addEventListener("change", center);
     document.addEventListener("visibilitychange", () => {
@@ -363,9 +372,13 @@ export class Observatory {
     if (this.cube && !work)
       this.cube.position.set(mobile ? 0.94 : 1.12, mobile ? 1.12 : 1.09, 0.22);
     if (work) {
-      this.camera.fov = 22;
-      this.camera.position.set(0, 1.7, 3.2);
-      this.camera.lookAt(0, 1.62, 0);
+      const wave =
+        this.interaction?.reaction?.name === "No"
+          ? this.interaction.reaction.weight
+          : 0;
+      this.camera.fov = mix(22, mobile ? 38 : 29, wave);
+      this.camera.position.set(-0.23 * wave, 1.7, 3.2);
+      this.camera.lookAt(-0.23 * wave, 1.62, 0);
       this.scene.background = null;
       this.scene.fog = null;
     } else if (mobile) {
@@ -595,9 +608,15 @@ export class Observatory {
     this.renderer.render(this.scene, this.camera);
     this.rendered++;
   }
-  taskResult(status) {
-    if (this.contextLost || this.staticQuality || this.frozen || document.hidden) return false;
-    const played = this.interaction?.react(status) ?? false;
+  taskResult(status, onStart) {
+    if (
+      this.contextLost ||
+      this.staticQuality ||
+      this.frozen ||
+      document.hidden
+    )
+      return false;
+    const played = this.interaction?.react(status, onStart) ?? false;
     if (played) this.forceRender = true;
     return played;
   }
@@ -622,7 +641,8 @@ export class Observatory {
       this.mode === "home" ||
       (this.mode === "preview" && ms < 870) ||
       this.mode === "expanding";
-    if (!animationActive && !this.forceRender && !this.interaction.active) return;
+    if (!animationActive && !this.forceRender && !this.interaction.active)
+      return;
     if (!this.reduced && this.mode === "home") {
       this.cube.rotateOnWorldAxis(
         new THREE.Vector3(0, 1, 0),
@@ -633,12 +653,21 @@ export class Observatory {
     if (this.reduced && !this.forceRender) return;
     if (this.pointer && !this.reduced && this.mode !== "expanding") {
       const rect = this.container.getBoundingClientRect();
-      const head = this.interaction.head.getWorldPosition(new THREE.Vector3()).project(this.camera);
+      const head = this.interaction.head
+        .getWorldPosition(new THREE.Vector3())
+        .project(this.camera);
       const x = rect.left + ((head.x + 1) / 2) * rect.width;
       const y = rect.top + ((1 - head.y) / 2) * rect.height;
-      this.interaction.look((this.pointer.x - x) / Math.max(320, innerWidth * 0.5), (y - this.pointer.y) / Math.max(240, innerHeight * 0.5));
+      this.interaction.look(
+        (this.pointer.x - x) / Math.max(320, innerWidth * 0.5),
+        (y - this.pointer.y) / Math.max(240, innerHeight * 0.5),
+      );
     }
-    this.interaction.update(Math.min(dt, 50) / 1000, this.camera, this.mode === "home");
+    this.interaction.update(
+      Math.min(dt, 50) / 1000,
+      this.camera,
+      this.mode === "home",
+    );
     this.forceRender = false;
     const start = performance.now();
     this.renderNow(ms);
