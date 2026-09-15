@@ -1,3 +1,5 @@
+> 历史设计/计划记录：保留原始上下文，不作为当前功能清单或执行指令。当前实现请从 [文档目录](../../README.md) 阅读；下文的待办和完成状态仅代表当时记录。
+
 # Four-Session GIS Platform Improvement Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. **Each session is executed in a fresh context** using only the repository state, this plan, and `docs/superpowers/HANDOFF.md`.

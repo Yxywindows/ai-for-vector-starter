@@ -1,0 +1,43 @@
+{
+  "marker": "DESIGN_HANDOFF_VERIFY_OK",
+  "localLinksChecked": 92,
+  "httpChecks": [
+    {
+      "path": "/",
+      "status": 200,
+      "length": "8508"
+    },
+    {
+      "path": "/prototype.html",
+      "status": 200,
+      "length": "4495"
+    },
+    {
+      "path": "/assets/OpenGMS_A.glb",
+      "status": 200,
+      "length": "3568508"
+    },
+    {
+      "path": "/assets/cube.glb",
+      "status": 200,
+      "length": "565652"
+    },
+    {
+      "path": "/stage_manifest.json",
+      "status": 200,
+      "length": "15024"
+    },
+    {
+      "path": "/evidence/observatory-film.webm",
+      "status": 200,
+      "length": "1848981"
+    },
+    {
+      "path": "video byte range",
+      "status": 206,
+      "bytes": 32
+    }
+  ],
+  "packagedFilesHashChecked": 100,
+  "errors": []
+}

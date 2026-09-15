@@ -1,0 +1,18 @@
+{
+  "version": "D01-R1.1",
+  "ready": true,
+  "createdAt": "2026-09-15T01:46:09.299916+00:00",
+  "runtimeChangeFiles": [
+    "app.mjs"
+  ],
+  "originalR1Unchanged": true,
+  "originalZipUnchanged": true,
+  "manifestFiles": 101,
+  "zipEntries": 104,
+  "zipBytes": 22832352,
+  "zipSha256": "3271da56d83e2ddf3859a1cd613f94c2f9158c18b640894e097ece4b578a53c6",
+  "zipVerified": true,
+  "dialogueChecks": 9,
+  "packageIntegrityMarker": "D01_VERIFY_OK",
+  "shaListLineEndings": "LF"
+}

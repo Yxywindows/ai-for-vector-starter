@@ -1,0 +1,14 @@
+
+> web@0.0.0 test
+> vitest --run
+
+
+ RUN  v4.1.10 C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web
+
+Not implemented: navigation to another Document
+
+ Test Files  42 passed (42)
+      Tests  363 passed (363)
+   Start at  20:22:41
+   Duration  16.09s (transform 7.47s, setup 32.77s, import 31.17s, tests 40.46s, environment 193.20s)
+

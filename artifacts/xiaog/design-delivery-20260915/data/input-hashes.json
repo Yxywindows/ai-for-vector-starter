@@ -1,0 +1,1479 @@
+{
+  "capturedAt": "2026-09-14T14:03:27.917Z",
+  "inputs": [
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/robot/exports/OpenGMS_A.glb",
+      "file": "assets/OpenGMS_A.glb",
+      "bytes": 3568508,
+      "sha256": "6c1c45e83743ae79767613c3ce690130546b95a93beb1ca8e5ca2eac2caa1ac3"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/robot/exports/cube.glb",
+      "file": "assets/cube.glb",
+      "bytes": 565652,
+      "sha256": "ffbeee194a53049b1555db8b75d5c58326110d8be9d3e267aa4d7753e521b2c9"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/robot/evidence/avatar.png",
+      "file": "assets/avatar.png",
+      "bytes": 919591,
+      "sha256": "3ade06b15e0b93ff986678cd152ec3c272b694bc293fa52910c460fe8447df4c"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/robot/runtime_manifest.json",
+      "file": "assets/runtime_manifest.json",
+      "bytes": 5349,
+      "sha256": "95c9371527b780ffc00a6496a2a001985e4a5a0a7bdcb252ae74f8b9b2cedf6c"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/robot/source/LICENSE-source.md",
+      "file": "licenses/LICENSE-source.md",
+      "bytes": 364,
+      "sha256": "14687ac4a51d5e013b0fbc5486dabc743f76c1e37b7ca872af74cfb93115b4b2"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/build/three.module.js",
+      "file": "vendor/three.module.js",
+      "bytes": 603113,
+      "sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/build/three.core.js",
+      "file": "vendor/three.core.js",
+      "bytes": 1403455,
+      "sha256": "eb077d2417f61d3e6d9264c317cabc4ea35769ed6b0ab533067292a550784c20"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/examples/jsm/loaders/GLTFLoader.js",
+      "file": "vendor/loaders/GLTFLoader.js",
+      "bytes": 114739,
+      "sha256": "67ac5551fdafa6e349bd80c8f8e5e39c136d6b2fb1ad647db9abb21dc86f9e4a"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/examples/jsm/utils/BufferGeometryUtils.js",
+      "file": "vendor/utils/BufferGeometryUtils.js",
+      "bytes": 35539,
+      "sha256": "fda7e946b8e0b5ab39b779206589e7a1079a22eb24efb89d7223e03fdfb1f751"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/examples/jsm/environments/RoomEnvironment.js",
+      "file": "vendor/environments/RoomEnvironment.js",
+      "bytes": 4899,
+      "sha256": "c20f0b4677f6128a138d7152b85cbef9091f4f45cdfa05adca04d40c1697c7ae"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/LICENSE",
+      "file": "licenses/THREE-LICENSE.txt",
+      "bytes": 1081,
+      "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/package.json",
+      "file": "licenses/three-package.json",
+      "bytes": 4635,
+      "sha256": "aa42494664dba4cf76d89c6975ee38321a402f09a048672e190bad6f13beec93"
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/analysis.ts",
+      "sha256": "6ebf7e4f15b7b812972d95391ad2420eea757939b44d24afda6fb3becf2533fb",
+      "bytes": 426
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/catalog.ts",
+      "sha256": "2ea222e3840a0c7ea7d9d096653fe5eb97b3dc6bcadc108fa11d63211593c9d0",
+      "bytes": 186
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/client.test.ts",
+      "sha256": "5b573e74394070715cfffa710c9361d26116f7606432aa90871d24973d31421b",
+      "bytes": 3671
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/client.ts",
+      "sha256": "8cb4f91e07bd243a02452b3a4aa4d5d81f98240efcc1b11b35bd1a3ae398faa4",
+      "bytes": 2471
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/exports.ts",
+      "sha256": "7ab059f3792e28d1fadbc090d4729d7735b610bbc1c92d55fb0f714f10672ffd",
+      "bytes": 1121
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/features.ts",
+      "sha256": "f689e4867417cb2397d82e5ff3559e04a5805af3edb0c3f02dcb9d8110286694",
+      "bytes": 2521
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/imports.ts",
+      "sha256": "c7671bdfd75da72f3081443af225fb4b7d0d4dc7382ca6c8bd4aea671cbc7808",
+      "bytes": 435
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/layers.ts",
+      "sha256": "42117c1cb133a3362dafddc806fc61054143bb1e54f408bcf4402aa79db05004",
+      "bytes": 2181
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/system.ts",
+      "sha256": "046321d935c83141ef82e6e63f72e2e8181d77d6fd6c6cfb7afad2d35525b664",
+      "bytes": 391
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/tasks.ts",
+      "sha256": "f13ed3872972c8f2649f605a51c6c208d6344c934353ae0a71b1b6d19179a413",
+      "bytes": 1228
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/types.ts",
+      "sha256": "9fcf138e677d1d668f7d3750a0762d026bcae0d384824203a5b0c2b3639f65a5",
+      "bytes": 5770
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/AppShell.test.tsx",
+      "sha256": "2b4fbf011494de07495498109087d986a639ffaf1eeadc8f5b8c75b277aa1631",
+      "bytes": 5673
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/AppShell.tsx",
+      "sha256": "5464b33c2864b1e92643fcc5bc2c5253958daec98be71ba824c938ec56c6e233",
+      "bytes": 15334
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/BrandMark.tsx",
+      "sha256": "7cd58e177e24a74891c10532f783e371440ab9fe4339a248b355542f907d077d",
+      "bytes": 590
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/LayoutMenu.test.tsx",
+      "sha256": "6efbe6a9bbe854dffe25960fa93a74da2ed3f98665950cdef0f95e693686554f",
+      "bytes": 2958
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/LayoutMenu.tsx",
+      "sha256": "0790a9fa075a52e569f6ed70e724d673cd542d747e20a24913d793bf3608b582",
+      "bytes": 5249
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/PlatformShell.tsx",
+      "sha256": "d2c93c345360da49b64518c12df51f72fad5d2ce1b70c18586471bf4b4f9625d",
+      "bytes": 263
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/ProjectSwitcher.tsx",
+      "sha256": "638b703c01b0061f3d423ccd5601b060081bbef24bd2a23b8966b09865111f99",
+      "bytes": 976
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/queryClient.ts",
+      "sha256": "ff5a7b8f1c0ba7c1984ebedd137910f4aa603338627a9a116f20c1668e16e99e",
+      "bytes": 201
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/router.tsx",
+      "sha256": "808c39faf174dba43bb7188feb3f297334b75238000cec131d74bc29ec5bdd1b",
+      "bytes": 2849
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/workspaceLayout.test.ts",
+      "sha256": "576ad93df6dd8d1cc3568122c5d4208c45e71f9c02d0977f7b5be32dd5db1e7e",
+      "bytes": 3608
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/workspaceLayout.ts",
+      "sha256": "fe9e4f4694c187af667e96298020a6d4c92c97597446fc359de499a7c5fd9d02",
+      "bytes": 4790
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/App.tsx",
+      "sha256": "cdbbbe786f188019f4daf84671d27c108bcab04baab8bf2b1d4d11df19e71e26",
+      "bytes": 10352
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/cache/geoCache.test.ts",
+      "sha256": "95baa6ea3d2d43f2022afb888f4bbdb0d08cf70f1d169fe5966e0b71a11b8c40",
+      "bytes": 22662
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/cache/geoCache.ts",
+      "sha256": "7240fd468380ff3b06384da642de2ee0396611d929887b1e989bb67130cbb583",
+      "bytes": 18553
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/cache/idb.test.ts",
+      "sha256": "53d11cf02872d9aa6d096005ebff2e24abd59b0b5b08b01db2d86e82a1d3ca11",
+      "bytes": 4270
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/cache/idb.ts",
+      "sha256": "dcbd3f34bec54ddaedc8ce645010725b9fd62b9c05c3f1d08f94ecbc64d2201d",
+      "bytes": 8350
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/cache/keys.ts",
+      "sha256": "c5222c001843c0a272ec81e303e2148f1c6d142dd148c08cd1f914f077f83814",
+      "bytes": 1178
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/experience.css",
+      "sha256": "e636019200668b26023d66bdee1e952ca54df3539080cea98cd63953fa288d1c",
+      "bytes": 25907
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/experienceReducer.test.ts",
+      "sha256": "2709523592084295f5984d19dfd0ff02b9d3c3f26c6cb4f6b0d557429f63ecbc",
+      "bytes": 3731
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/experienceReducer.ts",
+      "sha256": "fb128802b3c95393179539354bdf54681bcc6beb29b7634952e61a18c60cce2b",
+      "bytes": 3040
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/ExperienceRoot.test.tsx",
+      "sha256": "b354833cc0b11934fd27b55d2a6569cf0896760558a4a46ce75768bccd2b3e86",
+      "bytes": 6267
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/ExperienceRoot.tsx",
+      "sha256": "b226ac3e106acf1f18b758cf5076d5218167ea39d5135c00132d785b330376e9",
+      "bytes": 8990
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/featureRegistry.ts",
+      "sha256": "7ad0fc99b490b9a717a180744fe490ebdb51acee3660f8b292536e2d40b970df",
+      "bytes": 2646
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/motionConfig.ts",
+      "sha256": "d83d1b2ac84a4da6e0e8e3e7994b9002cf5c33da6ce76d7d380395c39b7a65c4",
+      "bytes": 305
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/ui/ExperienceStage.tsx",
+      "sha256": "2e3092086711a945e88a1505015b70d35efa0f533f821656c5123151d2eb31c4",
+      "bytes": 5896
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/ui/FeatureIcon.tsx",
+      "sha256": "6b5b229afd14f619bd5ffcc8aa4e7177d9874a08e5f15fe99f41041c54a12a35",
+      "bytes": 2142
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/useReducedMotion.ts",
+      "sha256": "11b794642c2495523092a9b5bc7c6f84173d5eca5483aaa904d682b7c23ce639",
+      "bytes": 1078
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/attributes/AttributeTable.test.tsx",
+      "sha256": "76ccaa57212e83e5bdb5ac007a698a24e4e368c004e283ae00b8398028c75525",
+      "bytes": 5721
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/attributes/AttributeTable.tsx",
+      "sha256": "7afe7dd2d3bf9090d4f158afa31c13fa75c85830130f62f547f123d54794507a",
+      "bytes": 6300
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/attributes/coerce.test.ts",
+      "sha256": "4cd965b2073fa5fb92df9d9910600a27783f3130751296f9e5213a8b8745a1a6",
+      "bytes": 1742
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/attributes/coerce.ts",
+      "sha256": "64580c20c7b17a10ac8fb0794a5e9ce739d7365ecd4573442cd31c134c459934",
+      "bytes": 1572
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/attributes/useAttributes.ts",
+      "sha256": "5535a454f7e109bd59e0314c739d4159bb9d9bcc6f4755c91a6deb29055e8fca",
+      "bytes": 2398
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/editing/editSession.test.ts",
+      "sha256": "5ad56b97cef8d460f4f2368da91dde76754895412ce76048a0462cb92266eee7",
+      "bytes": 3854
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/editing/editSession.ts",
+      "sha256": "b29a2e62916cbd5650f1072dcb4dd109a774eca6155302557e7025e3e7000af6",
+      "bytes": 3917
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/editing/EditToolbar.test.tsx",
+      "sha256": "7a6150915f6b9f431180974a59502bc1eb2f4f1b73e4eb15c8e2ce6dd62d292a",
+      "bytes": 2322
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/editing/EditToolbar.tsx",
+      "sha256": "7d3d1f8a733c555eebd3930680a67db0bb4c533d7d847ac4dd34c5f1eb33d198",
+      "bytes": 1879
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/editing/useEditSession.ts",
+      "sha256": "7ae8541cd1e05bea72d2138015a5423963b891af1d9d2cd1b46db410a392d534",
+      "bytes": 4701
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/DraftGrid.test.tsx",
+      "sha256": "cd0410f2b3ad03f4b5af65663fa534d83f797ea2db547faaab603760325e0511",
+      "bytes": 4465
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/DraftGrid.tsx",
+      "sha256": "0dd33c4270d90f20a70d03b65e378a03bb7f473c3febb39687dd0f8b5d351185",
+      "bytes": 9155
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/ImportPreview.test.tsx",
+      "sha256": "79eb120493a3680040bebb32fd9e4d1fea88254b7abad2fe020a21c7fbfea5ba",
+      "bytes": 8047
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/ImportPreview.tsx",
+      "sha256": "61af3690cb20c08247035533bbff0657f36e14babedc668877c1d4a803e38967",
+      "bytes": 14680
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/parseGeoJson.test.ts",
+      "sha256": "9346920728a51461df84a64072ed2506e8a2d555d033cf292b5c3c14823b18ff",
+      "bytes": 9935
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/parseGeoJson.ts",
+      "sha256": "901ec7af74d6181fd160fc9fa707bdbcbf61c6dcea362e13fbd7fa3a7490440e",
+      "bytes": 9682
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/parseWorker.test.ts",
+      "sha256": "32da3f46da7fdc20e7e374ae4e9732c0ef750f04d5f5a06565ebc0ed17e59402",
+      "bytes": 2957
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/parseWorker.ts",
+      "sha256": "2aa551b96aa04293b52874158797fc9a146b6dd81b3f34cf077484d0f04f44df",
+      "bytes": 904
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/PreviewMap.test.tsx",
+      "sha256": "12c7a9d7cef2edb0c89aa2ccb0c62a7c8505a1f432d62f05df3ce0230cff4f37",
+      "bytes": 1640
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/PreviewMap.tsx",
+      "sha256": "685941d547b73dc3246de683ea60dcd588e46d8333f08a081f8cfb9e228a50d5",
+      "bytes": 5314
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/useImportDraft.test.ts",
+      "sha256": "7d15a59d3d8ac24535b75e884933dd0ec3c4f968b6a5e6d1db6bc1a350b4f7b0",
+      "bytes": 7819
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/useImportDraft.ts",
+      "sha256": "80b32dd799b38aa3c0be73c181a9ec766bd278810e9f41255adecae42c13df7a",
+      "bytes": 8098
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/useParseWorker.test.ts",
+      "sha256": "98d850e154bfbbff969fc1320d265adc77e44b8ac8fbca00ee547ffcdb28c294",
+      "bytes": 6038
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/useParseWorker.ts",
+      "sha256": "92cdd85417cef8e5855b75b3e7d2666a3e36a3ffda993f687446bce533dd4b07",
+      "bytes": 4468
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/validation.test.ts",
+      "sha256": "327590b20ceeab247a45543cf838e22d3deac4fe6dcc4e20fde23a679d6e13be",
+      "bytes": 6092
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/validation.ts",
+      "sha256": "b7c788a6724da958892a6faf2ec8d30d95fd5485afcc0c0b90de116fddff672f",
+      "bytes": 7592
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/workerTypes.ts",
+      "sha256": "ce588e4b284373721238df5a2e8c7cb1898da4c9b45875ff4ed01681ddc3a8d1",
+      "bytes": 507
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/AddLayerDialog.test.tsx",
+      "sha256": "98584a8d66ffb8ea5e934049973828137e533dbe8bd80f020aa2d56101264ed5",
+      "bytes": 2532
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/AddLayerDialog.tsx",
+      "sha256": "afe64b39f94cad28773d437b8921c93a5fe3052aabc2fc6150b815ff07cfa839",
+      "bytes": 4169
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/LayerPanel.test.tsx",
+      "sha256": "e321b3fe640266f3619cef9f30a871be00518665393b544194fd57cd7f9481e5",
+      "bytes": 4385
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/LayerPanel.tsx",
+      "sha256": "e454678ec56a33cfc9a53a5b040f4f7b46f8444c7a5ea89f3b34032b1f851064",
+      "bytes": 4659
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/reorder.test.ts",
+      "sha256": "2e18dc22561af4957fffdfed5bea09cd5c5229aa7052726948b77d762c1b45ea",
+      "bytes": 803
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/reorder.ts",
+      "sha256": "048dba8442aeb88a7720bb9c80691ad3d095ff907591bd095c0498d0c9ca8432",
+      "bytes": 369
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/useLayerMutations.ts",
+      "sha256": "35005fc0fbd22d041e6b08f2e4f677c285fdd99e85e2ff76fe9ccb372134c126",
+      "bytes": 2144
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/memory/MemoryPanel.test.tsx",
+      "sha256": "0f9ba2c4771d14e1a5855d141cebc07eff5418005247055f264cd77ceb1c7d82",
+      "bytes": 2522
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/memory/MemoryPanel.tsx",
+      "sha256": "2225b1ee090f9f576e5253b35d4a4f71f01d3be096bc1ef5c00b54cee0d1e667",
+      "bytes": 2029
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/defaults.test.ts",
+      "sha256": "449054acc8346d2586d7069a3def8dabdd027fd1a6495b412e4933e6f87c7298",
+      "bytes": 1928
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/defaults.ts",
+      "sha256": "9dd3b17878960826aef5769fd1eece767d9108d38a351bd5502c0f98e003dddf",
+      "bytes": 1733
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/ramps.test.ts",
+      "sha256": "2e6434f2ca3d40b39339902921e0ce1f816b2e8564a7b13224ba1b9001050a17",
+      "bytes": 1615
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/ramps.ts",
+      "sha256": "d8f7aa82847272d543dc2456f71dd6c18231924ee8f46b52fc577116d51fcc63",
+      "bytes": 2611
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/StyleEditor.test.tsx",
+      "sha256": "c4e51e6e3cbfc94264d26312c5b7a4b7122ded4a32637b41d6b4e7c15df793fe",
+      "bytes": 5948
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/StyleEditor.tsx",
+      "sha256": "7ced93c5ae1eb370c60b4cfaef02e16b3809fe8b54dd13d0b8765420a02afec0",
+      "bytes": 10528
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/index.css",
+      "sha256": "00bdbf9acba1b31145698684628abf12d569fa428e30a623c7f1c9b070d990a8",
+      "bytes": 49190
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/main.tsx",
+      "sha256": "b96d8550ac37b3955e676269fc7d2c8c55a1e8aacb22f40d70e7e253047313d6",
+      "bytes": 815
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/BasemapSelector.test.tsx",
+      "sha256": "663c19e437d65237e44b23da201f602fb3c24b643d2d4f8c7b1141d9d7644556",
+      "bytes": 2882
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/BasemapSelector.tsx",
+      "sha256": "503c3ce619b2ecf5a12c316b132ada9f6bd87a66ff2892209c70591b4b3b38be",
+      "bytes": 4652
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/mapboxLayer.test.ts",
+      "sha256": "bab20bd03d861528f23ff00851253e74658915af350b47c9d477242709465c6d",
+      "bytes": 3982
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/mapboxLayer.ts",
+      "sha256": "7bd0ba57854aaed77099bd89a75e97dc4598a8aea66830f282ccdbd944f20eb1",
+      "bytes": 3656
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/themes.test.ts",
+      "sha256": "67f0868f243cc5bd6026e4aae5c9ebd8e9cdda30edb8e49d8c4bbd89786665a1",
+      "bytes": 2248
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/themes.ts",
+      "sha256": "f55312a52f2842e14c6830d4bf400c4d3fbd596d35c0d158416b0266c6d137f7",
+      "bytes": 4927
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/featureLoader.test.ts",
+      "sha256": "11d7c7aeb6cfa56c360ddd2b25bd6fd4a4f76f3189bdd4e2d6343addaf2d5ef4",
+      "bytes": 3010
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/featureLoader.ts",
+      "sha256": "9fd5dbd2d38f80127f112300fae1d884c0399d9dece2916839b6e33b375d220e",
+      "bytes": 4051
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/IdentifyPopup.tsx",
+      "sha256": "f65f06488356740d6fb8ee6e81e063908f8800a8c237ec9f57b67e8b9cc6143b",
+      "bytes": 4600
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/layerFactory.test.ts",
+      "sha256": "1e709da048bae9fbc4b10a4a9346fa430db9430c8d34a3daa74c9b808f758769",
+      "bytes": 5223
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/layerFactory.ts",
+      "sha256": "55b42f7ac85a22d52331286cad48ab6bd67dc75eac2719e8d5511c1fe620be21",
+      "bytes": 4546
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/loadingTiers.ts",
+      "sha256": "3c7bb5c0ba89a346486521a913c975b9f257e29cae00bd14ff2a5a2ec955a74e",
+      "bytes": 1202
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/MapCanvas.tsx",
+      "sha256": "2f2694b87388d1284653eaa6bb911eaaf228baae1fddb7054ae08506fa7d68c8",
+      "bytes": 1184
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/MapPreview.tsx",
+      "sha256": "891554a3c6fd58415d2de7554eab9de375aac0ce001c79bd985d55439ff0351b",
+      "bytes": 1338
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/MapProvider.tsx",
+      "sha256": "f05c5a47af922ad59c9ac2d5afa3d101f296a9cd7c845fb16220e1e4b56b9eb5",
+      "bytes": 1649
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/memory/instrumentation.ts",
+      "sha256": "fb0a59cc1a1d00c275943799755d2c421b5eaae6fa7a0eef358c5bf040e4af54",
+      "bytes": 2310
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/memory/LayerMemoryManager.test.ts",
+      "sha256": "811418e493daf0edb85b9a6bf7f709d7d7448f6f17f65033688c2734ee0ff297",
+      "bytes": 4770
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/memory/LayerMemoryManager.ts",
+      "sha256": "9db8356572fd4faccd6962fc856d9b8de964333807cbc18206c55a4631ce6865",
+      "bytes": 4362
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/memory/useLayerMemory.ts",
+      "sha256": "1c403c406854391e678edf7cc95705be86bbd9d61351bf08a73d6397e8beac82",
+      "bytes": 750
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/selection.ts",
+      "sha256": "d078eeed694fa7073873885ae329dfbf780543016e8c211ebfc3d9f881a1d8c5",
+      "bytes": 1335
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/StatusBar.tsx",
+      "sha256": "451f3cd2f50f083e6384ec29a36ebb3363a8ae99dcc8f32eb5ae63523a36e278",
+      "bytes": 1884
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/styleCompiler.test.ts",
+      "sha256": "f33f26f0a3df00a4f64c2ad9b4a43c2b01d3ace8cb00b75d068e824aa117e9e5",
+      "bytes": 6154
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/styleCompiler.ts",
+      "sha256": "9ed50b12a3eb19eef4f1d101b55cef52e58adfeb8bd9c2b601b3c6830d40214c",
+      "bytes": 3731
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/syncLayers.test.ts",
+      "sha256": "dd2753c0a4b1226deef44c2b6232e680717c8fc6ddb52c9e2a408ed2d6c13046",
+      "bytes": 2998
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/syncLayers.ts",
+      "sha256": "4fb23f2e041b89041d6b1f7fb7cdf23f89c2ea27e69458eff3aa32c41dd4c5a5",
+      "bytes": 2272
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/WorkspaceSync.test.ts",
+      "sha256": "db48e328185767cb1b9f13dbda8b2317602231692a06e172e5caa11e1ec89dec",
+      "bytes": 993
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/WorkspaceSync.tsx",
+      "sha256": "092261ee8b06ef4fa468d5afa06e0ed4a62b215ead47f71b4a388d9d2f537949",
+      "bytes": 5052
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/AnalysisPage.test.tsx",
+      "sha256": "b37c545b7959cb376a71cbd869fde0f3e2c5982bb933d9fd786b216e3ef8aee2",
+      "bytes": 4702
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/AnalysisPage.tsx",
+      "sha256": "6bb4b806a48207de70c2fbb3524ed642409cecaebd521e72b59aeb03c730111b",
+      "bytes": 10833
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/DashboardPage.test.tsx",
+      "sha256": "4af9c0ab9bd5ec09c31a3bb75a6d75c6d3810a41008a331919c7b0c94953ab9a",
+      "bytes": 2359
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/DashboardPage.tsx",
+      "sha256": "0d12301cf67811a21aac5bc77b6fa5bd6cd3f2a25cbe2a9b7fddda35d51d72f3",
+      "bytes": 4742
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/DataCatalogPage.test.tsx",
+      "sha256": "081d6f12cbf6c59668c20e70941e3e00167b13011c554f4ca9ad8c6d1fe19735",
+      "bytes": 2494
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/DataCatalogPage.tsx",
+      "sha256": "77bdad52e010be552f7dab4d854b7527eb5949215257ed86f7b2fbc5ad2250d1",
+      "bytes": 4665
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/DatasetDetailsPage.tsx",
+      "sha256": "58cb62484662e98db9ea2a901be70572a84ed1170fe52bd36fb7db6ef2586d65",
+      "bytes": 6958
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/ExportsPage.test.tsx",
+      "sha256": "184d06d6eef1c98164216ec1a58c88645a3d14bca568a3b66968ba7e5a0eb47c",
+      "bytes": 7222
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/ExportsPage.tsx",
+      "sha256": "a1d0e41e6a1e3b48a993b1b6a3bf7c3635bd921aa161a2e4528e48e966cdef41",
+      "bytes": 10000
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/ExtentSketch.tsx",
+      "sha256": "37874be6ff7b2d98dfd9123226dedf00fcf69bf20ed0ba34c841eb006c1a9175",
+      "bytes": 1201
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/ProjectOverviewPage.tsx",
+      "sha256": "cf0d2d1ba20585dba4ce0dc6781ff8c10131b475c381e406de33eb4a732ff454",
+      "bytes": 2058
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/ProjectsPage.tsx",
+      "sha256": "e637027e6de992acc2afb159240c1881a6dc37c12e28b4ff04614ba0a97e94b1",
+      "bytes": 1111
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/TasksPage.test.tsx",
+      "sha256": "2e2eefc20e9dfec28b7825db071f4968ed013c89cb650266ffc8e30be51be8c9",
+      "bytes": 7119
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/TasksPage.tsx",
+      "sha256": "405e95eaef1aea2c96539abe86e3a64e87ab7bb47602bc41761869ea5e0cfa8d",
+      "bytes": 9075
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/state/layerStore.test.ts",
+      "sha256": "53bfdfee5f0cbf9227ccc84b11505823007b219cf7e637aeebd5a1793b440b22",
+      "bytes": 1966
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/state/layerStore.ts",
+      "sha256": "7fb97cf3d3d22aca4d5c75ddbf8d1cd04c8ab969c5b797505eb76cde7aebfcd1",
+      "bytes": 1651
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/router.py",
+      "sha256": "223d495ddba1cfc5fcf11b619221d0b8417f4a2a218b7ed3bc03ed717a2db69e",
+      "bytes": 688
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/analysis.py",
+      "sha256": "285adf23d9e0133a64d0bd6e027cfcd123e4410f5915259801950d38ad023c67",
+      "bytes": 3652
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/catalog.py",
+      "sha256": "295581e9ab5132b3bd87e1b401019be5f0a3f41bd920dd2b02ab2634fdba41c9",
+      "bytes": 933
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/exports.py",
+      "sha256": "a004f4fda03704036cfa7a799dbb3230b4506c3cea5d80683b3b5d10ea8ae3de",
+      "bytes": 3232
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/features.py",
+      "sha256": "ef8071f95a8fbf72ea20d094705d006528b4cb48dbc8ae71f72e9e4ed3175ab3",
+      "bytes": 4033
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/health.py",
+      "sha256": "a0bf45f8a4931dc8b4183c36e1b774baf7a159b478bedb8c32696052c11561e7",
+      "bytes": 281
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/imports.py",
+      "sha256": "977311c0572808862db3c7b2ef6aa75bccd6b743f14228c4e77c266124599300",
+      "bytes": 1804
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/layers.py",
+      "sha256": "80337adec3e29b4b76c055b70a2295afcdd2959f7e59e7c8a5c07e126dba8c1c",
+      "bytes": 1006
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/projects.py",
+      "sha256": "29903239bf9883c7fb0a7fc7c3991623a409ad212ad4102b008b504e27df6eb8",
+      "bytes": 4456
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/system.py",
+      "sha256": "0258694d50b13ecbd1a349f75f29d5d89eb2eacb3a44fcc64b15df92cc5c1f38",
+      "bytes": 671
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/tasks.py",
+      "sha256": "920422a7926736185be7ae4beecec0d4a1272c98a13d630b1501fe237e827e81",
+      "bytes": 5707
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/tiles.py",
+      "sha256": "3a5ec6294ee09a5840e1d20a610f5b24c26fc50b34ed52bad10d2e2b3e42e4f5",
+      "bytes": 2283
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/analysis.cpython-312.pyc",
+      "sha256": "6fc568c9015298eab627e05af673d569f761adb1dbd80af4af4651a5685b7ddb",
+      "bytes": 5253
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/catalog.cpython-312.pyc",
+      "sha256": "c5fefc44ca4c13098bda0f4d33b9496ba9786759331bd275080349e00f8ea370",
+      "bytes": 1701
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/exports.cpython-312.pyc",
+      "sha256": "23cf3dd678966aa7664a5ec2dfbab74a5e2e335d670c9867bbae22cc550bef9f",
+      "bytes": 4775
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/features.cpython-312.pyc",
+      "sha256": "06df1b1f6caa49b314c454733fe9994b4a14be53ceb0186b9083ffa7d630cad9",
+      "bytes": 6573
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/health.cpython-312.pyc",
+      "sha256": "2a6d71f3360d449137fdf830764bc60ef5bb0225921ace5b2f8b0ac13b00e219",
+      "bytes": 687
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/imports.cpython-312.pyc",
+      "sha256": "64cd5f386295bed7554d24f425d69d7073fb3e3ff682e0395d8fb4adaa350c17",
+      "bytes": 2756
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/layers.cpython-312.pyc",
+      "sha256": "7967e5fa1be4b0794295f7c7ceb2cd129f976d7f87c4c85344e5c53b7cc83219",
+      "bytes": 1951
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/projects.cpython-312.pyc",
+      "sha256": "ae6fc9e4f467cdebd59986e6e6c3cbac86aee5c5c334182b446ad7fad5b2919e",
+      "bytes": 7806
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/system.cpython-312.pyc",
+      "sha256": "337c11e0dc11f749e059bdbece7567b573c17083a189107a94f3bd70286cbb2f",
+      "bytes": 1382
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/tasks.cpython-312.pyc",
+      "sha256": "1e21cfec0a8d05366e7fe883be9b4fa9db8ca31eb5032b1b634f3c4cb0829164",
+      "bytes": 8690
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/tiles.cpython-312.pyc",
+      "sha256": "c84839f57f6e28de7ac855396d05c0006c781ebd23ba9a02477414e41764e388",
+      "bytes": 3243
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "dfbc4ae3f8266d6bb27b8669273da417fcd55d15d9faa7bfbe6f48c4259a1326",
+      "bytes": 174
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/__pycache__/router.cpython-312.pyc",
+      "sha256": "10a40d44c8c7174ebd682d201d89a7be106c5248d12dc5fbd08701961f5ecafb",
+      "bytes": 1303
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "69bd1e7640ed91a6d9a69d855d14c5d937ee46095b7e842dd20adb0aa710f9b8",
+      "bytes": 167
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "3b9687425ff16b6eb363d9f0e304985795a116cc2add697b8b282aac7c0ecbb0",
+      "bytes": 164
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/config.py",
+      "sha256": "d2e7fb6d813613bfe5b5518a2188928be91ccf4b3069762fe62e2011d8c663d9",
+      "bytes": 2439
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/errors.py",
+      "sha256": "53deb5f87aa74afe059afa231b277cda1a78c22c38a5758f6c0c2c4478e8a442",
+      "bytes": 2934
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/geo_env.py",
+      "sha256": "cf53602fa4ba4efcef8656c2e675c125148f2606697d1178600577d2d9f0e02a",
+      "bytes": 1349
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/logging.py",
+      "sha256": "4142a2b8ff5ebd6922b731644a5f78684fd2afb0fdd2db224ef399c6e74c61a3",
+      "bytes": 1031
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__pycache__/config.cpython-312.pyc",
+      "sha256": "c468eb6178683ddc3feafee02e5dd92637cd68241d3ea9839b76f11e592e5613",
+      "bytes": 3037
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__pycache__/errors.cpython-312.pyc",
+      "sha256": "f8077529f4110a58e36665c5cd0579f38e229c98c83240965d2fbf55622b649e",
+      "bytes": 5295
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__pycache__/geo_env.cpython-312.pyc",
+      "sha256": "d5b25a079d4c55d751ffefe55326b4c7d7ca3afcfc09289289890e0910f0c2f9",
+      "bytes": 1842
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__pycache__/logging.cpython-312.pyc",
+      "sha256": "27489241ab107c23367bf028eb20e810b4aac1a7d0e4c45bb7f63df58e263276",
+      "bytes": 1258
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "409408581b7206c69959bad402dcd9e06a73b5bf2f877209f4274f8168637dbe",
+      "bytes": 165
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/base.py",
+      "sha256": "cd4887ff4827c4224b60a66b939ed9ca9ca5abbb7380893b59052e8025363ce8",
+      "bytes": 718
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/identifiers.py",
+      "sha256": "88098edfceebd08c7f9b538f8ababed41fe66d9cf334ec4e32b1b844da67e053",
+      "bytes": 4532
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/session.py",
+      "sha256": "66d360e5a59aefee41455737008af23ad59301cc19afbcc8acb60b32c5365a92",
+      "bytes": 1893
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/sync_engine.py",
+      "sha256": "84c5a4f7204d1075c8ae5ec2c023a3e4cd1fee38b6d7c4e0aeba6638f45bfa7f",
+      "bytes": 654
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__pycache__/base.cpython-312.pyc",
+      "sha256": "31c44dbb694d4104edb652cc2763d96ccc1682d60251fe9f8931eedfc1503e7a",
+      "bytes": 1053
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__pycache__/identifiers.cpython-312.pyc",
+      "sha256": "d96306e3c3dbd719a52544a8f4b13ab50726c4fb86395404d22cef04f311507c",
+      "bytes": 5805
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__pycache__/session.cpython-312.pyc",
+      "sha256": "127f14e6107721db59650bf975fa72ed1ff740452698b454ff10bf4a0f235c61",
+      "bytes": 2131
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__pycache__/sync_engine.cpython-312.pyc",
+      "sha256": "1fe823170ced9346b89767b286c53477a2f9fa1c2b1d9305d360ad7705376d6c",
+      "bytes": 1102
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "eb1d85736dbbaf70817276b7b5b94cee752830dd2d8c4fbec527a133d9b976f3",
+      "bytes": 163
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/main.py",
+      "sha256": "18f923f860b229f6f3f00c409aa64d413a63f97bd661562dafd57b85ac623e2b",
+      "bytes": 3689
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/layer.py",
+      "sha256": "9ccf3907aa63d6787fdb6232d6d90362b134c625ad66b4ac7615a30a10387811",
+      "bytes": 2681
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/project.py",
+      "sha256": "53d2e9781c8ebed9bbbe65766b31c285c4d0bff935d67379d6e69a573b8200ec",
+      "bytes": 1458
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/task.py",
+      "sha256": "376b22b57ec72b40f9e8c876e037ab18d6e3b6f6f4ab6b4f1665f82324106cf1",
+      "bytes": 3775
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/__init__.py",
+      "sha256": "50953e77b102daf78812f39bdfde7a1860183ebb679113a7e3850bede105c12c",
+      "bytes": 147
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/__pycache__/layer.cpython-312.pyc",
+      "sha256": "afc28378f59aaa842f577b6ede2bb931c1b88e8902955e26465cd0044e4a3298",
+      "bytes": 3550
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/__pycache__/project.cpython-312.pyc",
+      "sha256": "a624882a21118d95ffad62ed76f90ce99ac11d86050e9601ad49de8ef5167393",
+      "bytes": 2165
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/__pycache__/task.cpython-312.pyc",
+      "sha256": "23666940847fe9d70eb719168ceacb6cf822d2e159de0ec14ca7700089874b98",
+      "bytes": 3992
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "38127ba51a69cef44fdef73633fd848b7d94581740cb6d85247e2a1f8263739c",
+      "bytes": 351
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/catalog_repository.py",
+      "sha256": "b6a0391a82823f7dfa0eaa9cdf169377d9dca749b0c6406c8a1e64c74a7ba755",
+      "bytes": 5722
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/feature_repository.py",
+      "sha256": "ee276c5e11b557ba5810b3054b0808016bf068c84228147453b37576e58d018b",
+      "bytes": 17679
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/layer_repository.py",
+      "sha256": "0544586d25135629072a766d9ecf401382f9716d5d3eeba114188d335361a482",
+      "bytes": 2098
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/project_repository.py",
+      "sha256": "f033b0b1190b49be5a1888aafb9ee717a36887da6f2dcb87dee45ff1f0d4d439",
+      "bytes": 1479
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/tile_repository.py",
+      "sha256": "9bb7572f5b614e71e1e43478e5ef45fa9f6c117d71e170f2a4b86ab6877c1a19",
+      "bytes": 3995
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/catalog_repository.cpython-312.pyc",
+      "sha256": "bb1f7be1714ffc166664352aa1ca547229d7a96c75d3e53d6ab29123f771971b",
+      "bytes": 8124
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/feature_repository.cpython-312.pyc",
+      "sha256": "151ffabd4b5b2c552238093e463c9969059323be1583196728b964fd348f3c4d",
+      "bytes": 20958
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/layer_repository.cpython-312.pyc",
+      "sha256": "3924bb9fbb5e3782c68892068bdd21de65422e9d844c5d5f390fb61b6a511e09",
+      "bytes": 4895
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/project_repository.cpython-312.pyc",
+      "sha256": "e12d2a6e613a9cbc8579d8ce87ac97499ed4efed87e3a0b78573430dd48cee88",
+      "bytes": 3316
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/tile_repository.cpython-312.pyc",
+      "sha256": "ea8b4ff9fddc14cf427269e617fb69bd5ec407f956c2a71babe89e9940c17108",
+      "bytes": 3415
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "849aeb42bffb6ce55a4924e2af50ea113ab3d3b34c93c3ec4dc05e017aa47d9d",
+      "bytes": 173
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/resources/dataset_pool.py",
+      "sha256": "7f4e4816e64ef8f2dd35c05547ba980ab35c103baa1ddbcd881ca01232805198",
+      "bytes": 14253
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/resources/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/resources/__pycache__/dataset_pool.cpython-312.pyc",
+      "sha256": "0c68643cad6bcd487030381a38491a183655d20baf170b9a5a4db750b65bce32",
+      "bytes": 17946
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/resources/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "20b5e7f428cc26bebccbb6730d552ce50e5e8b1acadd462ecfd6f50293b6f162",
+      "bytes": 170
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/analysis.py",
+      "sha256": "5190a9143ad1ce95ed1aaeaec58063b32b4967735f84213f10fe74c65752e463",
+      "bytes": 1154
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/attribute.py",
+      "sha256": "36f437bfa19aae8f9082eb7b060debddb3ec56b39a943ad0b6320a7f41cf39b2",
+      "bytes": 2090
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/base.py",
+      "sha256": "55d5121f50afc055915d6566203c2c7b20ff540ac734ae8f83e2e12cb2303619",
+      "bytes": 399
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/catalog.py",
+      "sha256": "79ee14a56985a100ff632d367368131a6d9e6666a5e351e7fa0bb7d280bcb47b",
+      "bytes": 655
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/export.py",
+      "sha256": "22c83c126919250e4bfbb19694327d4261435b5a56fc504995b438bb24487c59",
+      "bytes": 963
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/feature.py",
+      "sha256": "f0910d3915a341b1c94dfae8b8a2032673f9a620dbcfcc4c179df6cb9a79f59f",
+      "bytes": 2820
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/import_draft.py",
+      "sha256": "8a0161583349e8fbdb6500a27f51f5d653f36f47e776175e6a9dd00c7713e1d5",
+      "bytes": 1318
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/layer.py",
+      "sha256": "995b984b8e36e16627f3231fd47bb75a031d527d9da6376f71d789400b088a61",
+      "bytes": 1981
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/project.py",
+      "sha256": "45c19dbbfb932c246946a41f3ca355733f76eb166f05da4271c44c71edc134db",
+      "bytes": 922
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/source.py",
+      "sha256": "f7e131cebfdd1dfed5b7d7ee65a23671c2e1ff7f7a45e09a93a4b3011bdb38f1",
+      "bytes": 1385
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/style.py",
+      "sha256": "a1a53cc019eb71ba92017126d15a521de78cb75143fde7a6ffa2f7baf89f8df6",
+      "bytes": 3746
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/system.py",
+      "sha256": "620e60274c115533f8f94b8f0d279a0cd7295fe5d764b038d946d2a4bc8ea2d8",
+      "bytes": 1178
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/task.py",
+      "sha256": "52d66dd9e6b63ce4b816405ed847522f7f6cdae3c61bc811b3da6092a377fc8e",
+      "bytes": 1079
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/analysis.cpython-312.pyc",
+      "sha256": "590769750e587c337e6801147cef722dd7e3a066031dbdc819149d38e13eceae",
+      "bytes": 2482
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/attribute.cpython-312.pyc",
+      "sha256": "d56795c11516f4d708e8420f15c14f1d6722a57130a7f12647bae6b0d09109e9",
+      "bytes": 3010
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/base.cpython-312.pyc",
+      "sha256": "c56b495fdabf7bd067b5854cf59a1bc763c8045ba5d2c6427dab4fabb66f92ab",
+      "bytes": 748
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/catalog.cpython-312.pyc",
+      "sha256": "b6b7d1a79148806f7d0c3424aaf42ee8a5c21cddb0f83c08aa138f1ec2957155",
+      "bytes": 1478
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/export.cpython-312.pyc",
+      "sha256": "dd42e67fdcc324ca6d9cb81c4190e691c4a1f872114c10e133f93570f9cbe9fe",
+      "bytes": 1606
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/feature.cpython-312.pyc",
+      "sha256": "8b7dd921a2b79cd9c3568b16c0a2fb9b3d45a8e81b651d48f5783f992147afa6",
+      "bytes": 4626
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/import_draft.cpython-312.pyc",
+      "sha256": "8a0dd39dfb90c3dd8c96ba05ae340783a984f296a26ee5ad2baa8d70010a5343",
+      "bytes": 2280
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/layer.cpython-312.pyc",
+      "sha256": "d78399b6d638b6e25c914c25565e93a933e04165fb134879353ac82a3016b3a8",
+      "bytes": 3341
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/project.cpython-312.pyc",
+      "sha256": "d0a31c1ba52b825e19fdc341c8996981c01ea72d5d1af2f2822628b043b87b92",
+      "bytes": 2264
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/source.cpython-312.pyc",
+      "sha256": "e3c7b7e0d421d59eaf3d0c6f4a77af73a893bb937798f088ddb09f1e4a3692f0",
+      "bytes": 2882
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/style.cpython-312.pyc",
+      "sha256": "e4a6a10ad73e2ebc451525e42a14b1c1fd5dd1e302258f1cf69d1bc1d4cdcd0c",
+      "bytes": 7159
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/system.cpython-312.pyc",
+      "sha256": "28bf851dd5ccbb02ad2f24c1cfa819ce6feb502eb2b19139ad9c932661215e4a",
+      "bytes": 2560
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/task.cpython-312.pyc",
+      "sha256": "79edbc12ab6cc27095b54ab866cd5e403510ae7440dddffb835cf9a2d82d4cdd",
+      "bytes": 2059
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "eceefe30db010ed2cd688ed48f76e5c5aafd3f909040ccb51d0272866fede19a",
+      "bytes": 168
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/analysis_service.py",
+      "sha256": "161914f2ad3b74f5fe883a037b09920f279d74746c55b7e0f387d420636a6052",
+      "bytes": 15350
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/attribute_service.py",
+      "sha256": "7481be43ed3e350f404d91f30df163a4e8acf5cf4c21ce23b214bc3697d05e02",
+      "bytes": 2448
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/catalog_service.py",
+      "sha256": "5755997514c4f2ce748656a085c14fd7bf98f1e0fa0a02b7a7f3088b3cbcb774",
+      "bytes": 4158
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/draft_import_service.py",
+      "sha256": "9fc90abf48957a8fb48351e016f4155ea76a1dca3d2b7d6b7fe24ecba0ca25ea",
+      "bytes": 4576
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/edit_service.py",
+      "sha256": "2a3097c82e7a26a778abe0705382b62dae7bff98cab2bdc223457010fcc4037f",
+      "bytes": 7080
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/export_service.py",
+      "sha256": "fec837f7abeabdfdf625fd6231b3b386e466386009880440f596bc04adf5604d",
+      "bytes": 8104
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/feature_service.py",
+      "sha256": "7949a2b2adfac60e760eca1717f35d3a6734a634323f83191927793587488337",
+      "bytes": 2036
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/geojson_validation.py",
+      "sha256": "82c4248d62675b8207b69276287b9682048c7a6a6ed0ecc27318de8c74d858c7",
+      "bytes": 10097
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/layer_service.py",
+      "sha256": "0fc209854e07ab2b182881577a94dda841a2f4a7a5fb42bf540fd61a07b896b9",
+      "bytes": 3868
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/project_service.py",
+      "sha256": "b34e3520633512d38545480bc3b0d468a0a6af9cac6e3735f01f0ab3c6311054",
+      "bytes": 1770
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/raster_import_service.py",
+      "sha256": "7f9fbd625b0a852ea9e1c97e3d6f591ff9e7b7b7180eefbcc25a23812af19520",
+      "bytes": 8430
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/raster_tile_service.py",
+      "sha256": "00508f5fa592373f40b9cbd6192b4db5de9cede21c3962d39ea1cf913c25bf41",
+      "bytes": 6457
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/source_snapshot.py",
+      "sha256": "398fa83c0dcf590198e39a5b918a381b2b5740c0efda938b8328d01db9c5177d",
+      "bytes": 3282
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/system_service.py",
+      "sha256": "d3d73dd3cb287eb1262d177bd005de6179652189fb636a133feb00c74c47bb73",
+      "bytes": 2559
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/task_handlers.py",
+      "sha256": "b3d03193bad05a9c22fb5d97987f777afa444e29be48c8cd52657fb1245df483",
+      "bytes": 4378
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/task_lifecycle.py",
+      "sha256": "9c69bccc303222d0a2f9974fd9bbaad544743b8336e05a3832e721b41bae0041",
+      "bytes": 1358
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/task_service.py",
+      "sha256": "a45e686bffe2630039db49419490e8a990dee8af9f744c7c8d74955a5df49325",
+      "bytes": 8809
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/task_worker.py",
+      "sha256": "c79aac0d9d9dfab29b420240b8b01cdd66427bd7e8b2fde1cdef2eb2efe6ac43",
+      "bytes": 5371
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/tile_service.py",
+      "sha256": "ff537a81ab7b503b2a18cc68597ccbe7048c91428bb3b0a9c3399434f4f1303a",
+      "bytes": 2957
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/upload_service.py",
+      "sha256": "b1b78b099626d72bd25dd489e835f93901daf9ba79e2b6c90dcdb173abe37f2d",
+      "bytes": 1988
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/vector_import_service.py",
+      "sha256": "560e9f184f680a02753d4540766037d66f08ab73c04503028cbf447b409e56b6",
+      "bytes": 13997
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/analysis_service.cpython-312.pyc",
+      "sha256": "9e189218f3176757955404c45ddfb5e6962aef57c6d3a6f9baf99300c3d2f3bc",
+      "bytes": 23728
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/attribute_service.cpython-312.pyc",
+      "sha256": "cb788be9784be5d2001fc2028c125c2f3d744d5e514d51e123fc65da6ed1805b",
+      "bytes": 3533
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/catalog_service.cpython-312.pyc",
+      "sha256": "4add9a6cfe1159842cb2918e0a794d7e38aae3ace202bd294b00d6752207a488",
+      "bytes": 4883
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/draft_import_service.cpython-312.pyc",
+      "sha256": "fc55dabe9a3b60a28d17b4584cccb6e9611dc9d3c4b6ce993c66f2737122a7fa",
+      "bytes": 6252
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/edit_service.cpython-312.pyc",
+      "sha256": "9b73407193afe02d896c3dab82cee7bd884ae798d80372b4abe4063175d776b5",
+      "bytes": 9587
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/export_service.cpython-312.pyc",
+      "sha256": "6f1dfb8418e72d237dec7e01eb61280dd56ceef13db461bdc8a30d0b5c4d0141",
+      "bytes": 13770
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/feature_service.cpython-312.pyc",
+      "sha256": "f50694572fb3f9c7793da0426e63177e70ecc98034fcf68cea8e13e170c0d367",
+      "bytes": 2769
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/geojson_validation.cpython-312.pyc",
+      "sha256": "7e1fa1e651fc9093de30ea7b7188d0b832602db64c03664123ea3efd71a7712c",
+      "bytes": 12181
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/layer_service.cpython-312.pyc",
+      "sha256": "feb8a132f907809e0d28b61b04c88403e188437c70720f03625872afd7a83e22",
+      "bytes": 6252
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/project_service.cpython-312.pyc",
+      "sha256": "8130ec92988d88b25b68e2eaeddcc6de4a7f5be725a075fd6b6661f29cd000a8",
+      "bytes": 3076
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/raster_import_service.cpython-312.pyc",
+      "sha256": "b1d9e581d01fa14851faa84f3b60de6e756b2326a006fcd4c5d8cf1cf6d497f8",
+      "bytes": 8803
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/raster_tile_service.cpython-312.pyc",
+      "sha256": "957b8121d27b79e590748b2a97a6bf835d4d95e58efbc3e6811762ee37035089",
+      "bytes": 7833
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/source_snapshot.cpython-312.pyc",
+      "sha256": "82239216848f74d9d2a977b995929b97aa9561e04a1624ef2556d6236d3594d1",
+      "bytes": 5338
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/system_service.cpython-312.pyc",
+      "sha256": "7e3126c551b6671fff3e71bad0659936a9347d22cf26337bd96fa98464c80244",
+      "bytes": 4602
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/task_handlers.cpython-312.pyc",
+      "sha256": "05c4ec9b75923cc38077b18edd32b1b1296ed5994b725d8bda3ed14a5aaab02d",
+      "bytes": 6968
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/task_lifecycle.cpython-312.pyc",
+      "sha256": "f194d4de9d7e4fe7c32c1c07eab61a794684d15f19972003480b46f4b97652da",
+      "bytes": 1740
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/task_service.cpython-312.pyc",
+      "sha256": "61c9cc5ad80b37a7afbe700a11b6604392cc3a20f0d55f1b11ea6a9002ca282e",
+      "bytes": 12564
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/task_worker.cpython-312.pyc",
+      "sha256": "c2c9f5f97d052a812b7094515a16f7b719d572f467f8dc782ab964376154023e",
+      "bytes": 8490
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/tile_service.cpython-312.pyc",
+      "sha256": "c32333021d60f5c66d62bbfb2e585cf856707bfee440e79228481e7736f1c5a4",
+      "bytes": 4557
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/upload_service.cpython-312.pyc",
+      "sha256": "87a58f8884d47ba7a8bc582ccdbe26889ef637e9f763fb9e2b442532688faabd",
+      "bytes": 3534
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/vector_import_service.cpython-312.pyc",
+      "sha256": "b38eba1e2ead8deb92a54af68b0288e22095c70636a0616c2a01367443194729",
+      "bytes": 17716
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "d4055102a5a178053486408ed0a41c5c810122f2b83bc446e17d6854cb9090b2",
+      "bytes": 169
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/__init__.py",
+      "sha256": "d634d7bbd271053c683d9b4f7aa1dc5c7f5aceb00fe36e492744b201c5e3004a",
+      "bytes": 225
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/__pycache__/main.cpython-312.pyc",
+      "sha256": "e14ebfcc8da5ffe3e6d8e01a9c2348dc4e335dbe86fda4ee7a61c71bb7a12415",
+      "bytes": 4172
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "0fa23d52526436e08169c129505b06b45a1eecc1c4f23ae68c0f31194bdc2feb",
+      "bytes": 415
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/package.json",
+      "sha256": "a295789dc61c36c711f98fd6e96053e19571b67aefd29d27c5a47f6b298b5e38",
+      "bytes": 1383
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/package-lock.json",
+      "sha256": "1c6bda238dc11e873881b8eefb666d89fb70430aa1c7f0d8c6d7d3e973269579",
+      "bytes": 155000
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/docs/xiaog-game/04-design-direction-review.md",
+      "sha256": "92dc409ef2131b223d25c70fcfb3591278400356b988386b0f42d888adeaa2a7",
+      "bytes": 35572
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/docs/xiaog-game/03-execution-status.md",
+      "sha256": "c9405feb4efd2805805bb3fc8e1fa0a4f2c5b49688da3b839d33dca978fcdcc1",
+      "bytes": 6915
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/artifacts/xiaog/T02-coordinator-review/coordinator-review.md",
+      "sha256": "ba263aa8398b164c5add5ea4fdb027fbf0b983027444fa4de0fa84fa20539996",
+      "bytes": 5474
+    }
+  ]
+}

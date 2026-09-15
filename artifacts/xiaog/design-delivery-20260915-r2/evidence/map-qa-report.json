@@ -1,0 +1,42 @@
+{
+  "version": "D01-R1",
+  "createdAt": "2026-09-14T14:56:28.169Z",
+  "results": [
+    {
+      "name": "map with real geometry, layer, attribute table, safe companion",
+      "pass": true
+    },
+    {
+      "name": "continue editing retains typed draft",
+      "pass": true
+    },
+    {
+      "name": "save failure retains page and queue",
+      "pass": true
+    },
+    {
+      "name": "save and leave stores local design draft only",
+      "pass": true
+    },
+    {
+      "name": "discard and leave exits without save",
+      "pass": true
+    },
+    {
+      "name": "save two separate rows then reload preserves both local values",
+      "pass": true
+    },
+    {
+      "name": "actual sessionStorage exception retains pending queue and page",
+      "pass": true
+    },
+    {
+      "name": "mobile map page flows, only attribute table scrolls horizontally",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "writes": [],
+  "productionWrites": false,
+  "scope": "Separate map design page, local draft only; no OL/backend editing integration."
+}

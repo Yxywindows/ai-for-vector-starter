@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "assetVersion": "A-body-refinement-20260914",
+  "character": {
+    "file": "exports/OpenGMS_A.glb",
+    "root": "XiaoG_Root",
+    "height": 2,
+    "up": "+Y",
+    "forward": "+Z",
+    "scaleAlreadyNormalized": true,
+    "brand": "OpenGMS",
+    "brandNode": "Brand_OpenGMS",
+    "defaultClip": "Idle",
+    "companionClip": "Idle",
+    "clips": [
+      {
+        "name": "Dance",
+        "duration": 3.3333332538604736
+      },
+      {
+        "name": "Death",
+        "duration": 0.9583333134651184
+      },
+      {
+        "name": "Idle",
+        "duration": 3.3333332538604736
+      },
+      {
+        "name": "Jump",
+        "duration": 0.7083333134651184
+      },
+      {
+        "name": "No",
+        "duration": 1.6666666269302368
+      },
+      {
+        "name": "Punch",
+        "duration": 0.8333333134651184
+      },
+      {
+        "name": "Running",
+        "duration": 0.9583333134651184
+      },
+      {
+        "name": "Sitting",
+        "duration": 0.4166666567325592
+      },
+      {
+        "name": "Standing",
+        "duration": 0.4166666567325592
+      },
+      {
+        "name": "ThumbsUp",
+        "duration": 1.5833333730697632
+      },
+      {
+        "name": "Walking",
+        "duration": 0.9583333134651184
+      },
+      {
+        "name": "WalkJump",
+        "duration": 0.8333333134651184
+      },
+      {
+        "name": "Wave",
+        "duration": 1.8333333730697632
+      },
+      {
+        "name": "Yes",
+        "duration": 1.6666666269302368
+      }
+    ],
+    "expressions": {
+      "names": [
+        "Angry",
+        "Surprised",
+        "Sad"
+      ],
+      "testedRange": [
+        0,
+        0.6
+      ],
+      "neutral": 0
+    },
+    "triangles": 97816,
+    "primitives": 44,
+    "embeddedTextureCount": 2,
+    "maxTextureDimension": 512
+  },
+  "cube": {
+    "file": "exports/cube.glb",
+    "root": "Cube_Root",
+    "independent": true,
+    "handBinding": false,
+    "nominalEdge": 0.42,
+    "grid": [
+      3,
+      3,
+      3
+    ],
+    "surfaceCubies": 26,
+    "tiles": 54,
+    "faces": {
+      "projects": {
+        "node": "Face_projects",
+        "normal": [
+          0,
+          0,
+          1
+        ]
+      },
+      "data": {
+        "node": "Face_data",
+        "normal": [
+          1,
+          0,
+          0
+        ]
+      },
+      "analysis": {
+        "node": "Face_analysis",
+        "normal": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "tasks": {
+        "node": "Face_tasks",
+        "normal": [
+          -1,
+          0,
+          0
+        ]
+      },
+      "exports": {
+        "node": "Face_exports",
+        "normal": [
+          0,
+          1,
+          0
+        ]
+      },
+      "overview": {
+        "node": "Face_overview",
+        "normal": [
+          0,
+          -1,
+          0
+        ]
+      }
+    },
+    "triangles": 17560,
+    "primitives": 13
+  },
+  "avatar": {
+    "file": "evidence/avatar.png",
+    "width": 1024,
+    "height": 1024,
+    "format": "RGBA PNG"
+  },
+  "inspectionOnly": {
+    "cubePosition": [
+      1.08,
+      1.1,
+      0.1
+    ],
+    "minimumIdleCubeSurfaceClearance": 0.18615120818535674,
+    "characterLightAndCamera": "not embedded in runtime GLB; scene design remains adjustable",
+    "cubeClearanceScope": {
+      "clip": "Idle",
+      "frames": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80
+      ],
+      "sampleCount": 9,
+      "continuousCollisionProof": false,
+      "otherClipsCovered": false,
+      "note": "Discrete sampled poses only. Circumsphere covers arbitrary whole-cube rotation at each sampled pose; no mathematical continuous-time collision guarantee and no clearance conclusion for other clips."
+    }
+  },
+  "license": {
+    "source": "CC0 1.0",
+    "author": "Tomas Laulhe / Quaternius",
+    "sourceAdaptation": "Don McCurdy",
+    "record": "source/LICENSE-source.md"
+  },
+  "validation": {
+    "ready": true,
+    "glTFErrors": 0,
+    "glTFWarnings": 2,
+    "warningDetails": "Two non-root skinned hand nodes inherited from source hierarchy; fresh import, animation and +0.5 root-translation checks pass.",
+    "totalBytes": 4134160,
+    "previewDrawCalls": 58,
+    "performance": "No production FPS claim; browser measurement overlapped offline Cycles rendering.",
+    "reports": [
+      "evidence/fresh_import_report.json",
+      "evidence/browser_report_final.json",
+      "evidence/brand_attachment.json",
+      "evidence/idle_cube_clearance.json",
+      "evidence/avatar_validation.json",
+      "evidence/glb_validation_summary.json",
+      "evidence/cube_marker_validation.json"
+    ],
+    "sameVersionEvidence": {
+      "manifest": "evidence/final_same_version/evidence_manifest.json",
+      "contactSheet": "evidence/final_same_version/contact_sheet.png",
+      "contactSheetHtml": "evidence/final_same_version/contact_sheet.html",
+      "inspectionEditable": "evidence/final_same_version/editable_inspection.json",
+      "inspectionGLB": "evidence/final_same_version/glb_inspection.json",
+      "notes": "evidence/final_same_version/verification_addendum.md",
+      "topologyWarnings": {
+        "glbDegenerateFaces": 2,
+        "sourceVerySmallWorldTriangles": 57,
+        "glbVerySmallWorldTriangles": 58,
+        "worldAreaThreshold": 1e-14,
+        "repairPerformed": false
+      }
+    }
+  }
+}

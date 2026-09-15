@@ -1,0 +1,4706 @@
+diff --git a/prototype.html b/prototype.html
+new file mode 100644
+index 0000000..61b1efd
+--- /dev/null
++++ b/prototype.html
+@@ -0,0 +1,123 @@
++<!doctype html>
++<html lang="zh-CN">
++  <head>
++    <meta charset="utf-8" />
++    <meta name="viewport" content="width=device-width,initial-scale=1" />
++    <meta name="theme-color" content="#11191f" />
++    <link rel="icon" href="data:," />
++    <title>小G · 空间观测室</title>
++    <link rel="stylesheet" href="styles.css" />
++    <script type="importmap">
++      {
++        "imports": {
++          "three": "./vendor/three.module.js",
++          "three/addons/": "./vendor/"
++        }
++      }
++    </script>
++  </head>
++  <body class="loading-scene" data-mode="home">
++    <a class="skip" href="#content">跳到工作内容</a>
++    <div id="stage" aria-hidden="true">
++      <img
++        id="fallback"
++        class="scene-still"
++        src="assets/static-scene-desktop.png"
++        alt=""
++      />
++    </div>
++    <header class="topbar">
++      <a class="brand" href="#/home" aria-label="小G 空间观测室首页"
++        ><span class="brand-mark">G<span>·</span></span
++        ><span>空间观测室<small>OpenGMS</small></span></a
++      >
++      <div class="top-context">
++        <span class="status-dot"></span
++        ><span id="context-name">选择观察项目</span>
++      </div>
++      <div class="top-actions">
++        <button id="motion" class="quiet" aria-pressed="false">减少动态</button
++        ><button
++          id="menu-toggle"
++          aria-expanded="false"
++          aria-controls="navigation"
++        >
++          导航</button
++        ><a class="package-link" href="index.html">设计入口 ↗</a>
++      </div>
++    </header>
++    <nav id="navigation" aria-label="功能导航"></nav>
++    <main id="content" tabindex="-1">
++      <section id="home">
++        <div class="home-intro">
++          <p class="eyebrow">小G · 空间探索</p>
++          <h1>从这里，读懂空间。</h1>
++          <p>一起看看数据里的联系。</p>
++        </div>
++        <div class="home-context">
++          <span class="eyebrow">正在观察</span
++          ><label
++            ><span class="sr-only">当前项目</span
++            ><select id="home-project"></select></label
++          ><label class="home-layer-label"
++            >观察图层<select id="home-layer"></select></label
++          ><span id="scope-label" class="mono"></span>
++        </div>
++        <div id="slice-caption">
++          <span class="dot-blue"></span>城市边界 · 局部观察窗<span class="mono"
++            >116–123° E / 29–34° N</span
++          >
++        </div>
++      </section>
++      <section id="projection" aria-labelledby="preview-title" hidden>
++        <div class="projection-inner">
++          <div class="preview-kicker">
++            <span id="preview-source"></span
++            ><button id="cancel-preview" class="quiet" aria-label="收起预览">
++              ×
++            </button>
++          </div>
++          <p class="eyebrow" id="preview-step"></p>
++          <h2 id="preview-title"></h2>
++          <p id="preview-copy"></p>
++          <div id="preview-context"></div>
++          <div id="preview-map"></div>
++          <button class="primary" id="expand">展开工作台 <span>↗</span></button>
++          <p class="preview-foot">停在这里看看，也可以随时换个方向。</p>
++        </div>
++      </section>
++      <section id="workspace" hidden>
++        <div class="workspace-head">
++          <div>
++            <p id="workspace-crumb" class="eyebrow"></p>
++            <h1 id="workspace-title" tabindex="-1"></h1>
++          </div>
++          <div class="workspace-controls">
++            <label
++              ><span>工作项目</span
++              ><select id="work-project"></select></label
++            ><button id="return-home" class="quiet">返回观测室 ↗</button>
++          </div>
++        </div>
++        <div id="workspace-body"></div>
++        <footer class="workspace-footer">
++          <span id="source-stamp"></span><a href="design-spec.md">设计说明 ↗</a>
++        </footer>
++      </section>
++    </main>
++    <div id="dialogue">
++      <span class="speaker">小G</span>
++      <p id="dialogue-text">你好。选一个方向，我们一起开始。</p>
++    </div>
++    <div id="notice" role="status" aria-live="polite"></div>
++    <div id="model-state" role="status">正在准备观测室…</div>
++    <noscript
++      ><div class="noscript">
++        启用 JavaScript 可体验交互；<a href="index.html"
++          >也可以直接查看完整设计画面</a
++        >。
++      </div></noscript
++    >
++    <script type="module" src="app.mjs"></script>
++  </body>
++</html>
+diff --git a/app.mjs b/app.mjs
+new file mode 100644
+index 0000000..1d54349
+--- /dev/null
++++ b/app.mjs
+@@ -0,0 +1,816 @@
++import { esc, extentText, mapSVG } from "./map.mjs";
++export const FEATURES = [
++  {
++    id: "projects",
++    title: "项目空间",
++    normal: [0, 0, 1],
++    copy: "把图层放回它所在的空间。先选项目，再看看它的范围与数据。",
++    dialogue: "每一个项目，都有自己的空间。",
++  },
++  {
++    id: "data",
++    title: "数据资源",
++    normal: [1, 0, 0],
++    copy: "从目录走近一层数据。字段、来源和空间范围，都在同一处。",
++    dialogue: "先看看数据从哪里来，再决定怎样使用。",
++  },
++  {
++    id: "analysis",
++    title: "空间分析",
++    normal: [0, 0, -1],
++    copy: "让图层之间的关系清楚起来。从输入、方法和一个明确的参数开始。",
++    dialogue: "先选输入图层，再设置缓冲距离。",
++  },
++  {
++    id: "tasks",
++    title: "任务进度",
++    normal: [-1, 0, 0],
++    copy: "沿着时间查看每次作业。状态、日志与关联对象，都有迹可循。",
++    dialogue: "任务走到哪一步，可以在这里找到。",
++  },
++  {
++    id: "exports",
++    title: "导出交付",
++    normal: [0, 1, 0],
++    copy: "带走你需要的数据。选择图层，确认格式、坐标系和保留的字段。",
++    dialogue: "交付前，先确认格式和坐标系。",
++  },
++  {
++    id: "overview",
++    title: "平台概览",
++    normal: [0, -1, 0],
++    copy: "退一步看全局。从近期项目、数据和作业，找到下一步的入口。",
++    dialogue: "这里可以看见所有项目的联系。",
++  },
++];
++const TOOLS = [
++  ["buffer", "缓冲区", "按米设置边界向外扩展的距离。"],
++  ["clip", "裁剪", "保留输入图层位于掩膜内的部分。"],
++  ["intersection", "相交", "计算两层数据的空间重叠。"],
++  ["dissolve", "融合", "按字段合并几何，留空则融合全部。"],
++  ["spatial-join", "空间连接", "按空间关系连接另一层的属性。"],
++  ["validate-repair", "几何修复", "检查并修复无效几何。"],
++  ["point-in-polygon", "面内点计数", "统计每个面内的点数量。"],
++];
++const $ = (s) => document.querySelector(s);
++const $$ = (s) => [...document.querySelectorAll(s)];
++const emptySnapshot = {
++  projects: [],
++  geometry: {},
++  fields: {},
++  tasks: [],
++  tables: [],
++  logs: {},
++  capturedAt: null,
++};
++let snapshot,
++  scene = null,
++  sceneFailed = false,
++  noticeTimer,
++  transitionTimer;
++try {
++  const response = await fetch("./data/snapshot.json");
++  if (!response.ok) throw Error("snapshot");
++  snapshot = await response.json();
++} catch {
++  snapshot = emptySnapshot;
++  $("#model-state").textContent =
++    "资料暂时无法读取，可重新打开或查看设计入口。";
++}
++const layers = () => snapshot.projects.flatMap((p) => p.layers);
++const state = {
++  mode: "home",
++  feature: null,
++  projectId: "",
++  layerId: "",
++  taskId: "",
++  tool: "buffer",
++  secondary: "",
++  distance: "500",
++  outputName: "",
++  byField: "",
++  predicate: "intersects",
++  format: "geojson",
++  crs: "4326",
++  filename: "",
++  excluded: new Set(),
++  projectSearch: "",
++  dataSearch: "",
++  kind: "",
++  taskState: "",
++  taskType: "",
++  dataKey: "",
++  reduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
++  transitionId: 0,
++};
++const project = () => snapshot.projects.find((p) => p.id === state.projectId);
++const layer = () =>
++  layers().find(
++    (l) =>
++      l.id === state.layerId &&
++      (!state.projectId || l.projectId === state.projectId),
++  );
++const vecLayers = () =>
++  (project()?.layers ?? []).filter(
++    (l) => l.kind === "vector" && l.source.type === "postgis",
++  );
++const exportLayers = () =>
++  (project()?.layers ?? []).filter(
++    (l) =>
++      (l.kind === "vector" && l.source.type === "postgis") ||
++      l.kind === "raster",
++  );
++const feature = () => FEATURES.find((f) => f.id === state.feature);
++const statusText = (s) =>
++  ({
++    succeeded: "已完成",
++    failed: "失败",
++    cancelled: "已取消",
++    running: "进行中",
++    queued: "等待中",
++    cancelling: "正在取消",
++  })[s] ?? s;
++const statusTag = (s) =>
++  `<span class="tag ${s === "failed" ? "error" : ["cancelled", "queued"].includes(s) ? "muted" : ""}">${esc(statusText(s))}</span>`;
++const count = (x) => (x == null ? "—" : Number(x).toLocaleString("en-US"));
++function inform(text) {
++  $("#notice").textContent = text;
++  clearTimeout(noticeTimer);
++  noticeTimer = setTimeout(() => ($("#notice").textContent = ""), 5500);
++}
++function routePath(mode = state.mode, id = state.feature) {
++  return mode === "home"
++    ? "home"
++    : mode === "preview" || mode === "expanding"
++      ? "preview/" + id
++      : id;
++}
++function url(mode = state.mode, id = state.feature) {
++  const params = new URLSearchParams();
++  if (state.projectId) params.set("projectId", state.projectId);
++  if (state.layerId) params.set("layerId", state.layerId);
++  if (state.taskId && id === "tasks") params.set("taskId", state.taskId);
++  return "#/" + routePath(mode, id) + (params.size ? "?" + params : "");
++}
++function writeRoute(replace = false) {
++  history[replace ? "replaceState" : "pushState"]({}, "", url());
++}
++function validateContext(params) {
++  const requested = params.get("projectId") ?? "";
++  state.projectId = snapshot.projects.some((p) => p.id === requested)
++    ? requested
++    : "";
++  if (requested && !state.projectId)
++    inform("这个项目不在当前资料中，请重新选择。");
++  const requestedLayer = params.get("layerId") ?? "";
++  const found = layers().find((l) => l.id === requestedLayer);
++  state.layerId =
++    found && (!state.projectId || found.projectId === state.projectId)
++      ? requestedLayer
++      : "";
++  if (requestedLayer && !state.layerId)
++    inform("图层不存在或不属于当前项目，已清除图层选择。");
++  state.taskId = snapshot.tasks.some((t) => t.id === params.get("taskId"))
++    ? params.get("taskId")
++    : "";
++  if (params.get("taskId") && !state.taskId)
++    inform("未找到这条任务，仍可查看任务列表。");
++  state.secondary = "";
++}
++function restore() {
++  clearTimeout(transitionTimer);
++  state.transitionId++;
++  const [path, query = ""] = (
++    location.hash.replace(/^#\//, "") || "home"
++  ).split("?");
++  const bits = path.split("/");
++  validateContext(new URLSearchParams(query));
++  state.mode =
++    bits[0] === "home" ? "home" : bits[0] === "preview" ? "preview" : "work";
++  state.feature =
++    bits[0] === "preview" ? bits[1] : state.mode === "work" ? bits[0] : null;
++  if (state.feature && !FEATURES.some((f) => f.id === state.feature)) {
++    state.feature = null;
++    state.mode = "home";
++    inform("没有找到这个页面，已回到观测室。");
++  }
++  renderAll();
++  scene?.setContext(snapshot, layer());
++  scene?.setState(state, true);
++  if (state.mode === "work")
++    $("#workspace-title").focus({ preventScroll: true });
++}
++function nav(id) {
++  clearTimeout(transitionTimer);
++  state.transitionId++;
++  const quick = state.mode === "work";
++  state.feature = id;
++  state.mode = quick ? "work" : "preview";
++  writeRoute();
++  renderAll();
++  scene?.setState(state, false);
++  if (quick) {
++    $("#workspace-body").animate(
++      [
++        { opacity: 0.6, transform: "translateY(4px)" },
++        { opacity: 1, transform: "none" },
++      ],
++      { duration: state.reduced ? 0 : 160 },
++    );
++    $("#workspace-title").focus({ preventScroll: true });
++  } else inform("已选择" + feature().title + "。");
++  $("#navigation").classList.remove("open");
++  $("#menu-toggle").setAttribute("aria-expanded", "false");
++}
++function expand() {
++  if (state.mode !== "preview") return;
++  state.mode = "expanding";
++  const id = ++state.transitionId;
++  scene?.setState(state, false);
++  if (state.reduced || sceneFailed) return finishExpand(id);
++  transitionTimer = setTimeout(() => finishExpand(id), 560);
++}
++function finishExpand(id) {
++  if (id !== state.transitionId || state.mode !== "expanding") return;
++  state.mode = "work";
++  writeRoute();
++  renderAll();
++  scene?.setState(state, true);
++  $("#workspace-title").focus({ preventScroll: true });
++  scrollTo(0, 0);
++}
++function home() {
++  clearTimeout(transitionTimer);
++  const previous = state.feature;
++  state.transitionId++;
++  state.mode = "home";
++  state.feature = null;
++  writeRoute();
++  renderAll();
++  scene?.setState(state, false);
++  $(`#navigation a[data-feature="${previous}"]`)?.focus();
++  scrollTo(0, 0);
++}
++function options(items, value, placeholder = "请选择图层") {
++  return (
++    `<option value="">${placeholder}</option>` +
++    items
++      .map(
++        (x) =>
++          `<option value="${esc(x.id)}" ${value === x.id ? "selected" : ""}>${esc(x.name)}</option>`,
++      )
++      .join("")
++  );
++}
++function contextOptions() {
++  const all = ["tasks", "overview", "data"].includes(state.feature);
++  return options(
++    snapshot.projects,
++    state.projectId,
++    all ? "全部项目" : "选择项目",
++  );
++}
++function setProject(id) {
++  state.projectId = id;
++  state.layerId = "";
++  state.secondary = "";
++  state.taskId = "";
++  state.dataKey = "";
++  state.excluded.clear();
++  writeRoute(true);
++  renderAll();
++  scene?.setContext(snapshot, layer());
++  inform(
++    id
++      ? "工作项目已切换到 " + project().name + "，请选择输入图层。"
++      : "已切换到全部或未选择项目。",
++  );
++}
++function setLayer(id) {
++  state.layerId = id;
++  state.excluded.clear();
++  writeRoute(true);
++  scene?.setContext(snapshot, layer());
++}
++function mapPanel(l = layer(), title = "当前空间范围") {
++  const sampled = snapshot.geometry[l?.id];
++  return `<div class="map-panel"><div class="map-title"><span>${esc(title)}</span><span class="mono">${l?.srid ? "EPSG:" + esc(l.srid) : "范围未就绪"}</span></div>${mapSVG(snapshot, l)}<div class="map-legend"><span><span class="dot-blue"></span>${sampled ? "城市边界 · " + sampled.data.features.length + " 个局部要素" : "图层范围示意"}</span><span>${sampled ? "简化几何 · 非测量地图" : "未显示要素几何"}</span></div></div>`;
++}
++function sectionTitle(title, meta = "") {
++  return `<div class="section-title"><h2>${title}</h2><span>${meta}</span></div>`;
++}
++function refreshFallback() {
++  const img = $("#fallback");
++  img.classList.toggle("scene-still", state.mode !== "work");
++  img.src =
++    state.mode === "work"
++      ? "./assets/avatar.png"
++      : innerWidth <= 700
++        ? "./assets/static-scene-mobile.png"
++        : "./assets/static-scene-desktop.png";
++}
++addEventListener("resize", refreshFallback);
++function renderAll() {
++  refreshFallback();
++  document.body.dataset.mode = state.mode === "work" ? "work" : "home";
++  document.body.classList.toggle(
++    "previewing",
++    ["preview", "expanding"].includes(state.mode),
++  );
++  $("#home").hidden = state.mode === "work";
++  $("#workspace").hidden = state.mode !== "work";
++  $("#projection").hidden = !["preview", "expanding"].includes(state.mode);
++  $("#navigation").innerHTML = FEATURES.map(
++    (f, i) =>
++      `<a href="${url(state.mode === "work" ? "work" : "preview", f.id)}" data-feature="${f.id}" ${state.feature === f.id ? 'aria-current="page"' : ""}><span>0${i + 1}</span>${f.title}</a>`,
++  ).join("");
++  $("#home-project").innerHTML = contextOptions();
++  $("#home-layer").innerHTML = options(
++    project()?.layers ?? [],
++    state.layerId,
++    "选择观察图层",
++  );
++  $("#home-layer").disabled = !project();
++  $("#work-project").innerHTML = contextOptions();
++  $("#context-name").textContent = project()?.name ?? "全部空间";
++  $("#scope-label").textContent = layer()?.extent
++    ? "图层范围 " + extentText(layer().extent)
++    : project()
++      ? "请选择一层数据"
++      : "尚未选择项目";
++  $("#slice-caption").style.visibility = snapshot.geometry[layer()?.id]
++    ? "visible"
++    : "hidden";
++  $("#dialogue").style.display = "";
++  $("#dialogue-text").textContent =
++    feature()?.dialogue ?? "你好。选一个方向，我们一起开始。";
++  $("#motion").setAttribute("aria-pressed", String(state.reduced));
++  $("#motion").textContent = state.reduced ? "恢复动态" : "减少动态";
++  if (feature()) {
++    const f = feature();
++    $("#preview-title").textContent = f.title;
++    $("#preview-copy").textContent = f.copy;
++    $("#preview-step").textContent =
++      "0" + (FEATURES.indexOf(f) + 1) + " / 06 · 观察方向";
++    $("#preview-source").textContent = document.body.classList.contains(
++      "static-scene",
++    )
++      ? "观察方向 · " + f.title
++      : "来自魔方 · " + f.title + "面";
++    $("#preview-context").innerHTML =
++      `<span>${esc(project()?.name ?? "全部项目")}</span><span>${esc(layer() ? count(layer().featureCount) + " 要素" : "选择图层后关联范围")}</span>`;
++    $("#preview-map").innerHTML = layer()
++      ? mapSVG(snapshot, layer(), 480, 150) +
++        "<span>" +
++        esc(layer().name) +
++        " · " +
++        (snapshot.geometry[layer().id] ? "局部输入范围" : "图层范围示意") +
++        "</span>"
++      : "<p>尚未选择观察图层，可在工作台选择输入。</p>";
++    $("#workspace-title").textContent = f.title;
++    $("#workspace-crumb").textContent =
++      "空间观测室 / " + (project()?.name ?? "全部项目");
++  }
++  $("#source-stamp").textContent = snapshot.capturedAt
++    ? "资料采集于 " +
++      new Date(snapshot.capturedAt).toLocaleString("zh-CN", { hour12: false }) +
++      " · 只读快照"
++    : "资料读取失败";
++  if (state.mode === "work") renderPage();
++}
++function renderPage() {
++  const active = document.activeElement?.id;
++  $("#workspace-body").innerHTML = (
++    {
++      projects: projectsPage,
++      data: dataPage,
++      analysis: analysisPage,
++      tasks: tasksPage,
++      exports: exportsPage,
++      overview: overviewPage,
++    }[state.feature] ?? projectsPage
++  )();
++  if (active && document.getElementById(active))
++    document.getElementById(active).focus({ preventScroll: true });
++}
++function projectsPage() {
++  const visible = snapshot.projects.filter((p) =>
++    p.name.toLowerCase().includes(state.projectSearch.toLowerCase()),
++  );
++  const p = project(),
++    l = layer() ?? p?.layers[0];
++  return `<div class="toolbar"><input type="search" id="project-search" aria-label="搜索项目" placeholder="搜索项目" value="${esc(state.projectSearch)}"><span class="count">${visible.length} 个项目</span></div><div class="split"><section>${sectionTitle("我的项目", "选择后关联右侧范围")}${visible.map((p, i) => `<button class="project-row" data-project="${p.id}" aria-pressed="${p.id === state.projectId}"><span class="project-num">0${i + 1}</span><span><h3>${esc(p.name)}</h3><span class="hint">${p.layers.length} 层数据 · ${esc(p.layers[0]?.geometryType ?? "暂无数据")}</span></span><span class="arrow">↗</span></button>`).join("") || '<div class="empty">没有匹配的项目。试试其他名称。</div>'}<p class="hint" style="margin-top:25px">选择一个项目，再把数据与它的范围联系起来。</p><button class="text-button" data-demo="创建项目的名称与范围将在正式工作台设置。当前不会新建项目。">＋ 新建项目</button></section><section>${mapPanel(l, p?.name ?? "先选择项目")}<dl class="scope-stats"><div><dt>图层</dt><dd>${esc(l?.name ?? "尚未选择")}</dd></div><div><dt>要素总数</dt><dd>${count(l?.featureCount)}</dd></div><div><dt>范围 / EPSG:4326</dt><dd class="mono">${extentText(l?.extent)}</dd></div><div><dt>来源</dt><dd>${esc(l?.source?.type ?? "未找到")}</dd></div></dl><div class="scope-action"><button class="quiet" data-open-data="${l?.id ?? ""}" ${!l ? "disabled" : ""}>查看项目图层</button><button class="text-button" data-map="true" ${!p ? "disabled" : ""}>进入地图 ↗</button></div></section></div>`;
++}
++function catalogRows() {
++  const bound = layers().map((l) => ({
++    ...l,
++    key: l.id,
++    label: l.name,
++    type: l.kind,
++  }));
++  const registered = new Set(
++    layers()
++      .filter((l) => l.source.type === "postgis")
++      .map((l) => l.source.schemaName + "." + l.source.tableName),
++  );
++  return [
++    ...bound,
++    ...snapshot.tables
++      .filter((t) => !registered.has(t.schemaName + "." + t.tableName))
++      .map((t) => ({
++        key: t.schemaName + "." + t.tableName,
++        label: t.schemaName + "." + t.tableName,
++        type: "table",
++        geometryType: t.geometryType,
++        featureCount: t.estimatedRows,
++        projectId: null,
++        srid: t.srid,
++        source: t,
++      })),
++  ];
++}
++function dataPage() {
++  const rows = catalogRows().filter(
++    (r) =>
++      (!state.projectId || !r.projectId || r.projectId === state.projectId) &&
++      (!state.kind || r.type === state.kind) &&
++      r.label.toLowerCase().includes(state.dataSearch.toLowerCase()),
++  );
++  const selected = rows.find((r) => r.key === (state.dataKey || state.layerId));
++  const f = selected?.id ? snapshot.fields[selected.id]?.fields : [];
++  return `<div class="toolbar"><input type="search" id="data-search" aria-label="搜索数据" placeholder="搜索图层或来源表" value="${esc(state.dataSearch)}"><select id="data-kind" aria-label="数据类型"><option value="">全部类型</option><option value="vector" ${state.kind === "vector" ? "selected" : ""}>矢量图层</option><option value="table" ${state.kind === "table" ? "selected" : ""}>未绑定表</option></select><span class="count">${rows.length} 项数据</span></div><div class="table-wrap"><table><thead><tr><th>数据名称</th><th>几何 / 类型</th><th>要素</th><th>所属项目</th></tr></thead><tbody>${rows.map((r) => `<tr class="${selected?.key === r.key ? "table-row-selected" : ""}"><td><button data-data="${esc(r.key)}">${esc(r.label)}</button></td><td><span class="mono">${esc(r.geometryType)}</span><br><span class="hint">${r.type === "table" ? "未绑定表" : "矢量图层"}</span></td><td class="mono">${count(r.featureCount)}</td><td>${esc(snapshot.projects.find((p) => p.id === r.projectId)?.name ?? "未绑定项目")}</td></tr>`).join("") || '<tr><td colspan="4" class="empty">没有匹配的数据，调整搜索或类型筛选。</td></tr>'}</tbody></table></div>${selected ? `<section class="detail-drawer"><div><p class="eyebrow">数据详情 / 来源与字段</p><h2>${esc(selected.label)}</h2><p class="source-path">${esc(selected.source.schemaName ?? "gis_data")}.${esc(selected.source.tableName ?? "")}<br>EPSG:${esc(selected.srid)} · ${selected.id ? "已绑定图层" : "独立表，尚未绑定图层"}</p>${f?.length ? `<div class="field-list">${f.map((x) => `<span>${esc(x.name)} <small>${esc(x.type ?? x.dataType ?? "")}</small></span>`).join("")}</div>` : '<p class="hint">未取得图层字段详情。</p>'}<p class="hint">${selected.id ? "字段来自当前图层元数据。属性值、样式编辑在正式地图工作区查看。" : "这张表没有图层 ID 与空间范围，不能定位到某个项目。"}</p>${selected.id ? `<button class="text-button" data-analyze="${selected.id}">使用此图层分析 ↗</button>` : ""}</div><div>${mapPanel(selected, selected.id ? "图层空间范围" : "未绑定空间范围")}</div></section>` : '<div class="empty">选择一项数据，查看字段、来源与空间范围。</div>'}`;
++}
++function analysisPage() {
++  const t = TOOLS.find((t) => t[0] === state.tool),
++    secondary = [
++      "clip",
++      "intersection",
++      "spatial-join",
++      "point-in-polygon",
++    ].includes(state.tool);
++  return `<div class="tool-strip" role="group" aria-label="分析方法">${TOOLS.map((t) => `<button data-tool="${t[0]}" aria-pressed="${state.tool === t[0]}">${t[1]}</button>`).join("")}</div><div class="split"><section><div class="form-title"><span>01 — 参数</span><h2>${t[1]}</h2></div><p class="hint">${t[2]}</p><form id="analysis-form" novalidate><div class="fields"><label>${state.tool === "point-in-polygon" ? "点图层" : state.tool === "spatial-join" ? "目标图层" : "输入图层"}<select id="analysis-layer">${options(vecLayers(), state.layerId)}</select></label>${secondary ? `<label>${state.tool === "clip" ? "掩膜图层" : state.tool === "point-in-polygon" ? "多边形图层" : "关联图层"}<select id="secondary">${options(vecLayers(), state.secondary)}</select></label>` : ""}${state.tool === "buffer" ? `<label>缓冲距离<div class="unit-input"><input id="distance" type="number" min="0.1" step="any" value="${esc(state.distance)}"><span>米</span></div></label>` : ""}${
++    state.tool === "dissolve"
++      ? `<label>融合字段（可选）<select id="by-field">${options(
++          (snapshot.fields[state.layerId]?.fields ?? []).map((f) => ({
++            id: f.name,
++            name: f.name,
++          })),
++          state.byField,
++          "融合全部",
++        )}</select></label>`
++      : ""
++  }${state.tool === "spatial-join" ? `<label>空间关系<select id="predicate">${["intersects", "contains", "within"].map((x) => `<option ${state.predicate === x ? "selected" : ""}>${x}</option>`).join("")}</select></label>` : ""}<label>输出数据名称<input id="output-name" value="${esc(state.outputName)}" placeholder="例如：城市边界_500米"></label></div><div class="form-actions"><button class="primary" type="submit">检查分析参数 <span>→</span></button><span class="hint">结果尚未生成</span></div><div id="analysis-feedback" class="feedback" role="status"></div></form></section><section>${mapPanel(layer(), "输入图层 · 局部观察窗")}<div class="flow"><span>输入图层</span> → <span>${t[1]}</span> → <span>等待结果</span></div><div class="result-empty"><span class="ring">—</span><div><h3>先确认输入，再运行分析</h3><p>当前只查看输入范围。没有运行新的分析，也没有生成结果图层。</p></div></div><button class="text-button" data-nav="tasks">查看历史作业 ↗</button></section></div>`;
++}
++function taskName(t) {
++  return (
++    t.result?.downloadName ??
++    t.provenance?.outputName ??
++    t.provenance?.sourceFilename ??
++    {
++      export_vector: "矢量导出",
++      analysis_buffer: "缓冲区分析",
++      vector_import: "矢量导入",
++    }[t.kind] ??
++    t.kind
++  );
++}
++function tasksPage() {
++  const tasks = snapshot.tasks.filter(
++    (t) =>
++      (!state.projectId || t.projectId === state.projectId) &&
++      (!state.taskState || t.state === state.taskState) &&
++      (!state.taskType || t.kind.startsWith(state.taskType)),
++  );
++  const selected = tasks.find((t) => t.id === state.taskId);
++  return `<div class="toolbar"><select id="task-state" aria-label="任务状态">${[
++    ["", "全部状态"],
++    ["succeeded", "已完成"],
++    ["failed", "失败"],
++    ["cancelled", "已取消"],
++    ["running", "进行中"],
++  ]
++    .map(
++      ([v, t]) =>
++        `<option value="${v}" ${state.taskState === v ? "selected" : ""}>${t}</option>`,
++    )
++    .join("")}</select><select id="task-type" aria-label="任务类型">${[
++    ["", "全部类型"],
++    ["analysis_", "空间分析"],
++    ["export_", "导出"],
++    ["vector_import", "导入"],
++  ]
++    .map(
++      ([v, t]) =>
++        `<option value="${v}" ${state.taskType === v ? "selected" : ""}>${t}</option>`,
++    )
++    .join(
++      "",
++    )}</select><span class="count">${tasks.length} 条历史记录</span></div><div class="task-split"><section>${sectionTitle("时间与作业", "历史状态 · 不实时更新")}${tasks.map((t) => `<button class="timeline-row" data-task="${t.id}" aria-pressed="${selected?.id === t.id}"><span class="date">${t.createdAt.slice(5, 10)}<br>${t.createdAt.slice(11, 16)} UTC</span><span><h3>${esc(taskName(t))}</h3><span class="hint">${esc(t.projectName)} · ${esc(t.kind)}</span></span>${statusTag(t.state)}</button>`).join("") || '<div class="empty">这个筛选下没有任务记录。</div>'}</section><section class="log-panel">${selected ? `<p class="eyebrow">作业详情 / 关联对象</p><h2>${esc(taskName(selected))}</h2><div class="task-id">${selected.id}</div>${statusTag(selected.state)}<p class="hint" style="margin-top:15px">${esc(selected.projectName)} · ${selected.durationMs == null ? "耗时未记录" : selected.durationMs + " ms"}</p>${selected.error ? `<p class="feedback error">${esc(selected.error.code)}<br>${esc(selected.error.message)}</p>` : ""}<div class="log-lines">${(snapshot.logs[selected.id] ?? []).map((l) => `<div><span class="muted">${esc(l.level)} / </span>${esc(l.message)}</div>`).join("") || "未保存这条任务的日志快照。"}</div>${selected.layerId && layers().some((l) => l.id === selected.layerId) ? `<button class="text-button" data-open-data="${selected.layerId}">查看关联图层 ↗</button>` : selected.result?.layerId ? '<p class="hint">历史结果 ID 已记录；当前图层列表中未找到该结果，无法定位。</p>' : '<p class="hint">这条记录没有可定位的图层。</p>'}` : '<div class="empty">选择一条作业，<br>查看它的日志与关联对象。</div>'}</section></div>`;
++}
++function exportsPage() {
++  const l = layer(),
++    raster = l?.kind === "raster",
++    fields = snapshot.fields[l?.id]?.fields ?? [],
++    exports = snapshot.tasks.filter(
++      (t) =>
++        t.kind.startsWith("export_") &&
++        (!state.projectId || t.projectId === state.projectId),
++    );
++  return `<div class="split"><section><div class="form-title"><span>01 — 交付设置</span><h2>带走需要的数据</h2></div><form id="export-form" novalidate><div class="fields"><label>导出图层<select id="export-layer">${options(exportLayers(), state.layerId)}</select></label>${
++    raster
++      ? '<p class="hint">栅格保留原始 GeoTIFF，当前不提供重投影和字段选择。</p>'
++      : `<div class="field-pair"><label>文件格式<select id="format">${[
++          ["geojson", "GeoJSON"],
++          ["gpkg", "GeoPackage"],
++          ["shp", "Shapefile ZIP"],
++          ["csv", "CSV + WKT"],
++        ]
++          .map(
++            ([v, t]) =>
++              `<option value="${v}" ${state.format === v ? "selected" : ""}>${t}</option>`,
++          )
++          .join(
++            "",
++          )}</select></label><label>坐标系 / EPSG<input id="crs" type="number" min="1" step="1" value="${esc(state.crs)}"></label></div>`
++  }<label>文件名称（可选）<input id="filename" placeholder="${esc(l?.name ?? "数据名称")}" value="${esc(state.filename)}"></label></div>${!raster && fields.length ? `<fieldset class="check-list"><legend>保留字段</legend>${fields.map((f) => `<label><input type="checkbox" data-field="${esc(f.name)}" ${state.excluded.has(f.name) ? "" : "checked"}>${esc(f.name)}</label>`).join("")}</fieldset>` : ""}<div class="form-actions"><button class="primary" type="submit">检查交付设置 <span>→</span></button></div><div id="export-feedback" class="feedback" role="status"></div></form><p class="capability">矢量支持 GeoJSON、GeoPackage、Shapefile 与 CSV。这里按选中图层导出，不提供任意框选裁剪。</p></section><section>${mapPanel(l, "待交付图层")}<div class="export-summary"><p class="eyebrow">交付预览</p><div class="big-format">${raster ? "GeoTIFF" : { geojson: "GeoJSON", gpkg: "GeoPackage", shp: "Shapefile", csv: "CSV + WKT" }[state.format]}</div><div class="hint">${esc(l?.name ?? "尚未选择图层")}<br>${raster ? "原始栅格" : `${count(l?.featureCount)} 要素 · EPSG:${esc(state.crs)}`} · 尚未生成文件</div></div></section></div><section style="margin-top:25px">${sectionTitle("已有交付记录", "历史快照")}<div class="table-wrap"><table><thead><tr><th>文件</th><th>格式</th><th>大小</th><th>状态</th></tr></thead><tbody>${
++    exports
++      .slice(0, 3)
++      .map(
++        (t) =>
++          `<tr><td><button data-task-link="${t.id}">${esc(t.result?.downloadName ?? "未生成文件")} ↗</button></td><td class="mono">${esc(t.result?.format ?? "—")}</td><td class="mono">${t.result?.sizeBytes ? (t.result.sizeBytes / 1048576).toFixed(2) + " MB" : "—"}</td><td>${statusTag(t.state)}</td></tr>`,
++      )
++      .join("") || '<tr><td colspan="4">暂无导出记录</td></tr>'
++  }</tbody></table></div></section>`;
++}
++function overviewPage() {
++  if (!snapshot.capturedAt)
++    return '<section role="alert" class="empty">资料暂时无法读取，统计尚未就绪。<br>请重新打开，或返回设计入口查看已保存画面。</section>';
++  const failed = snapshot.tasks.filter((t) => t.state === "failed").length;
++  return `<p class="page-lead">所有项目的共同入口。把注意力放回正在做的事。</p><div class="stat-line"><div><div class="number">${snapshot.projects.length}</div><div class="label">项目</div></div><div><div class="number">${layers().length}</div><div class="label">已绑定图层</div></div><div><div class="number">${snapshot.tasks.length}</div><div class="label">已读取的历史作业</div></div><div><div class="number">${failed}</div><div class="label">失败记录</div></div></div><div class="split"><section>${sectionTitle("项目索引", "现有项目 · API 返回顺序")}${snapshot.projects.map((p, i) => `<button class="project-row" data-overview-project="${p.id}"><span class="project-num">0${i + 1}</span><span><h3>${esc(p.name)}</h3><span class="hint">${p.layers.length} 层数据</span></span><span class="arrow">↗</span></button>`).join("")}<p class="hint" style="margin-top:20px">项目接口未提供更新时间，因此不推定最近编辑顺序。</p></section><section>${sectionTitle("从这里继续", "全局索引")}<div class="index-links">${FEATURES.filter(
++    (f) => f.id !== "overview",
++  )
++    .map((f) => `<button data-nav="${f.id}">${f.title}<span>↗</span></button>`)
++    .join(
++      "",
++    )}</div><div style="margin-top:35px">${sectionTitle("最近作业", "按任务创建时间")}${snapshot.tasks
++    .slice(0, 2)
++    .map(
++      (t) =>
++        `<button class="timeline-row" data-task-link="${t.id}"><span class="date">${t.createdAt.slice(5, 10)}<br>2026</span><span><h3>${esc(taskName(t))}</h3><span class="hint">${esc(t.projectName)}</span></span>${statusTag(t.state)}</button>`,
++    )
++    .join("")}</div></section></div>`;
++}
++function feedback(id, text, error = false) {
++  const el = $(id);
++  el.textContent = text;
++  el.classList.toggle("error", error);
++}
++function validateAnalysis() {
++  const selected = layer(),
++    secondary = vecLayers().find((l) => l.id === state.secondary);
++  let error = "";
++  if (!project()) error = "先选择工作项目。";
++  else if (!selected || !vecLayers().some((l) => l.id === selected.id))
++    error = "请选择可分析的矢量图层。";
++  else if (
++    ["clip", "intersection", "spatial-join", "point-in-polygon"].includes(
++      state.tool,
++    ) &&
++    !secondary
++  )
++    error = "请选择关联图层。";
++  else if (
++    state.tool === "buffer" &&
++    (!Number.isFinite(Number(state.distance)) || Number(state.distance) <= 0)
++  )
++    error = "缓冲距离必须是大于 0 的有限数值，单位是米。";
++  else if (
++    state.tool === "point-in-polygon" &&
++    !/POINT/.test(selected.geometryType ?? "")
++  )
++    error = "点图层需要 POINT 或 MULTIPOINT 类型。";
++  else if (
++    state.tool === "point-in-polygon" &&
++    secondary &&
++    !/POLYGON|GEOMETRY/.test(secondary.geometryType ?? "")
++  )
++    error = "目标图层需要多边形几何。";
++  else if (!state.outputName.trim()) error = "请填写输出数据名称。";
++  feedback(
++    "#analysis-feedback",
++    error || "参数检查通过。设计预演已保留设置；尚未提交作业，没有新结果。",
++    !!error,
++  );
++}
++function validateExport() {
++  const l = layer(),
++    fields = snapshot.fields[l?.id]?.fields ?? [];
++  let error = "";
++  if (!project() || !l || !exportLayers().some((x) => x.id === l.id))
++    error = "先选择项目与可导出的图层。";
++  else if (
++    l.kind !== "raster" &&
++    (!Number.isInteger(Number(state.crs)) || Number(state.crs) <= 0)
++  )
++    error = "EPSG 编号需要是正整数。";
++  else if (
++    l.kind !== "raster" &&
++    fields.length &&
++    fields.every((f) => state.excluded.has(f.name))
++  )
++    error = "至少保留一个字段。";
++  feedback(
++    "#export-feedback",
++    error ||
++      "交付设置检查通过。设计预演不生成文件；坐标系可用性将在正式提交时确认。",
++    !!error,
++  );
++}
++document.addEventListener("click", (e) => {
++  const button = e.target.closest("button,a");
++  if (!button) return;
++  if (button.dataset.feature) {
++    e.preventDefault();
++    nav(button.dataset.feature);
++  } else if (button.dataset.nav) nav(button.dataset.nav);
++  else if (button.dataset.project) {
++    setProject(button.dataset.project);
++  } else if (button.dataset.data) {
++    state.dataKey = button.dataset.data;
++    const l = layers().find((l) => l.id === state.dataKey);
++    if (l) setLayer(l.id);
++    else setLayer("");
++    renderPage();
++  } else if (button.dataset.tool) {
++    state.tool = button.dataset.tool;
++    renderPage();
++  } else if (button.dataset.task) {
++    state.taskId = button.dataset.task;
++    writeRoute(true);
++    renderPage();
++  } else if (button.dataset.taskLink) {
++    state.taskId = button.dataset.taskLink;
++    nav("tasks");
++  } else if (button.dataset.overviewProject) {
++    setProject(button.dataset.overviewProject);
++    nav("projects");
++  } else if (button.hasAttribute("data-open-data") || button.dataset.analyze) {
++    const id = button.dataset.openData || button.dataset.analyze;
++    const l = layers().find((l) => l.id === id);
++    if (l) {
++      state.projectId = l.projectId;
++      state.layerId = l.id;
++      state.dataKey = l.id;
++      nav(button.dataset.analyze ? "analysis" : "data");
++      scene?.setContext(snapshot, l);
++    }
++  } else if (button.dataset.map)
++    location.href =
++      "map-design.html?projectId=" +
++      encodeURIComponent(state.projectId) +
++      "&layerId=" +
++      encodeURIComponent(state.layerId);
++  else if (button.dataset.demo) inform(button.dataset.demo);
++});
++document.addEventListener("change", (e) => {
++  const el = e.target,
++    id = el.id;
++  if (["home-project", "work-project"].includes(id))
++    return setProject(el.value);
++  if (["analysis-layer", "export-layer", "home-layer"].includes(id)) {
++    setLayer(el.value);
++    renderAll();
++    return;
++  }
++  const bindings = {
++    secondary: "secondary",
++    distance: "distance",
++    "output-name": "outputName",
++    "by-field": "byField",
++    predicate: "predicate",
++    format: "format",
++    crs: "crs",
++    filename: "filename",
++    "data-kind": "kind",
++    "task-state": "taskState",
++    "task-type": "taskType",
++  };
++  if (bindings[id]) state[bindings[id]] = el.value;
++  if (el.dataset.field) {
++    if (el.checked) state.excluded.delete(el.dataset.field);
++    else state.excluded.add(el.dataset.field);
++  }
++  if (["format", "data-kind", "task-state", "task-type"].includes(id))
++    renderPage();
++});
++document.addEventListener("input", (e) => {
++  const id = e.target.id;
++  const b = {
++    distance: "distance",
++    "output-name": "outputName",
++    crs: "crs",
++    filename: "filename",
++  };
++  if (b[id]) state[b[id]] = e.target.value;
++  if (["project-search", "data-search"].includes(id)) {
++    state[id === "project-search" ? "projectSearch" : "dataSearch"] =
++      e.target.value;
++    const pos = e.target.selectionStart;
++    renderPage();
++    document.getElementById(id).setSelectionRange(pos, pos);
++  }
++});
++document.addEventListener("submit", (e) => {
++  if (e.target.id === "analysis-form") {
++    e.preventDefault();
++    validateAnalysis();
++  }
++  if (e.target.id === "export-form") {
++    e.preventDefault();
++    validateExport();
++  }
++});
++$("#expand").onclick = expand;
++$("#cancel-preview").onclick = home;
++$("#return-home").onclick = home;
++$("#menu-toggle").onclick = () => {
++  const open = $("#navigation").classList.toggle("open");
++  $("#menu-toggle").setAttribute("aria-expanded", String(open));
++};
++$("#motion").onclick = () => {
++  state.reduced = !state.reduced;
++  renderAll();
++  scene?.setReduced(state.reduced);
++};
++matchMedia("(prefers-reduced-motion: reduce)").addEventListener(
++  "change",
++  (e) => {
++    state.reduced = e.matches;
++    renderAll();
++    scene?.setReduced(e.matches);
++    if (e.matches && state.mode === "expanding")
++      finishExpand(state.transitionId);
++  },
++);
++addEventListener("keydown", (e) => {
++  if (e.key === "Escape") {
++    if ($("#navigation").classList.contains("open")) {
++      $("#navigation").classList.remove("open");
++      $("#menu-toggle").setAttribute("aria-expanded", "false");
++      $("#menu-toggle").focus();
++    } else if (state.mode !== "home") home();
++  }
++});
++addEventListener("popstate", restore);
++addEventListener("hashchange", () => {
++  if (location.hash !== url()) restore();
++});
++restore();
++window.D01 = {
++  version: "D01-R1",
++  state,
++  snapshot,
++  ready: false,
++  metrics: () =>
++    scene?.metrics() ?? {
++      fallback: true,
++      canvasCount: document.querySelectorAll("canvas").length,
++    },
++  captureAt: (mode, ms = 0, id = "analysis") => {
++    clearTimeout(transitionTimer);
++    state.feature = mode === "home" ? null : id;
++    state.mode = mode;
++    state.transitionId++;
++    renderAll();
++    scene?.captureAt(state, ms);
++  },
++  resume: () => scene?.resume(),
++  select: nav,
++  expand,
++  home,
++  setProject,
++  setLayer,
++  getScene: () => scene,
++};
++try {
++  if (new URLSearchParams(location.search).has("static"))
++    throw Error("Static preview requested");
++  const { Observatory } = await import("./scene.mjs");
++  scene = new Observatory($("#stage"), $("#projection"), snapshot);
++  await scene.load();
++  scene.setContext(snapshot, layer());
++  scene.setReduced(state.reduced);
++  scene.setState(state, true);
++  $("#model-state").textContent = "";
++  document.body.classList.remove("loading-scene");
++  window.D01.ready = true;
++} catch (error) {
++  sceneFailed = true;
++  document.body.classList.remove("loading-scene");
++  document.body.classList.add("static-scene");
++  renderAll();
++  $("#model-state").textContent = "静态陪伴 · 导航与内容仍可使用";
++  if (!new URLSearchParams(location.search).has("static"))
++    console.warn("Model fallback:", error.message);
++  window.D01.ready = true;
++}
+diff --git a/scene.mjs b/scene.mjs
+new file mode 100644
+index 0000000..8f103c4
+--- /dev/null
++++ b/scene.mjs
+@@ -0,0 +1,709 @@
++import * as THREE from "three";
++import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
++import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
++import { mapSVG } from "./map.mjs";
++const normals = {
++  projects: [0, 0, 1],
++  data: [1, 0, 0],
++  analysis: [0, 0, -1],
++  tasks: [-1, 0, 0],
++  exports: [0, 1, 0],
++  overview: [0, -1, 0],
++};
++const clamp = (x) => Math.max(0, Math.min(1, x)),
++  smooth = (x) => {
++    x = clamp(x);
++    return x * x * (3 - 2 * x);
++  };
++const mix = (a, b, t) => a + (b - a) * t;
++function quadMatrix(points, w, h) {
++  const src = [
++      [0, 0],
++      [w, 0],
++      [w, h],
++      [0, h],
++    ],
++    a = [];
++  for (let i = 0; i < 4; i++) {
++    const [x, y] = src[i],
++      [u, v] = points[i];
++    a.push([x, y, 1, 0, 0, 0, -u * x, -u * y, u]);
++    a.push([0, 0, 0, x, y, 1, -v * x, -v * y, v]);
++  }
++  for (let i = 0; i < 8; i++) {
++    let pivot = i;
++    for (let j = i + 1; j < 8; j++)
++      if (Math.abs(a[j][i]) > Math.abs(a[pivot][i])) pivot = j;
++    [a[i], a[pivot]] = [a[pivot], a[i]];
++    const divisor = a[i][i] || 1e-10;
++    for (let k = i; k < 9; k++) a[i][k] /= divisor;
++    for (let j = 0; j < 8; j++)
++      if (j !== i) {
++        const factor = a[j][i];
++        for (let k = i; k < 9; k++) a[j][k] -= factor * a[i][k];
++      }
++  }
++  const q = a.map((row) => row[8]);
++  return `matrix3d(${[q[0], q[3], 0, q[6], q[1], q[4], 0, q[7], 0, 0, 1, 0, q[2], q[5], 0, 1].join(",")})`;
++}
++export class Observatory {
++  constructor(container, projection, snapshot) {
++    this.container = container;
++    this.projection = projection;
++    this.snapshot = snapshot;
++    this.mode = "home";
++    this.feature = null;
++    this.started = performance.now();
++    this.last = performance.now();
++    this.elapsed = 0;
++    this.reduced = false;
++    this.frozen = false;
++    this.frames = [];
++    this.renderTimes = [];
++    this.rendered = 0;
++    this.quality = "standard";
++    this.ratio = Math.min(
++      devicePixelRatio,
++      innerWidth <= 700 || innerWidth >= 1700 ? 1 : 1.5,
++    );
++    this.renderer = new THREE.WebGLRenderer({
++      antialias: true,
++      alpha: true,
++      preserveDrawingBuffer: true,
++      powerPreference: "high-performance",
++    });
++    this.renderer.setPixelRatio(this.ratio);
++    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
++    this.renderer.toneMappingExposure = 1.08;
++    this.renderer.shadowMap.enabled = true;
++    this.renderer.shadowMap.type = THREE.VSMShadowMap;
++    this.container.append(this.renderer.domElement);
++    this.renderer.domElement.setAttribute("aria-hidden", "true");
++    this.scene = new THREE.Scene();
++    this.scene.background = new THREE.Color("#172127");
++    this.scene.fog = new THREE.Fog("#172127", 8, 20);
++    this.camera = new THREE.PerspectiveCamera(32, 1, 0.05, 35);
++    this.pmrem = new THREE.PMREMGenerator(this.renderer);
++    this.environment = this.pmrem.fromScene(new RoomEnvironment(), 0.03);
++    this.scene.environment = this.environment.texture;
++    this.scene.environmentIntensity = 0.45;
++    this.scene.add(new THREE.HemisphereLight(0xe8eff2, 0x465057, 1.3));
++    this.key = new THREE.DirectionalLight(0xfff0df, 3.2);
++    this.key.position.set(-3, 5, 5);
++    this.key.castShadow = true;
++    this.key.shadow.mapSize.set(1024, 1024);
++    Object.assign(this.key.shadow.camera, {
++      left: -4,
++      right: 4,
++      top: 5,
++      bottom: -3,
++      near: 0.1,
++      far: 15,
++    });
++    this.key.shadow.bias = -0.00035;
++    this.key.shadow.normalBias = 0.018;
++    this.key.shadow.radius = 5;
++    this.key.shadow.blurSamples = 8;
++    this.scene.add(this.key);
++    const fill = new THREE.DirectionalLight(0xcbdde4, 1.5);
++    fill.position.set(4, 3, -3);
++    this.scene.add(fill);
++    this.floor = new THREE.Mesh(
++      new THREE.PlaneGeometry(100, 100),
++      new THREE.MeshStandardMaterial({
++        color: "#172128",
++        roughness: 0.94,
++        metalness: 0.02,
++      }),
++    );
++    this.floor.rotation.x = -Math.PI / 2;
++    this.floor.position.y = -0.018;
++    this.floor.receiveShadow = true;
++    this.scene.add(this.floor);
++    // Broad contact patch supplements the cast shadow; no animated decorative geometry.
++    const shadowData = new Uint8Array(64 * 64 * 4);
++    for (let y = 0; y < 64; y++)
++      for (let x = 0; x < 64; x++) {
++        const i = (y * 64 + x) * 4;
++        shadowData[i + 3] = Math.round(
++          90 * Math.exp(-((x - 32) ** 2 + (y - 32) ** 2) / 170),
++        );
++      }
++    const tex = new THREE.DataTexture(shadowData, 64, 64);
++    tex.needsUpdate = true;
++    this.contact = new THREE.Mesh(
++      new THREE.PlaneGeometry(1.85, 1),
++      new THREE.MeshBasicMaterial({
++        map: tex,
++        transparent: true,
++        depthWrite: false,
++      }),
++    );
++    this.contact.rotation.x = -Math.PI / 2;
++    this.contact.position.set(0, -0.005, 0);
++    this.scene.add(this.contact);
++    this.mapRoot = new THREE.Group();
++    this.mapRoot.position.set(1.76, 0.025, 0.57);
++    this.mapRoot.rotation.y = -0.22;
++    const edge = new THREE.Mesh(
++      new THREE.BoxGeometry(2.6, 0.055, 1.76),
++      new THREE.MeshStandardMaterial({ color: "#5a6c73", roughness: 0.8 }),
++    );
++    edge.receiveShadow = true;
++    edge.castShadow = true;
++    this.mapRoot.add(edge);
++    this.mapFace = new THREE.Mesh(
++      new THREE.PlaneGeometry(2.6, 1.76),
++      new THREE.MeshBasicMaterial({ color: "#dce1db" }),
++    );
++    this.mapFace.rotation.x = -Math.PI / 2;
++    this.mapFace.position.y = 0.03;
++    this.mapRoot.add(this.mapFace);
++    this.scene.add(this.mapRoot);
++    const planeGeometry = new THREE.BufferGeometry();
++    planeGeometry.setAttribute(
++      "position",
++      new THREE.BufferAttribute(new Float32Array(12), 3),
++    );
++    planeGeometry.setIndex([0, 1, 2, 0, 2, 3]);
++    this.projectionPlane = new THREE.Mesh(
++      planeGeometry,
++      new THREE.MeshBasicMaterial({
++        color: "#74a4ae",
++        transparent: true,
++        opacity: 0.18,
++        side: THREE.DoubleSide,
++        depthWrite: false,
++      }),
++    );
++    this.projectionPlane.frustumCulled = false;
++    this.scene.add(this.projectionPlane);
++    const ribbonGeometry = new THREE.BufferGeometry();
++    ribbonGeometry.setAttribute(
++      "position",
++      new THREE.BufferAttribute(new Float32Array(18), 3),
++    );
++    this.ribbon = new THREE.Mesh(
++      ribbonGeometry,
++      new THREE.MeshBasicMaterial({
++        color: "#8bc4cd",
++        transparent: true,
++        opacity: 0.18,
++        side: THREE.DoubleSide,
++        depthWrite: false,
++      }),
++    );
++    this.ribbon.frustumCulled = false;
++    this.scene.add(this.ribbon);
++    const lineGeo = new THREE.BufferGeometry();
++    lineGeo.setAttribute(
++      "position",
++      new THREE.BufferAttribute(new Float32Array(12), 3),
++    );
++    this.leads = new THREE.LineSegments(
++      lineGeo,
++      new THREE.LineBasicMaterial({
++        color: "#aacfd1",
++        transparent: true,
++        opacity: 0.65,
++      }),
++    );
++    this.leads.frustumCulled = false;
++    this.scene.add(this.leads);
++    this.fromQ = new THREE.Quaternion();
++    this.targetQ = new THREE.Quaternion();
++    this.resize();
++    this.titleGhost = document.createElement("div");
++    this.titleGhost.className = "transition-title";
++    this.titleGhost.setAttribute("aria-hidden", "true");
++    document.body.append(this.titleGhost);
++    this.resizeObserver = new ResizeObserver(() => this.resize());
++    this.resizeObserver.observe(container);
++    this.renderer.domElement.addEventListener("webglcontextlost", (e) => {
++      e.preventDefault();
++      document.body.classList.add("static-scene");
++      document.querySelector("#model-state").textContent =
++        "静态陪伴 · 导航与内容仍可使用";
++      this.contextLost = true;
++    });
++    this.renderer.setAnimationLoop((t) => this.frame(t));
++  }
++  async load() {
++    const loader = new GLTFLoader();
++    const [r, c] = await Promise.all([
++      loader.loadAsync("./assets/OpenGMS_A.glb"),
++      loader.loadAsync("./assets/cube.glb"),
++    ]);
++    this.robot = r.scene;
++    this.cube = c.scene.getObjectByName("Cube_Root");
++    this.scene.add(this.robot, this.cube);
++    this.robot.traverse((o) => {
++      if (o.isMesh) {
++        o.castShadow = true;
++        o.receiveShadow = true;
++      }
++    });
++    this.cube.traverse((o) => {
++      if (o.isMesh) o.castShadow = true;
++    });
++    this.cube.position.set(1.12, 1.09, 0.22);
++    this.cube.rotation.set(0.18, 0.34, 0.1);
++    this.mixer = new THREE.AnimationMixer(this.robot);
++    const idle = r.animations.find((a) => a.name === "Idle");
++    if (!idle) throw Error("Idle not found");
++    this.mixer.clipAction(idle).play();
++    this.mixer.setTime(0.8);
++    this.loaded = true;
++    this.renderNow(0);
++  }
++  resize() {
++    const box = this.container.getBoundingClientRect();
++    this.width = Math.max(1, box.width);
++    this.height = Math.max(1, box.height);
++    this.renderer.setSize(this.width, this.height, false);
++    this.camera.aspect = this.width / this.height;
++    this.camera.updateProjectionMatrix();
++    this.forceRender = true;
++  }
++  setContext(snapshot, layer) {
++    this.snapshot = snapshot;
++    this.layer = layer;
++    const version = ++this.textureVersion || 1;
++    this.textureVersion = version;
++    const svg = mapSVG(snapshot, layer, 1024, 700);
++    const image = new Image();
++    const objectURL = URL.createObjectURL(
++      new Blob([svg], { type: "image/svg+xml" }),
++    );
++    image.onload = () => {
++      URL.revokeObjectURL(objectURL);
++      if (version !== this.textureVersion) return;
++      const texture = new THREE.Texture(image);
++      texture.colorSpace = THREE.SRGBColorSpace;
++      texture.needsUpdate = true;
++      texture.anisotropy = Math.min(
++        4,
++        this.renderer.capabilities.getMaxAnisotropy(),
++      );
++      this.mapFace.material.map?.dispose();
++      this.mapFace.material.map = texture;
++      this.mapFace.material.needsUpdate = true;
++      this.forceRender = true;
++    };
++    image.onerror = () => URL.revokeObjectURL(objectURL);
++    image.src = objectURL;
++    this.mapRoot.visible = !!layer?.extent;
++  }
++  setReduced(value) {
++    this.reduced = value;
++    this.forceRender = true;
++    if (value && this.mode === "preview")
++      this.started = performance.now() - 850;
++  }
++  setState(state, immediate = false) {
++    const priorMode = this.mode;
++    this.mode = state.mode;
++    this.feature = state.feature;
++    this.reduced = state.reduced;
++    this.started =
++      performance.now() -
++      (immediate ? (state.mode === "expanding" ? 560 : 850) : 0);
++    this.frozen = false;
++    this.resize();
++    if (this.cube) {
++      this.fromQ.copy(this.cube.quaternion);
++      this.placeCamera(0);
++      if (this.feature) {
++        const normal = new THREE.Vector3(...normals[this.feature]);
++        const view = this.camera.position
++          .clone()
++          .sub(this.cube.position)
++          .normalize();
++        this.targetQ.setFromUnitVectors(normal, view);
++      }
++    }
++    if (this.mode === "expanding") {
++      this.expandFrom = this.previewQuad?.map((p) => [...p]);
++      const heading = document.querySelector("#preview-title");
++      const rect = heading.getBoundingClientRect();
++      this.titleFrom = { x: rect.x, y: rect.y };
++      this.titleGhost.textContent = heading.textContent;
++    } else {
++      this.titleGhost.style.display = "none";
++      document.querySelector("#preview-title").style.visibility = "";
++      this.projection.querySelector(".projection-inner").style.opacity = "";
++    }
++    this.projection.style.opacity = "1";
++    this.forceRender = true;
++    this.renderNow(immediate ? 850 : 0);
++  }
++  placeCamera(expanding) {
++    const mobile = innerWidth <= 700,
++      work = this.mode === "work";
++    if (this.cube && !work)
++      this.cube.position.set(mobile ? 0.94 : 1.12, mobile ? 1.12 : 1.09, 0.22);
++    if (work) {
++      this.camera.fov = 22;
++      this.camera.position.set(0, 1.7, 3.2);
++      this.camera.lookAt(0, 1.62, 0);
++      this.scene.background = null;
++      this.scene.fog = null;
++    } else if (mobile) {
++      this.camera.fov = 34;
++      this.camera.position.set(0.26, 1.75, 3.65);
++      this.camera.lookAt(0.26, 1.35, 0.05);
++      this.scene.background = new THREE.Color("#172127");
++      this.scene.fog = new THREE.Fog("#172127", 8, 20);
++    } else {
++      this.camera.fov = 32;
++      this.camera.position.set(0.36, 2.05, 6.28);
++      this.camera.lookAt(0.36, 1.02, 0);
++      this.scene.background = new THREE.Color("#172127");
++      this.scene.fog = new THREE.Fog("#172127", 8, 20);
++    }
++    this.camera.updateProjectionMatrix();
++    this.camera.updateMatrixWorld();
++  }
++  screen(v) {
++    const p = v.clone().project(this.camera);
++    return [(p.x * 0.5 + 0.5) * this.width, (0.5 - p.y * 0.5) * this.height];
++  }
++  onPlane(screen, plane) {
++    const v = new THREE.Vector3(
++      (screen[0] / this.width) * 2 - 1,
++      1 - (screen[1] / this.height) * 2,
++      0.5,
++    ).unproject(this.camera);
++    const ray = new THREE.Ray(
++      this.camera.position.clone(),
++      v.sub(this.camera.position).normalize(),
++    );
++    return (
++      ray.intersectPlane(plane, new THREE.Vector3()) ?? new THREE.Vector3()
++    );
++  }
++  drawProjection(ms, expandProgress) {
++    const active =
++      ["preview", "expanding"].includes(this.mode) && this.cube && this.feature;
++    this.projectionPlane.visible =
++      this.ribbon.visible =
++      this.leads.visible =
++        !!active;
++    if (!active) return;
++    const n = new THREE.Vector3(...normals[this.feature])
++      .applyQuaternion(this.cube.quaternion)
++      .normalize();
++    const targetNormal = this.camera.position
++      .clone()
++      .sub(this.cube.position)
++      .normalize();
++    const right = new THREE.Vector3(1, 0, 0).applyQuaternion(
++        this.camera.quaternion,
++      ),
++      up = new THREE.Vector3(0, 1, 0).applyQuaternion(this.camera.quaternion);
++    const localNormal = new THREE.Vector3(...normals[this.feature]);
++    const localU =
++      Math.abs(localNormal.y) > 0.9
++        ? new THREE.Vector3(1, 0, 0)
++        : new THREE.Vector3(0, 1, 0).cross(localNormal).normalize();
++    const localV = localNormal.clone().cross(localU).normalize();
++    const diagonal = right.clone().add(up);
++    const signU =
++        localU.clone().applyQuaternion(this.targetQ).dot(diagonal) >= 0
++          ? 1
++          : -1,
++      signV =
++        localV.clone().applyQuaternion(this.targetQ).dot(diagonal) >= 0
++          ? 1
++          : -1;
++    const faceU = localU
++        .applyQuaternion(this.cube.quaternion)
++        .multiplyScalar(signU),
++      faceV = localV
++        .applyQuaternion(this.cube.quaternion)
++        .multiplyScalar(signV);
++    const cubeScale = this.cube.scale.x;
++    const center = this.cube.position
++      .clone()
++      .addScaledVector(n, 0.216 * cubeScale);
++    const corner = center
++      .clone()
++      .addScaledVector(faceU, 0.145 * cubeScale)
++      .addScaledVector(faceV, 0.145 * cubeScale);
++    this.faceOrigin = corner;
++    this.normal = n;
++    const a = this.screen(corner);
++    this.sourceScreen = a;
++    const mobile = innerWidth <= 700,
++      short = innerHeight <= 550;
++    let w = Math.min(380, innerWidth * 0.275),
++      h = 510;
++    if (short) {
++      w = Math.min(260, innerWidth * 0.31);
++      h = 296;
++    }
++    const left = Math.min(
++      innerWidth - w - 35,
++      Math.max(a[0] + 40, innerWidth * 0.69),
++    );
++    const top = Math.max(
++      short ? 75 : 150,
++      Math.min(a[1] - 160, innerHeight - h - 125),
++    );
++    let quad = [
++      [left + 6, top],
++      [left + w, top + 9],
++      [left + w - 4, top + h],
++      [left, top + h - 9],
++    ];
++    let reveal = this.reduced ? 1 : smooth((ms - 300) / 550);
++    if (this.mode === "expanding") reveal = 1;
++    if (mobile) {
++      w = 350;
++      h = 345;
++      quad = [
++        [Math.min(this.width - 100, a[0] + 7), a[1] - 10],
++        [this.width - 8, a[1] + 10],
++        [this.width - 20, this.height - 3],
++        [Math.max(270, a[0] + 5), this.height - 3],
++      ];
++    }
++    if (this.mode === "expanding" && !mobile) {
++      const rect = [
++        [262, 139],
++        [innerWidth - 46, 139],
++        [innerWidth - 46, innerHeight - 32],
++        [262, innerHeight - 32],
++      ];
++      quad = quad.map((p, i) =>
++        p.map((v, j) => mix(v, rect[i][j], expandProgress)),
++      );
++    }
++    if (this.mode === "expanding" && !mobile) {
++      const targetX = innerWidth >= 1700 ? 315 : innerWidth <= 1150 ? 218 : 262;
++      const targetY =
++        innerWidth >= 1700 ? 164.7 : innerWidth <= 1150 ? 142.7 : 153.7;
++      this.titleGhost.style.cssText =
++        "display:block;left:" +
++        mix(this.titleFrom?.x ?? left + 25, targetX, expandProgress) +
++        "px;top:" +
++        mix(this.titleFrom?.y ?? top + 65, targetY, expandProgress) +
++        "px;font-size:" +
++        mix(29, 31, expandProgress) +
++        "px";
++      document.querySelector("#preview-title").style.visibility = "hidden";
++      this.projection.querySelector(".projection-inner").style.opacity = String(
++        1 - smooth(expandProgress / 0.65),
++      );
++    }
++    this.previewQuad = quad.map((p) => [...p]);
++    const grown = quad.map((p) => [
++      mix(a[0], p[0], Math.max(0.002, reveal)),
++      mix(a[1], p[1], Math.max(0.002, reveal)),
++    ]);
++    const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(
++      targetNormal,
++      center.clone().addScaledVector(targetNormal, 0.085),
++    );
++    const world = grown.map((p) => this.onPlane(p, plane));
++    this.projectionPlane.geometry.attributes.position.array.set(
++      world.flatMap((p) => p.toArray()),
++    );
++    this.projectionPlane.geometry.attributes.position.needsUpdate = true;
++    const source2 = center
++      .clone()
++      .addScaledVector(faceU, 0.145 * cubeScale)
++      .addScaledVector(faceV, -0.13 * cubeScale);
++    const strip = [corner, source2, world[3], corner, world[3], world[0]];
++    this.ribbon.geometry.attributes.position.array.set(
++      strip.flatMap((p) => p.toArray()),
++    );
++    this.ribbon.geometry.attributes.position.needsUpdate = true;
++    this.leads.geometry.attributes.position.array.set(
++      [corner, world[0], source2, world[3]].flatMap((p) => p.toArray()),
++    );
++    this.leads.geometry.attributes.position.needsUpdate = true;
++    this.ribbon.material.opacity = 0.16 * reveal * (1 - expandProgress);
++    this.leads.material.opacity = 0.6 * reveal * (1 - expandProgress);
++    this.projectionPlane.material.opacity = 0.16 * reveal;
++    this.lastQuad = grown;
++    this.projection.style.width = w + "px";
++    this.projection.style.height = h + "px";
++    this.projection.style.left = "0";
++    this.projection.style.top = "0";
++    this.projection.style.transform = quadMatrix(grown, w, h);
++    this.projection.style.opacity = String(mobile ? 1 : clamp(reveal * 2));
++    this.projection.style.pointerEvents =
++      reveal > 0.1 || mobile ? "auto" : "none";
++    if (mobile) {
++      this.projectionPlane.material.opacity = 0.17 * reveal;
++      this.projection.style.opacity = "1";
++    }
++  }
++  renderNow(ms) {
++    if (!this.loaded) return;
++    const expanding =
++      this.mode === "expanding" ? (this.reduced ? 1 : smooth(ms / 560)) : 0;
++    this.placeCamera(expanding);
++    const work = this.mode === "work";
++    this.floor.visible = this.contact.visible = !work;
++    this.mapRoot.visible = !work && !!this.layer?.extent;
++    this.cube.visible = !work;
++    this.robot.scale.setScalar(work ? 1 : mix(1, 0.2, expanding));
++    this.robot.position.set(
++      work ? 0 : mix(0, -1.5, expanding),
++      work ? 0 : mix(0, 1.65, expanding),
++      0,
++    );
++    if (this.mode === "preview") {
++      this.cube.quaternion.slerpQuaternions(
++        this.fromQ,
++        this.targetQ,
++        this.reduced ? 1 : smooth(ms / 510),
++      );
++    }
++    if (this.mode === "expanding") {
++      this.cube.quaternion.slerpQuaternions(
++        this.fromQ,
++        this.targetQ,
++        this.reduced ? 1 : smooth(ms / 300),
++      );
++      this.cube.scale.setScalar(mix(1, 0.2, expanding));
++    } else this.cube.scale.setScalar(1);
++    this.scene.updateMatrixWorld(true);
++    this.drawProjection(ms, expanding);
++    this.renderer.render(this.scene, this.camera);
++    this.rendered++;
++  }
++  frame(t) {
++    const dt = t - this.last;
++    this.last = t;
++    if (
++      !this.loaded ||
++      this.contextLost ||
++      this.staticQuality ||
++      document.hidden ||
++      this.frozen
++    )
++      return;
++    this.elapsed += Math.min(dt, 100) / 1000;
++    const ms = t - this.started;
++    const animationActive =
++      this.mode === "home" ||
++      (this.mode === "preview" && ms < 870) ||
++      this.mode === "expanding";
++    if (!animationActive && !this.forceRender) return;
++    if (!this.reduced && this.mode === "home") {
++      this.cube.rotateOnWorldAxis(
++        new THREE.Vector3(0, 1, 0),
++        (Math.min(dt, 50) / 1000) *
++          (0.45 + 0.2 * Math.sin((this.elapsed * Math.PI) / 4)),
++      );
++      this.mixer.update(Math.min(dt, 50) / 1000);
++    }
++    if (this.reduced && !this.forceRender) return;
++    this.forceRender = false;
++    const start = performance.now();
++    this.renderNow(ms);
++    this.renderTimes.push(performance.now() - start);
++    if (dt > 0 && dt < 1000) this.frames.push(dt);
++    if (this.frames.length > 360) this.frames.shift();
++    if (this.renderTimes.length > 360) this.renderTimes.shift();
++    if (this.quality === "low" && this.frames.length === 360) {
++      const sorted = [...this.frames].sort((a, b) => a - b);
++      if (sorted[180] > 50) {
++        this.staticQuality = true;
++        this.quality = "static";
++        document.body.classList.add("static-scene");
++        document.querySelector("#model-state").textContent =
++          "静态陪伴 · 导航与内容仍可使用";
++      }
++    }
++    if (this.quality === "standard" && this.frames.length === 180) {
++      const avg = this.frames.reduce((a, b) => a + b, 0) / 180;
++      if (avg > 38) {
++        this.quality = "low";
++        this.renderer.setPixelRatio(1);
++        this.ratio = 1;
++        this.renderer.shadowMap.enabled = false;
++        document.querySelector("#model-state").textContent = "轻量画面";
++        this.forceRender = true;
++      }
++    }
++  }
++  captureAt(state, ms) {
++    this.setState(state, false);
++    this.frozen = true;
++    this.mixer?.setTime(0.8);
++    this.cube.rotation.set(0.18, 0.34, 0.1);
++    this.fromQ.copy(this.cube.quaternion);
++    this.renderNow(ms);
++  }
++  resume() {
++    this.frozen = false;
++    this.last = performance.now();
++    this.started = performance.now() - 850;
++    this.forceRender = true;
++  }
++  metrics() {
++    const ordered = [...this.frames].sort((a, b) => a - b);
++    const normal = this.feature
++      ? new THREE.Vector3(...normals[this.feature])
++          .applyQuaternion(this.cube.quaternion)
++          .normalize()
++      : null;
++    const view = this.cube
++      ? this.camera.position.clone().sub(this.cube.position).normalize()
++      : null;
++    const meshBounds = this.robot
++      ? new THREE.Box3().setFromObject(this.robot)
++      : null;
++    const gl = this.renderer.getContext(),
++      ext = gl.getExtension("WEBGL_debug_renderer_info");
++    return {
++      version: "D01-R1",
++      mode: this.mode,
++      feature: this.feature,
++      ready: this.loaded,
++      canvasCount: document.querySelectorAll("canvas").length,
++      viewport: [innerWidth, innerHeight],
++      canvasCSS: [this.width, this.height],
++      drawingBuffer: [
++        this.renderer.domElement.width,
++        this.renderer.domElement.height,
++      ],
++      dpr: this.renderer.getPixelRatio(),
++      quality: this.quality,
++      reduced: this.reduced,
++      renderer: ext
++        ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)
++        : gl.getParameter(gl.RENDERER),
++      drawCalls: this.renderer.info.render.calls,
++      triangles: this.renderer.info.render.triangles,
++      frameSamples: ordered.length,
++      p50FrameMs: ordered[Math.floor(ordered.length * 0.5)] ?? null,
++      p95FrameMs: ordered[Math.floor(ordered.length * 0.95)] ?? null,
++      meanRenderCPUMs: this.renderTimes.length
++        ? this.renderTimes.reduce((a, b) => a + b) / this.renderTimes.length
++        : null,
++      faceDotView: normal && view ? normal.dot(view) : null,
++      worldNormal: normal?.toArray(),
++      sourcePlaneOffset:
++        normal && this.faceOrigin
++          ? this.faceOrigin.clone().sub(this.cube.position).dot(normal)
++          : null,
++      faceSourceScreen: this.sourceScreen,
++      projectionQuad: this.lastQuad,
++      cubeQuaternion: this.cube?.quaternion.toArray(),
++      cubeScreen: this.cube ? this.screen(this.cube.position) : null,
++      robotBounds: meshBounds
++        ? { min: meshBounds.min.toArray(), max: meshBounds.max.toArray() }
++        : null,
++      camera: {
++        position: this.camera.position.toArray(),
++        fov: this.camera.fov,
++      },
++      rendered: this.rendered,
++    };
++  }
++}
+diff --git a/map.mjs b/map.mjs
+new file mode 100644
+index 0000000..fe584b3
+--- /dev/null
++++ b/map.mjs
+@@ -0,0 +1,67 @@
++let sketchId = 0;
++export const esc = (s) =>
++  String(s ?? "").replace(
++    /[&<>"']/g,
++    (c) =>
++      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
++        c
++      ],
++  );
++export function extentText(e) {
++  return e?.length === 4 && e.every(Number.isFinite)
++    ? e.map((x) => x.toFixed(2)).join(" / ")
++    : "暂无空间范围";
++}
++export function mapSVG(snapshot, layer, width = 640, height = 380) {
++  const clipId = "region-" + ++sketchId;
++  const sampled = snapshot.geometry?.[layer?.id];
++  const e = sampled?.bbox ?? layer?.extent;
++  if (
++    !e ||
++    e.length !== 4 ||
++    !e.every(Number.isFinite) ||
++    e[2] <= e[0] ||
++    e[3] <= e[1]
++  )
++    return `<svg xmlns="http://www.w3.org/2000/svg" class="map-art" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="#dce1db"/><text x="50%" y="50%" text-anchor="middle" fill="#465d68" font-size="18" font-family="sans-serif">暂无空间范围</text></svg>`;
++  const padding = 24,
++    sx = (width - padding * 2) / (e[2] - e[0]),
++    sy = (height - padding * 2) / (e[3] - e[1]),
++    scale = Math.min(sx, sy);
++  const ox = (width - (e[2] - e[0]) * scale) / 2,
++    oy = (height - (e[3] - e[1]) * scale) / 2;
++  const xy = (c) => [
++    ox + (c[0] - e[0]) * scale,
++    height - oy - (c[1] - e[1]) * scale,
++  ];
++  const ring = (r) =>
++    r
++      .map(
++        (c, i) =>
++          `${i ? "L" : "M"}${xy(c)
++            .map((x) => x.toFixed(2))
++            .join(",")}`,
++      )
++      .join(" ") + " Z";
++  const geopath = (g) =>
++    g?.type === "Polygon"
++      ? g.coordinates.map(ring).join(" ")
++      : g?.type === "MultiPolygon"
++        ? g.coordinates.flatMap((p) => p.map(ring)).join(" ")
++        : "";
++  const color = layer?.style?.fill?.color ?? "#3b82f6",
++    stroke = layer?.style?.stroke?.color ?? "#1e3a8a",
++    opacity = layer?.style?.fill?.opacity ?? 0.6;
++  const paths = (sampled?.data.features ?? [])
++    .map(
++      (f) =>
++        `<path d="${geopath(f.geometry)}" fill="${esc(color)}" fill-opacity="${opacity}" stroke="${esc(stroke)}" stroke-width=".6" fill-rule="evenodd"/>`,
++    )
++    .join("");
++  const grid = Array.from({ length: 5 }, (_, i) => {
++    const x = ox + ((width - 2 * ox) * i) / 4,
++      y = oy + ((height - 2 * oy) * i) / 4;
++    return `<path d="M${x} ${oy}V${height - oy}M${ox} ${y}H${width - ox}" stroke="#617984" stroke-opacity=".15" stroke-width=".7"/>`;
++  }).join("");
++  return `<svg xmlns="http://www.w3.org/2000/svg" class="map-art" width="${width}" height="${height}" role="img" aria-label="${esc(sampled ? "城市边界局部，简化几何，非测量地图" : "图层范围示意，未载入要素几何")}" viewBox="0 0 ${width} ${height}"><defs><clipPath id="${clipId}"><rect x="${ox}" y="${oy}" width="${width - ox * 2}" height="${height - oy * 2}"/></clipPath></defs><rect width="100%" height="100%" fill="#dce1db"/>${grid}<g clip-path="url(#${clipId})">${paths}</g><rect x="${ox}" y="${oy}" width="${width - ox * 2}" height="${height - oy * 2}" fill="none" stroke="#526d7b" stroke-width="1" stroke-dasharray="${sampled ? "0" : "5 4"}"/>${!sampled ? `<text x="50%" y="49%" text-anchor="middle" fill="#455e6b" font-size="16" font-family="sans-serif">图层范围 · 无要素快照</text>` : ""}<text x="${ox + 8}" y="${oy + 17}" font-size="10" fill="#233e4d" font-family="monospace">N ↑</text><text x="${width - ox}" y="${height - 5}" text-anchor="end" font-size="10" fill="#486571" font-family="monospace">${e[0].toFixed(2)}–${e[2].toFixed(2)}° E · ${e[1].toFixed(2)}–${e[3].toFixed(2)}° N</text></svg>`;
++}
+diff --git a/styles.css b/styles.css
+new file mode 100644
+index 0000000..c29b93b
+--- /dev/null
++++ b/styles.css
+@@ -0,0 +1,2041 @@
++:root {
++  color-scheme: dark;
++  --bg: #11191f;
++  --surface: #202b32;
++  --text: #ece8df;
++  --muted: #abb7bc;
++  --accent: #78b6bc;
++  --line: #40515b;
++  --soft: #26343c;
++  --error: #f0a68f;
++  font-family:
++    "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", system-ui,
++    sans-serif;
++  font-size: 16px;
++  color: var(--text);
++  background: var(--bg);
++}
++* {
++  box-sizing: border-box;
++}
++body {
++  margin: 0;
++  min-width: 320px;
++}
++a {
++  color: inherit;
++  text-decoration: none;
++}
++button,
++input,
++select {
++  font: inherit;
++  color: inherit;
++}
++button,
++a,
++select,
++input {
++  touch-action: manipulation;
++}
++button {
++  cursor: pointer;
++  border: 1px solid transparent;
++  background: none;
++  min-height: 44px;
++  padding: 10px 15px;
++  border-radius: 4px;
++}
++button:hover {
++  background: #ffffff0e;
++}
++button:disabled {
++  cursor: not-allowed;
++  opacity: 0.45;
++}
++a:hover {
++  color: #a1d0d3;
++}
++input,
++select {
++  width: 100%;
++  min-height: 44px;
++  padding: 10px 12px;
++  background: #172128;
++  border: 1px solid #536671;
++  border-radius: 4px;
++  outline-offset: 3px;
++}
++select {
++  cursor: pointer;
++}
++select option {
++  background: #202b32;
++}
++label {
++  display: grid;
++  gap: 8px;
++  font-size: 14px;
++}
++input[type="checkbox"] {
++  width: 18px;
++  min-height: 18px;
++  accent-color: #78b6bc;
++}
++input[type="search"]::-webkit-search-cancel-button {
++  cursor: pointer;
++}
++button:focus-visible,
++a:focus-visible,
++input:focus-visible,
++select:focus-visible,
++[tabindex]:focus-visible {
++  outline: 2px solid #b8e4e6;
++  outline-offset: 4px;
++}
++p {
++  line-height: 1.7;
++  margin: 0 0 18px;
++}
++h1,
++h2,
++h3 {
++  font-weight: 500;
++  margin: 0;
++  line-height: 1.4;
++}
++h1 {
++  font-size: 34px;
++  letter-spacing: 0.015em;
++}
++h2 {
++  font-size: 24px;
++}
++h3 {
++  font-size: 18px;
++}
++.mono {
++  font-family: Consolas, "SFMono-Regular", monospace;
++  font-size: 12px;
++  font-variant-numeric: tabular-nums;
++}
++.eyebrow {
++  font-size: 12px;
++  letter-spacing: 0.12em;
++  color: var(--muted);
++  margin-bottom: 12px;
++}
++.sr-only {
++  position: absolute;
++  width: 1px;
++  height: 1px;
++  overflow: hidden;
++  clip-path: inset(50%);
++}
++.skip {
++  position: fixed;
++  top: -80px;
++  left: 24px;
++  z-index: 100;
++  background: #ece8df;
++  color: #11191f;
++  padding: 14px;
++}
++.skip:focus {
++  top: 12px;
++}
++.quiet {
++  color: var(--muted);
++  border-color: var(--line);
++}
++.primary {
++  background: #8dc2c5;
++  color: #101e24;
++  font-weight: 600;
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  gap: 36px;
++  border: 1px solid #a4d4d6;
++}
++.primary:hover {
++  background: #b2dbdd;
++}
++.text-button {
++  color: #a0cccf;
++  padding-left: 0;
++}
++.tag {
++  display: inline-flex;
++  font-size: 12px;
++  color: #bbd6d5;
++  background: #2d4549;
++  padding: 4px 9px;
++  line-height: 1.5;
++  border-radius: 3px;
++}
++.tag.error {
++  color: #ffc0aa;
++  background: #503b36;
++}
++.tag.muted {
++  background: #31404a;
++  color: #c5cdd0;
++}
++.empty {
++  padding: 35px 10px;
++  color: var(--muted);
++  text-align: center;
++  line-height: 1.8;
++}
++.hint {
++  font-size: 13px;
++  color: var(--muted);
++  line-height: 1.7;
++}
++.muted {
++  color: var(--muted);
++}
++#stage {
++  position: fixed;
++  inset: 0;
++  z-index: 0;
++  overflow: hidden;
++  background: radial-gradient(ellipse at 43% 36%, #34414a, #11191f 70%);
++  pointer-events: none;
++}
++#stage canvas {
++  width: 100%;
++  height: 100%;
++  display: block;
++}
++#fallback {
++  display: none;
++  position: absolute;
++  left: 29%;
++  top: 15%;
++  width: 36%;
++  height: 60%;
++  object-fit: contain;
++}
++.static-scene #fallback {
++  display: block;
++}
++.static-scene #stage canvas {
++  opacity: 0;
++}
++.topbar {
++  height: 96px;
++  position: relative;
++  z-index: 20;
++  margin: 0 48px;
++  display: flex;
++  align-items: center;
++  gap: 36px;
++  border-bottom: 1px solid #8fa2ab26;
++}
++.brand {
++  display: flex;
++  align-items: center;
++  gap: 15px;
++  font-size: 17px;
++  letter-spacing: 0.13em;
++}
++.brand small {
++  display: block;
++  font: 10px system-ui;
++  letter-spacing: 0.23em;
++  color: var(--muted);
++  margin-top: 5px;
++}
++.brand-mark {
++  font:
++    500 36px Georgia,
++    serif;
++  letter-spacing: -4px;
++  display: block;
++}
++.brand-mark span {
++  color: var(--accent);
++  font-size: 28px;
++}
++.top-context {
++  display: flex;
++  gap: 9px;
++  align-items: center;
++  margin-left: auto;
++  color: var(--muted);
++  font-size: 13px;
++}
++.status-dot {
++  width: 5px;
++  height: 5px;
++  background: #93bcc0;
++  border-radius: 50%;
++}
++.top-actions {
++  display: flex;
++  align-items: center;
++  gap: 18px;
++}
++.top-actions button {
++  font-size: 13px;
++  border: 0;
++}
++.package-link {
++  font-size: 12px;
++  color: var(--muted);
++}
++#menu-toggle {
++  display: none;
++}
++#navigation {
++  position: fixed;
++  left: 48px;
++  top: 33%;
++  z-index: 25;
++  display: flex;
++  flex-direction: column;
++  gap: 8px;
++  width: 190px;
++}
++#navigation a {
++  display: flex;
++  align-items: center;
++  gap: 22px;
++  min-height: 48px;
++  padding: 9px 12px;
++  border-left: 2px solid transparent;
++  font-size: 15px;
++  color: var(--muted);
++  transition:
++    background 0.16s,
++    color 0.16s;
++}
++#navigation a span {
++  font:
++    11px Consolas,
++    monospace;
++  color: #82949e;
++}
++#navigation a:hover,
++#navigation a[aria-current="page"] {
++  color: var(--text);
++  background: #bacdd40a;
++  border-left-color: var(--accent);
++}
++#navigation a[aria-current="page"] span {
++  color: var(--accent);
++}
++#content {
++  position: relative;
++  z-index: 2;
++  outline: none;
++}
++#home {
++  height: calc(100vh - 96px);
++  min-height: 500px;
++  pointer-events: none;
++}
++.home-intro {
++  position: fixed;
++  left: 48px;
++  top: 143px;
++}
++.home-intro h1 {
++  font-size: 29px;
++}
++.home-intro > p:last-child {
++  font-size: 15px;
++  color: var(--muted);
++  margin-top: 13px;
++}
++.home-context {
++  position: fixed;
++  right: 48px;
++  top: 143px;
++  width: 214px;
++  pointer-events: auto;
++}
++.home-context select {
++  background: #17212888;
++  border-color: #5a6b724d;
++  font-size: 15px;
++  padding-left: 0;
++  border-width: 0 0 1px;
++  border-radius: 0;
++}
++.home-context > .mono {
++  display: block;
++  font-size: 11px;
++  color: var(--muted);
++  margin-top: 13px;
++  line-height: 1.8;
++}
++#slice-caption {
++  position: fixed;
++  right: 7.5%;
++  bottom: 15%;
++  font-size: 13px;
++  color: #d2dbd9;
++  line-height: 2;
++  pointer-events: none;
++}
++#slice-caption .mono {
++  display: block;
++  color: #a2b4bc;
++}
++.dot-blue {
++  display: inline-block;
++  width: 6px;
++  height: 6px;
++  background: #3b82f6;
++  margin-right: 9px;
++}
++#dialogue {
++  position: fixed;
++  bottom: 0;
++  left: 20%;
++  right: 18%;
++  padding: 48px 32px 44px;
++  z-index: 8;
++  display: flex;
++  align-items: baseline;
++  gap: 22px;
++  background: radial-gradient(ellipse at bottom, #10171fe8, transparent 75%);
++  pointer-events: none;
++}
++.speaker {
++  font-size: 12px;
++  letter-spacing: 0.15em;
++  color: var(--accent);
++  white-space: nowrap;
++}
++#dialogue p {
++  font-size: 17px;
++  line-height: 1.8;
++  margin: 0;
++  pointer-events: auto;
++}
++#projection {
++  position: fixed;
++  z-index: 10;
++  transform-origin: 0 0;
++  will-change: transform;
++  pointer-events: auto;
++  background: linear-gradient(135deg, #293d45f5, #1d2c34f0);
++  border: 1px solid #8ab6b799;
++  border-radius: 3px;
++  box-shadow: 14px 26px 60px #060d1440;
++  overflow: hidden;
++}
++#projection[hidden] {
++  display: none;
++}
++.projection-inner {
++  padding: 23px 27px;
++  height: 100%;
++  display: flex;
++  flex-direction: column;
++  justify-content: center;
++}
++.preview-kicker {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  margin-bottom: 8px;
++  font-size: 11px;
++  color: #acc7cb;
++}
++.preview-kicker button {
++  border: 0;
++  font-size: 22px;
++  margin: -12px -14px -8px 0;
++}
++#preview-step {
++  font-size: 11px;
++  margin-bottom: 6px;
++}
++#preview-title {
++  font-size: 29px;
++  margin-bottom: 11px;
++}
++#preview-copy {
++  font-size: 15px;
++  color: #d0dadd;
++  line-height: 1.75;
++  margin-bottom: 16px;
++}
++#preview-context {
++  border-top: 1px solid #66838c75;
++  padding: 12px 0;
++  margin-bottom: 8px;
++  display: flex;
++  justify-content: space-between;
++  gap: 10px;
++  font-size: 12px;
++  color: #b7cacd;
++}
++#expand {
++  width: 100%;
++  font-size: 15px;
++}
++.preview-foot {
++  font-size: 10px;
++  color: #adc0c5;
++  margin: 12px 0 0;
++}
++.previewing .home-context,
++.previewing #slice-caption {
++  opacity: 0;
++  pointer-events: none;
++}
++.previewing .home-intro > p:last-child {
++  opacity: 0.4;
++}
++#notice {
++  position: fixed;
++  bottom: 23px;
++  right: 28px;
++  max-width: 420px;
++  padding: 0;
++  z-index: 50;
++  color: #d8eceb;
++  font-size: 14px;
++  background: #284147;
++  box-shadow: 0 10px 24px #0003;
++  border-radius: 5px;
++  line-height: 1.7;
++}
++#notice:not(:empty) {
++  padding: 14px 20px;
++}
++#model-state {
++  position: fixed;
++  bottom: 12px;
++  left: 20px;
++  font-size: 12px;
++  color: var(--muted);
++  z-index: 21;
++}
++.noscript {
++  position: fixed;
++  inset: 30% 20%;
++  background: #202b32;
++  padding: 40px;
++  z-index: 50;
++}
++body[data-mode="work"] {
++  background: #11191f;
++}
++body[data-mode="work"] #stage {
++  height: 100px;
++  width: 165px;
++  left: 22px;
++  top: 105px;
++  background: transparent;
++}
++body[data-mode="work"] .topbar {
++  height: 90px;
++}
++body[data-mode="work"] .brand {
++  visibility: visible;
++}
++body[data-mode="work"] #navigation {
++  top: 235px;
++  left: 30px;
++  width: 178px;
++}
++body[data-mode="work"] #dialogue {
++  left: 30px;
++  right: auto;
++  bottom: 25px;
++  width: 170px;
++  padding: 25px 0;
++  display: block;
++  background: none;
++}
++body[data-mode="work"] #dialogue p {
++  font-size: 12px;
++  line-height: 1.9;
++  margin-top: 8px;
++  color: #bbc8cb;
++}
++body[data-mode="work"] #fallback {
++  inset: 0;
++  width: 100%;
++  height: 100%;
++  object-fit: contain;
++}
++#workspace {
++  padding: 39px 46px 20px;
++  margin-left: 216px;
++  min-height: calc(100vh - 90px);
++  background: linear-gradient(150deg, #253239bd, #152129d9 70%);
++}
++#workspace[hidden] {
++  display: none;
++}
++.workspace-head {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  gap: 20px;
++  margin-bottom: 30px;
++}
++.workspace-head .eyebrow {
++  margin-bottom: 6px;
++  font-size: 11px;
++}
++.workspace-head h1 {
++  font-size: 31px;
++}
++.workspace-controls {
++  display: flex;
++  align-items: center;
++  gap: 15px;
++}
++.workspace-controls label {
++  font-size: 11px;
++  color: var(--muted);
++  min-width: 165px;
++}
++.workspace-controls select {
++  font-size: 13px;
++  min-height: 42px;
++}
++.workspace-controls button {
++  font-size: 12px;
++  margin-top: 20px;
++}
++.workspace-footer {
++  border-top: 1px solid #53636d50;
++  display: flex;
++  justify-content: space-between;
++  gap: 20px;
++  color: #a4b3bc;
++  font-size: 11px;
++  margin-top: 28px;
++  padding-top: 18px;
++}
++.toolbar {
++  display: flex;
++  align-items: center;
++  gap: 16px;
++  margin-bottom: 24px;
++}
++.toolbar input {
++  max-width: 330px;
++}
++.toolbar select {
++  max-width: 170px;
++  font-size: 14px;
++}
++.toolbar .count {
++  margin-left: auto;
++  color: var(--muted);
++  font-size: 12px;
++}
++.split {
++  display: grid;
++  grid-template-columns: minmax(300px, 0.94fr) minmax(350px, 1.06fr);
++  gap: 36px;
++}
++.section-title {
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++  border-bottom: 1px solid #53636d66;
++  padding-bottom: 15px;
++  margin-bottom: 20px;
++}
++.section-title h2 {
++  font-size: 16px;
++}
++.section-title span {
++  font-size: 12px;
++  color: var(--muted);
++}
++.project-row {
++  display: flex;
++  gap: 20px;
++  align-items: center;
++  text-align: left;
++  width: 100%;
++  padding: 24px 0;
++  border: 0;
++  border-bottom: 1px solid #53636d66;
++  border-radius: 0;
++}
++.project-row[aria-pressed="true"] {
++  border-bottom-color: var(--accent);
++}
++.project-num {
++  font: 28px Georgia;
++  color: #809ba5;
++}
++.project-row h3 {
++  font-size: 21px;
++  margin-bottom: 7px;
++}
++.project-row .arrow {
++  margin-left: auto;
++  color: var(--accent);
++}
++.map-panel {
++  background: #dce1db;
++  color: #243b4b;
++  min-width: 0;
++  overflow: hidden;
++  border-radius: 3px;
++}
++.map-title {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  gap: 10px;
++  padding: 16px 20px;
++  font-size: 13px;
++  border-bottom: 1px solid #213e4929;
++}
++.map-title .mono {
++  font-size: 11px;
++}
++.map-art {
++  display: block;
++  width: 100%;
++  height: 285px;
++}
++.map-legend {
++  display: flex;
++  justify-content: space-between;
++  font-size: 11px;
++  padding: 13px 20px;
++  gap: 15px;
++  border-top: 1px solid #213e4929;
++}
++.scope-stats {
++  display: grid;
++  grid-template-columns: 1fr 1fr;
++  gap: 20px;
++  padding: 20px 0;
++}
++.scope-stats dt {
++  font-size: 11px;
++  color: var(--muted);
++  margin-bottom: 8px;
++}
++.scope-stats dd {
++  margin: 0;
++  font-size: 14px;
++}
++.scope-action {
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++  gap: 20px;
++  margin-top: 10px;
++}
++.tool-strip {
++  display: flex;
++  gap: 3px;
++  border-bottom: 1px solid var(--line);
++  margin-bottom: 26px;
++  overflow: auto;
++  padding-bottom: 10px;
++}
++.tool-strip button {
++  white-space: nowrap;
++  font-size: 13px;
++  padding: 9px 14px;
++  color: var(--muted);
++}
++.tool-strip button[aria-pressed="true"] {
++  background: #354b53;
++  color: #e4edeb;
++}
++.form-title {
++  display: flex;
++  gap: 16px;
++  align-items: baseline;
++  margin-bottom: 12px;
++}
++.form-title span {
++  font: 12px Consolas;
++  color: var(--accent);
++}
++.form-title h2 {
++  font-size: 21px;
++}
++.fields {
++  display: grid;
++  gap: 18px;
++  margin-top: 23px;
++}
++.field-pair {
++  display: grid;
++  grid-template-columns: 1fr 1fr;
++  gap: 18px;
++}
++.unit-input {
++  position: relative;
++}
++.unit-input input {
++  padding-right: 45px;
++}
++.unit-input span {
++  position: absolute;
++  right: 16px;
++  top: 12px;
++  font-size: 13px;
++  color: var(--muted);
++}
++.form-actions {
++  display: flex;
++  align-items: center;
++  gap: 16px;
++  flex-wrap: wrap;
++  margin-top: 25px;
++}
++.feedback {
++  font-size: 13px;
++  line-height: 1.8;
++  color: #aecfd0;
++  min-height: 24px;
++  margin-top: 14px;
++}
++.feedback.error {
++  color: var(--error);
++}
++.result-empty {
++  margin-top: 20px;
++  border-top: 1px solid #50616b;
++  padding: 18px 0;
++  display: flex;
++  gap: 18px;
++}
++.result-empty .ring {
++  border: 1px solid #607987;
++  width: 35px;
++  height: 35px;
++  border-radius: 50%;
++  flex-shrink: 0;
++  text-align: center;
++  line-height: 32px;
++  color: var(--muted);
++}
++.result-empty h3 {
++  font-size: 15px;
++}
++.result-empty p {
++  font-size: 13px;
++  margin: 5px 0 0;
++  color: var(--muted);
++}
++.flow {
++  display: flex;
++  gap: 8px;
++  align-items: center;
++  font-size: 11px;
++  color: #a8bac1;
++  margin-top: 16px;
++}
++.flow > span {
++  padding: 8px 12px;
++  background: #293a43;
++  border-radius: 2px;
++}
++.flow > span:last-child {
++  background: transparent;
++  border: 1px dashed #657b85;
++}
++.table-wrap {
++  overflow-x: auto;
++  border-top: 1px solid var(--line);
++}
++table {
++  border-collapse: collapse;
++  width: 100%;
++  font-size: 13px;
++  text-align: left;
++}
++th {
++  color: #a5b8c2;
++  font-weight: 400;
++  font-size: 11px;
++  padding: 14px 12px;
++  border-bottom: 1px solid var(--line);
++}
++td {
++  padding: 15px 12px;
++  border-bottom: 1px solid #48596370;
++  vertical-align: middle;
++}
++td:first-child,
++th:first-child {
++  padding-left: 0;
++}
++td button {
++  padding: 0;
++  min-height: 44px;
++  text-align: left;
++  max-width: 270px;
++  overflow-wrap: anywhere;
++  font-size: 13px;
++}
++.table-row-selected {
++  background: #82b7bc0b;
++}
++td .mono {
++  font-size: 11px;
++}
++.detail-drawer {
++  margin-top: 24px;
++  display: grid;
++  grid-template-columns: 0.9fr 1.1fr;
++  gap: 32px;
++  border-top: 1px solid #5e7480;
++  padding-top: 23px;
++}
++.detail-drawer h2 {
++  font-size: 19px;
++  overflow-wrap: anywhere;
++}
++.detail-drawer .map-art {
++  height: 185px;
++}
++.field-list {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 9px;
++  margin: 16px 0;
++}
++.field-list span {
++  font: 12px Consolas;
++  padding: 6px 9px;
++  background: #344550;
++  border-radius: 2px;
++}
++.source-path {
++  font: 12px Consolas;
++  color: #abc0cb;
++  overflow-wrap: anywhere;
++  line-height: 1.8;
++}
++.task-split {
++  display: grid;
++  grid-template-columns: 1.4fr 0.85fr;
++  gap: 32px;
++}
++.timeline-row {
++  display: grid;
++  grid-template-columns: 70px 1fr auto;
++  gap: 18px;
++  align-items: center;
++  padding: 18px 0;
++  border-bottom: 1px solid #455762;
++  width: 100%;
++  text-align: left;
++}
++.timeline-row[aria-pressed="true"] {
++  background: #74aeb809;
++}
++.timeline-row .date {
++  font: 11px Consolas;
++  line-height: 1.8;
++  color: #a8bdc5;
++}
++.timeline-row h3 {
++  font-size: 14px;
++  margin-bottom: 7px;
++}
++.timeline-row .hint {
++  font-size: 11px;
++}
++.log-panel {
++  border-left: 1px solid #526570;
++  padding-left: 27px;
++}
++.log-panel h2 {
++  font-size: 18px;
++}
++.log-lines {
++  font: 12px Consolas;
++  line-height: 2;
++  padding: 20px 0;
++  overflow-wrap: anywhere;
++  color: #bdd0d5;
++}
++.task-id {
++  font: 10px Consolas;
++  word-break: break-all;
++  margin: 15px 0;
++  color: var(--muted);
++}
++.check-list {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 3px 18px;
++  border: 0;
++  padding: 0;
++  margin: 18px 0 0;
++}
++.check-list legend {
++  font-size: 13px;
++  margin-bottom: 10px;
++}
++.check-list label {
++  display: flex;
++  align-items: center;
++  gap: 8px;
++  min-height: 44px;
++  font: 12px Consolas;
++  cursor: pointer;
++}
++.export-summary {
++  padding: 23px 0;
++  border-top: 1px solid #526570;
++}
++.export-summary .big-format {
++  font: 38px Georgia;
++  letter-spacing: -0.02em;
++  margin: 5px 0 20px;
++}
++.capability {
++  font-size: 12px;
++  line-height: 1.8;
++  color: var(--muted);
++  border-left: 2px solid #607d88;
++  padding-left: 14px;
++  margin-top: 24px;
++}
++.stat-line {
++  display: grid;
++  grid-template-columns: repeat(4, 1fr);
++  border-block: 1px solid #526570;
++  margin: 8px 0 34px;
++  padding: 23px 0;
++}
++.stat-line .number {
++  font: 42px Georgia;
++}
++.stat-line .label {
++  font-size: 12px;
++  color: var(--muted);
++  margin-top: 8px;
++}
++.stat-line > div + div {
++  border-left: 1px solid #526570;
++  padding-left: 28px;
++}
++.index-links {
++  display: grid;
++  grid-template-columns: 1fr 1fr;
++  gap: 0 30px;
++}
++.index-links button {
++  border-bottom: 1px solid #50636d;
++  padding: 18px 0;
++  display: flex;
++  justify-content: space-between;
++  text-align: left;
++  border-radius: 0;
++  font-size: 14px;
++}
++.page-lead {
++  font-size: 15px;
++  color: var(--muted);
++  margin-bottom: 27px;
++}
++@media (min-width: 1700px) {
++  .topbar {
++    margin: 0 64px;
++    height: 110px;
++  }
++  #navigation {
++    left: 64px;
++    width: 212px;
++  }
++  .home-intro {
++    left: 64px;
++    top: 168px;
++  }
++  .home-context {
++    right: 64px;
++    top: 168px;
++  }
++  .home-intro h1 {
++    font-size: 34px;
++  }
++  #workspace {
++    padding: 50px 70px;
++    margin-left: 245px;
++  }
++  .workspace-head {
++    margin-bottom: 40px;
++  }
++  .split {
++    gap: 55px;
++  }
++  .map-art {
++    height: 340px;
++  }
++  .project-row {
++    padding: 30px 0;
++  }
++  .fields {
++    gap: 25px;
++  }
++  .topbar .brand {
++    font-size: 19px;
++  }
++  #dialogue {
++    bottom: 20px;
++  }
++  #navigation a {
++    font-size: 16px;
++    min-height: 53px;
++  }
++}
++@media (max-width: 1150px) and (min-width: 701px) {
++  .topbar {
++    margin: 0 28px;
++    gap: 20px;
++  }
++  .top-actions {
++    gap: 8px;
++  }
++  .package-link {
++    display: none;
++  }
++  #navigation {
++    left: 28px;
++    width: 160px;
++  }
++  .home-intro {
++    left: 28px;
++  }
++  .home-intro h1 {
++    font-size: 24px;
++  }
++  .home-context {
++    right: 28px;
++    width: 170px;
++  }
++  .home-intro > p:last-child {
++    font-size: 13px;
++  }
++  .split {
++    grid-template-columns: 1fr 1fr;
++    gap: 22px;
++  }
++  #workspace {
++    margin-left: 190px;
++    padding: 28px;
++  }
++  .workspace-controls {
++    gap: 8px;
++  }
++  .workspace-controls label {
++    min-width: 120px;
++  }
++  .workspace-controls button {
++    display: none;
++  }
++  .tool-strip button {
++    padding: 9px 10px;
++  }
++  .task-split {
++    grid-template-columns: 1.2fr 1fr;
++    gap: 22px;
++  }
++  .map-art {
++    height: 230px;
++  }
++}
++@media (max-width: 700px) {
++  :root {
++    font-size: 15px;
++  }
++  .topbar {
++    margin: 0 20px;
++    height: 76px;
++    gap: 15px;
++  }
++  .brand {
++    font-size: 14px;
++    gap: 12px;
++  }
++  .brand-mark {
++    font-size: 32px;
++  }
++  .brand small {
++    font-size: 8px;
++  }
++  .top-context,
++  .package-link,
++  .top-actions #motion {
++    display: none;
++  }
++  .top-actions {
++    margin-left: auto;
++    gap: 0;
++  }
++  #menu-toggle {
++    display: block;
++    border: 1px solid #53636d;
++    font-size: 13px;
++  }
++  #navigation {
++    left: 16px;
++    right: 16px;
++    top: 83px;
++    width: auto;
++    display: none;
++    background: #19272df5;
++    padding: 15px;
++    gap: 0;
++    box-shadow: 0 20px 35px #0005;
++  }
++  #navigation.open {
++    display: flex;
++  }
++  #navigation a {
++    min-height: 47px;
++  }
++  #stage {
++    position: absolute;
++    top: 76px;
++    height: 370px;
++    bottom: auto;
++  }
++  #home {
++    height: auto;
++    min-height: calc(100vh - 76px);
++    padding: 380px 22px 22px;
++  }
++  .home-intro {
++    position: relative;
++    inset: auto;
++    margin: 0 0 23px;
++  }
++  .home-intro .eyebrow {
++    font-size: 10px;
++    margin-bottom: 7px;
++  }
++  .home-intro h1 {
++    font-size: 25px;
++  }
++  .home-intro > p:last-child {
++    font-size: 15px;
++    margin-top: 10px;
++    line-height: 1.8;
++  }
++  .home-intro br {
++    display: none;
++  }
++  .home-context {
++    position: relative;
++    inset: auto;
++    width: 100%;
++    display: grid;
++    grid-template-columns: 1fr 1.4fr;
++    align-items: center;
++    gap: 0 12px;
++    margin-bottom: 80px;
++  }
++  .home-context > .eyebrow {
++    font-size: 11px;
++    margin: 0;
++  }
++  .home-context > .mono {
++    grid-column: 1 / -1;
++    font-size: 10px;
++    margin-top: 8px;
++  }
++  #slice-caption {
++    position: absolute;
++    top: 332px;
++    right: 20px;
++    bottom: auto;
++    font-size: 10px;
++    color: #c3d3d5;
++  }
++  #slice-caption .mono {
++    font-size: 9px;
++  }
++  #dialogue {
++    position: relative;
++    inset: auto;
++    margin: -73px 22px 0;
++    padding: 15px 0 25px;
++    gap: 13px;
++    background: none;
++  }
++  #dialogue p {
++    font-size: 15px;
++    line-height: 1.8;
++  }
++  .speaker {
++    font-size: 11px;
++    line-height: 27px;
++  }
++  #fallback {
++    left: 10%;
++    top: -8%;
++    width: 80%;
++    height: 113%;
++  }
++  #projection {
++    position: relative;
++    left: auto !important;
++    top: auto !important;
++    width: calc(100% - 40px) !important;
++    height: auto !important;
++    margin: 375px 20px 85px;
++    transform: none !important;
++    min-height: 346px;
++  }
++  .projection-inner {
++    padding: 20px 22px;
++  }
++  .previewing #home {
++    display: none;
++  }
++  .previewing #slice-caption {
++    display: none;
++  }
++  #preview-title {
++    font-size: 27px;
++  }
++  #preview-copy {
++    font-size: 15px;
++  }
++  .preview-foot {
++    font-size: 11px;
++  }
++  #notice {
++    bottom: 12px;
++    left: 16px;
++    right: 16px;
++    max-width: none;
++    font-size: 13px;
++  }
++  #model-state {
++    bottom: 2px;
++    left: 8px;
++    font-size: 10px;
++  }
++  body[data-mode="work"] .topbar {
++    height: 76px;
++  }
++  body[data-mode="work"] #stage {
++    position: absolute;
++    left: 10px;
++    top: 84px;
++    width: 70px;
++    height: 75px;
++  }
++  body[data-mode="work"] #navigation {
++    top: 83px;
++    left: 16px;
++    right: 16px;
++    width: auto;
++  }
++  body[data-mode="work"] #dialogue {
++    display: none;
++  }
++  #workspace {
++    margin: 0;
++    padding: 24px 20px 20px;
++    min-height: calc(100vh - 76px);
++  }
++  .workspace-head {
++    margin-bottom: 24px;
++    display: block;
++  }
++  .workspace-head > div:first-child {
++    padding-left: 57px;
++    min-height: 64px;
++  }
++  .workspace-head .eyebrow {
++    font-size: 10px;
++  }
++  .workspace-head h1 {
++    font-size: 27px;
++  }
++  .workspace-controls {
++    margin-top: 16px;
++    gap: 13px;
++  }
++  .workspace-controls label {
++    min-width: 0;
++    flex: 1;
++  }
++  .workspace-controls button {
++    font-size: 11px;
++    display: block;
++    min-width: 110px;
++  }
++  .split,
++  .task-split,
++  .detail-drawer {
++    grid-template-columns: 1fr;
++    gap: 28px;
++  }
++  .map-art {
++    height: 240px;
++  }
++  .map-title {
++    padding: 14px;
++    font-size: 12px;
++  }
++  .map-title .mono {
++    font-size: 10px;
++  }
++  .map-legend {
++    padding: 13px;
++    font-size: 10px;
++  }
++  .scope-stats {
++    margin: 0;
++    gap: 16px;
++  }
++  .scope-stats dd {
++    font-size: 12px;
++  }
++  .toolbar {
++    flex-wrap: wrap;
++    gap: 10px;
++    margin-bottom: 19px;
++  }
++  .toolbar input {
++    max-width: none;
++    flex-basis: 100%;
++  }
++  .toolbar select {
++    max-width: 180px;
++    flex: 1;
++  }
++  .toolbar .count {
++    font-size: 11px;
++  }
++  .project-row {
++    padding: 20px 0;
++  }
++  .project-row h3 {
++    font-size: 20px;
++  }
++  .section-title {
++    margin-bottom: 12px;
++  }
++  .tool-strip {
++    margin-inline: -20px;
++    padding: 0 20px 10px;
++    gap: 4px;
++  }
++  .tool-strip button {
++    min-height: 44px;
++    font-size: 13px;
++  }
++  .fields {
++    gap: 18px;
++  }
++  .form-title h2 {
++    font-size: 21px;
++  }
++  .field-pair {
++    gap: 13px;
++  }
++  .form-actions .primary {
++    width: 100%;
++  }
++  .flow {
++    font-size: 10px;
++    gap: 4px;
++  }
++  .flow > span {
++    padding: 7px 9px;
++  }
++  .table-wrap {
++    margin-inline: -4px;
++  }
++  table {
++    min-width: 590px;
++  }
++  .detail-drawer h2 {
++    font-size: 17px;
++  }
++  .log-panel {
++    border-left: 0;
++    border-top: 1px solid #526570;
++    padding: 24px 0 0;
++  }
++  .timeline-row {
++    gap: 10px;
++    grid-template-columns: 55px 1fr auto;
++  }
++  .timeline-row h3 {
++    font-size: 12px;
++  }
++  .timeline-row .tag {
++    font-size: 10px;
++    padding: 3px 6px;
++  }
++  .stat-line {
++    grid-template-columns: 1fr 1fr;
++    gap: 25px 0;
++    padding: 24px 0;
++  }
++  .stat-line > div:nth-child(3) {
++    padding-left: 0;
++    border-left: 0;
++  }
++  .stat-line .number {
++    font-size: 36px;
++  }
++  .workspace-footer {
++    font-size: 10px;
++    line-height: 1.8;
++  }
++  .workspace-footer span {
++    max-width: 220px;
++  }
++  .page-lead {
++    font-size: 14px;
++  }
++  .index-links {
++    gap: 0 20px;
++  }
++  .index-links button {
++    font-size: 12px;
++  }
++  .result-empty {
++    margin-top: 15px;
++  }
++}
++@media (max-height: 550px) and (min-width: 701px) {
++  .topbar {
++    height: 66px;
++    margin: 0 22px;
++  }
++  .home-intro {
++    top: 83px;
++    left: 24px;
++  }
++  .home-intro h1 {
++    font-size: 20px;
++  }
++  .home-intro > p:last-child {
++    display: none;
++  }
++  #navigation {
++    top: 167px;
++    left: 22px;
++    width: 143px;
++    gap: 0;
++  }
++  #navigation a {
++    min-height: 39px;
++    font-size: 13px;
++    padding: 6px 10px;
++    gap: 15px;
++  }
++  .home-context {
++    top: 85px;
++    right: 22px;
++    width: 165px;
++  }
++  .home-context > .mono {
++    font-size: 10px;
++  }
++  #dialogue {
++    left: 24%;
++    right: 14%;
++    padding: 14px;
++    bottom: 5px;
++  }
++  #dialogue p {
++    font-size: 13px;
++  }
++  #slice-caption {
++    bottom: 18%;
++    font-size: 10px;
++  }
++  .projection-inner {
++    padding: 12px 20px;
++  }
++  #preview-title {
++    font-size: 24px;
++    margin-bottom: 5px;
++  }
++  #preview-copy {
++    font-size: 13px;
++    margin-bottom: 6px;
++    line-height: 1.55;
++  }
++  .preview-foot {
++    display: none;
++  }
++  #preview-context {
++    padding: 7px 0;
++    margin-bottom: 5px;
++  }
++  .preview-kicker {
++    margin-bottom: 4px;
++  }
++  #workspace {
++    margin-left: 180px;
++    padding: 25px 24px;
++  }
++  body[data-mode="work"] .topbar {
++    height: 66px;
++  }
++  body[data-mode="work"] #stage {
++    top: 72px;
++    height: 75px;
++    width: 120px;
++  }
++  body[data-mode="work"] #navigation {
++    top: 153px;
++    left: 20px;
++    width: 140px;
++  }
++  body[data-mode="work"] #dialogue {
++    display: none;
++  }
++  .workspace-controls {
++    display: none;
++  }
++  .split,
++  .task-split {
++    grid-template-columns: 1fr;
++  }
++  .top-actions #motion {
++    display: none;
++  }
++  .package-link {
++    display: none;
++  }
++  #home {
++    min-height: calc(100vh - 66px);
++  }
++}
++@media (prefers-reduced-motion: reduce) {
++  *,
++  *::before,
++  *::after {
++    scroll-behavior: auto !important;
++    animation: none !important;
++    transition: none !important;
++  }
++}
++.home-layer-label {
++  font-size: 11px;
++  color: var(--muted);
++  margin-top: 20px;
++  gap: 4px;
++}
++.home-layer-label select {
++  font-size: 12px;
++}
++.previewing .home-intro {
++  opacity: 0;
++  pointer-events: none;
++}
++#navigation {
++  top: max(280px, 33%);
++}
++#slice-caption {
++  color: #203e4c;
++}
++#slice-caption .mono {
++  color: #385b69;
++}
++#preview-map {
++  margin: 0 0 16px;
++  background: #dce1db;
++  color: #263f4d;
++  border-radius: 2px;
++  overflow: hidden;
++}
++#preview-map .map-art {
++  height: 105px;
++  width: 100%;
++}
++#preview-map > span {
++  display: block;
++  padding: 7px 10px;
++  font-size: 9px;
++  overflow-wrap: anywhere;
++  border-top: 1px solid #899b9d66;
++}
++#preview-map > p {
++  font-size: 12px;
++  line-height: 1.6;
++  padding: 12px;
++  margin: 0;
++}
++#preview-copy {
++  font-size: 14px;
++  margin-bottom: 9px;
++}
++#preview-context {
++  padding: 9px 0;
++  margin-bottom: 12px;
++}
++.preview-kicker {
++  margin-bottom: 4px;
++}
++.projection-inner {
++  padding: 18px 25px;
++}
++.preview-foot {
++  font-size: 10px;
++}
++.home-context {
++  width: 225px;
++}
++@media (max-height: 550px) and (min-width: 701px) {
++  #preview-copy,
++  #preview-step {
++    display: none;
++  }
++  .preview-kicker {
++    font-size: 10px;
++  }
++  #preview-title {
++    font-size: 23px;
++  }
++  #preview-map > span {
++    font-size: 9px;
++  }
++}
++#preview-map {
++  flex-shrink: 0;
++}
++#preview-map .map-art {
++  height: 82px;
++}
++#preview-map > span {
++  font-size: 10px;
++  line-height: 1.5;
++  padding: 5px 8px;
++}
++.preview-foot {
++  margin-top: 9px;
++  font-size: 10px;
++}
++.projection-inner {
++  justify-content: flex-start;
++}
++#preview-title {
++  margin-bottom: 7px;
++}
++.preview-kicker {
++  min-height: 24px;
++}
++#cancel-preview {
++  min-width: 44px;
++}
++.preview-kicker button {
++  flex-shrink: 0;
++}
++.previewing #projection {
++  max-height: none;
++}
++@media (max-width: 700px) {
++  #slice-caption {
++    color: #aebfc6;
++  }
++  #slice-caption .mono {
++    color: #98b1bd;
++  }
++  #preview-map .map-art {
++    height: 110px;
++  }
++  #preview-map > span {
++    font-size: 10px;
++  }
++  .projection-inner {
++    padding: 20px 22px;
++  }
++  .preview-foot {
++    font-size: 11px;
++  }
++}
++@media (max-height: 550px) and (min-width: 701px) {
++  #preview-map .map-art {
++    height: 65px;
++    width: 100px;
++  }
++  #preview-map > span {
++    font-size: 9px;
++  }
++  #preview-map {
++    margin-top: 6px;
++  }
++  .projection-inner {
++    justify-content: center;
++  }
++}
++#preview-copy {
++  font-size: 16px;
++}
++.home-intro > p:last-child {
++  font-size: 16px;
++}
++.preview-kicker {
++  font-size: 12px;
++}
++#preview-context {
++  font-size: 12px;
++}
++#preview-step {
++  font-size: 12px;
++}
++.preview-foot {
++  font-size: 11px;
++}
++.previewing #projection {
++  height: auto;
++}
++.projection-inner {
++  height: 100%;
++}
++@media (max-width: 700px) {
++  #dialogue p {
++    font-size: 16px;
++  }
++  .preview-kicker {
++    font-size: 11px;
++  }
++  #preview-copy {
++    font-size: 16px;
++  }
++  .home-intro > p:last-child {
++    font-size: 16px;
++  }
++}
++@media (max-height: 550px) and (min-width: 701px) {
++  .preview-kicker {
++    font-size: 10px;
++  }
++  #preview-copy {
++    display: none;
++  }
++}
++.static-scene #projection {
++  left: auto !important;
++  right: 38px;
++  top: 155px !important;
++  width: min(400px, 34vw) !important;
++  height: auto !important;
++  transform: none !important;
++  opacity: 1 !important;
++}
++.static-scene .projection-inner {
++  padding: 23px;
++}
++.static-scene #fallback {
++  display: block;
++}
++.static-scene #stage {
++  background: #172127;
++}
++.static-scene #fallback.scene-still {
++  inset: 0;
++  width: 100%;
++  height: 100%;
++  object-fit: cover;
++}
++body[data-mode="work"].static-scene #fallback {
++  object-fit: contain;
++}
++.transition-title {
++  display: none;
++  position: fixed;
++  z-index: 15;
++  pointer-events: none;
++  font-weight: 500;
++  line-height: 1.4;
++  color: #ece8df;
++}
++@media (max-width: 700px) {
++  .static-scene #projection {
++    position: relative;
++    right: auto;
++    left: auto !important;
++    top: auto !important;
++    width: calc(100% - 40px) !important;
++    height: auto !important;
++    transform: none !important;
++  }
++  .static-scene #fallback.scene-still {
++    object-fit: cover;
++  }
++}
++@media (max-height: 550px) and (min-width: 701px) {
++  .static-scene #projection {
++    top: 75px !important;
++    width: 260px !important;
++    right: 22px;
++  }
++  .static-scene .projection-inner {
++    padding: 14px;
++  }
++}
++@media (max-width: 700px) {
++  #navigation {
++    top: 83px;
++  }
++  .home-context {
++    width: 100%;
++  }
++  .home-layer-label {
++    grid-column: 1 / -1;
++    grid-template-columns: 1fr 1.4fr;
++    margin-top: 13px;
++    align-items: center;
++  }
++  .home-layer-label select {
++    font-size: 13px;
++  }
++  .home-intro {
++    margin-bottom: 18px;
++  }
++  .previewing #projection {
++    margin-top: 375px;
++  }
++  #preview-map .map-art {
++    height: 112px;
++  }
++  #preview-map > span {
++    font-size: 10px;
++  }
++  .projection-inner {
++    padding: 20px 22px;
++  }
++  #preview-copy {
++    font-size: 15px;
++  }
++  .preview-foot {
++    font-size: 11px;
++  }
++  .home-context {
++    margin-bottom: 87px;
++  }
++  #home {
++    padding-top: 380px;
++  }
++  .home-intro > p:last-child {
++    margin-top: 7px;
++    margin-bottom: 15px;
++  }
++  #dialogue {
++    margin-top: -77px;
++  }
++  #slice-caption {
++    top: 338px;
++    font-size: 9px;
++  }
++  .home-intro {
++    opacity: 1;
++  }
++}
++@media (max-height: 550px) and (min-width: 701px) {
++  #navigation {
++    top: 97px;
++  }
++  #navigation a {
++    min-height: 44px;
++  }
++  .home-intro {
++    display: none;
++  }
++  .home-context {
++    width: 168px;
++    top: 82px;
++  }
++  .home-layer-label {
++    margin-top: 8px;
++  }
++  .home-context > .eyebrow {
++    font-size: 10px;
++    margin-bottom: 2px;
++  }
++  .home-context select {
++    font-size: 11px;
++    min-height: 36px;
++  }
++  #preview-map {
++    display: flex;
++    margin-bottom: 8px;
++  }
++  #preview-map .map-art {
++    width: 100px;
++    height: 56px;
++    flex-shrink: 0;
++  }
++  #preview-map > span {
++    font-size: 8px;
++    padding: 6px;
++    border-top: 0;
++  }
++  #preview-context {
++    padding: 5px 0;
++    margin-bottom: 5px;
++  }
++  .projection-inner {
++    padding: 10px 16px;
++  }
++  #preview-title {
++    font-size: 21px;
++  }
++  #preview-copy {
++    font-size: 12px;
++    line-height: 1.5;
++  }
++  .preview-kicker {
++    font-size: 9px;
++  }
++  #preview-step {
++    font-size: 10px;
++    margin-bottom: 3px;
++  }
++  #expand {
++    font-size: 13px;
++    min-height: 44px;
++    padding: 8px 13px;
++  }
++}
++
++/* Final responsive and loading refinements; all content remains ordinary DOM. */
++.loading-scene #fallback { display:block; inset:0; width:100%; height:100%; object-fit:cover; }
++.loading-scene #stage canvas { visibility:hidden; }
++.static-scene #slice-caption { display:none; }
++#preview-map { flex-shrink:0; }
++#preview-map .map-art { height:82px; }
++#preview-map > span { font-size:11px; line-height:1.5; padding:6px 8px; }
++#preview-copy { font-size:16px; }
++.preview-kicker { font-size:12px; }
++#preview-context, #preview-step { font-size:12px; }
++.preview-foot { font-size:11px; }
++.home-intro > p:last-child { font-size:16px; }
++#cancel-preview { min-width:44px; }
++@media(max-width:700px) {
++  #dialogue p { font-size:16px; }
++  #preview-copy { font-size:16px; }
++  #preview-map .map-art { height:105px; }
++  .preview-kicker { font-size:11px; }
++  #slice-caption { color:#b7c8ce; }
++  #slice-caption .mono { color:#abc0c8; }
++}
++@media(max-height:550px) and (min-width:701px) {
++  #preview-copy, #preview-step, .preview-foot { display:none; }
++  #preview-map .map-art { height:65px; width:100px; }
++  #preview-map > span { font-size:10px; }
++  .preview-kicker { font-size:11px; }
++  #preview-title { font-size:23px; }
++  .projection-inner { padding:12px 16px; justify-content:center; }
++}
+diff --git a/map-design.html b/map-design.html
+new file mode 100644
+index 0000000..af25912
+--- /dev/null
++++ b/map-design.html
+@@ -0,0 +1,400 @@
++<!doctype html>
++<html lang="zh-CN">
++  <head>
++    <meta charset="utf-8" />
++    <meta name="viewport" content="width=device-width,initial-scale=1" />
++    <link rel="icon" href="data:," />
++    <title>空间观测室 · 地图工作区设计</title>
++    <link rel="stylesheet" href="styles.css" />
++    <style>
++      body {
++        height: 100vh;
++        overflow: hidden;
++      }
++      .map-top {
++        height: 76px;
++        display: flex;
++        align-items: center;
++        padding: 0 28px;
++        gap: 20px;
++        border-bottom: 1px solid #50606a;
++      }
++      .map-top h1 {
++        font-size: 18px;
++      }
++      .map-top small {
++        font-size: 11px;
++        color: #adbec6;
++      }
++      .map-top .right {
++        margin-left: auto;
++      }
++      .design-layout {
++        height: calc(100vh - 76px);
++        display: grid;
++        grid-template-columns: 236px 1fr;
++      }
++      .layers {
++        padding: 25px 20px;
++        background: #17242c;
++        border-right: 1px solid #445862;
++        display: flex;
++        flex-direction: column;
++        gap: 18px;
++        overflow: auto;
++      }
++      .layers h2 {
++        font-size: 14px;
++      }
++      .layer-item {
++        display: flex;
++        align-items: flex-start;
++        gap: 10px;
++        padding: 18px 0;
++        border-bottom: 1px solid #485b65;
++        font-size: 12px;
++        overflow-wrap: anywhere;
++      }
++      .layer-item input {
++        margin-top: 4px;
++        flex-shrink: 0;
++      }
++      .layers .companion {
++        margin-top: auto;
++        display: flex;
++        align-items: center;
++        gap: 8px;
++        font-size: 12px;
++        color: #b1c4cc;
++        line-height: 1.8;
++      }
++      .companion img {
++        width: 66px;
++        height: 77px;
++        object-fit: cover;
++        object-position: center 25%;
++      }
++      .map-main {
++        min-width: 0;
++        display: grid;
++        grid-template-rows: minmax(260px, 1fr) 251px;
++      }
++      .geography {
++        position: relative;
++        background: #dce1db;
++        color: #233e4d;
++        overflow: hidden;
++      }
++      .geography > .map-art {
++        width: 100%;
++        height: 100%;
++        max-height: 100%;
++      }
++      .map-tools {
++        position: absolute;
++        top: 16px;
++        left: 20px;
++        display: flex;
++        gap: 4px;
++        background: #eef1eaf2;
++        border: 1px solid #7e939b;
++        padding: 4px;
++        border-radius: 4px;
++        color: #1f3949;
++      }
++      .map-tools button {
++        font-size: 12px;
++        padding: 8px 15px;
++      }
++      .map-tools button[aria-pressed="true"] {
++        background: #cad8d9;
++      }
++      .map-note {
++        position: absolute;
++        bottom: 16px;
++        left: 20px;
++        background: #ecf0e9ed;
++        padding: 8px 12px;
++        font-size: 11px;
++      }
++      .map-float {
++        position: absolute;
++        top: 22px;
++        right: 23px;
++        font-size: 12px;
++        line-height: 1.7;
++        max-width: 230px;
++      }
++      .attributes {
++        background: #202e36;
++        min-width: 0;
++        overflow: auto;
++        padding: 14px 24px;
++      }
++      .attributes header {
++        display: flex;
++        justify-content: space-between;
++        align-items: center;
++        gap: 15px;
++        font-size: 12px;
++        margin-bottom: 6px;
++      }
++      .attributes h2 {
++        font-size: 14px;
++      }
++      .attributes table {
++        font-size: 12px;
++      }
++      .attributes td {
++        padding: 10px 12px;
++      }
++      .attributes th {
++        padding: 11px 12px;
++      }
++      .attributes input {
++        font-size: 12px;
++        min-height: 36px;
++        padding: 6px 9px;
++        max-width: 160px;
++      }
++      .attributes td button {
++        min-height: 36px;
++      }
++      .selected {
++        background: #86bbc414;
++      }
++      .edit-note {
++        font-size: 11px;
++        color: #b7d5d7;
++      }
++      .scene-key {
++        position: absolute;
++        right: 20px;
++        bottom: 16px;
++        font-size: 11px;
++      }
++      .scene-key span {
++        display: inline-block;
++        width: 8px;
++        height: 8px;
++        background: #3b82f6;
++        margin-right: 7px;
++      }
++      dialog {
++        background: #24363e;
++        color: #ece8df;
++        border: 1px solid #83a4ad;
++        padding: 30px;
++        width: min(470px, calc(100vw - 32px));
++        border-radius: 6px;
++      }
++      dialog::backdrop {
++        background: #0911199c;
++      }
++      dialog h2 {
++        font-size: 22px;
++        margin-bottom: 15px;
++      }
++      dialog p {
++        font-size: 14px;
++        color: #b5c7ce;
++      }
++      .dialog-actions {
++        display: flex;
++        flex-wrap: wrap;
++        gap: 10px;
++        margin-top: 24px;
++      }
++      .dialog-actions button {
++        font-size: 13px;
++      }
++      .state-details {
++        font-size: 11px;
++        color: #a5b8c2;
++      }
++      .state-details summary {
++        cursor: pointer;
++        min-height: 44px;
++        padding-top: 12px;
++      }
++      .state-details label {
++        font-size: 11px;
++        display: flex;
++        align-items: center;
++        min-height: 44px;
++        gap: 8px;
++      }
++      #map-feedback {
++        position: fixed;
++        right: 24px;
++        bottom: 24px;
++        max-width: 420px;
++        background: #29484c;
++        border-radius: 4px;
++        font-size: 13px;
++        z-index: 10;
++      }
++      #map-feedback:not(:empty) {
++        padding: 16px 22px;
++      }
++      @media (max-width: 700px) {
++        body {
++          height: auto;
++          overflow: auto;
++        }
++        .map-top {
++          padding: 10px 16px;
++          height: 80px;
++          gap: 10px;
++        }
++        .map-top h1 {
++          font-size: 15px;
++        }
++        .map-top small {
++          display: none;
++        }
++        .map-top button,
++        .map-top a {
++          font-size: 11px;
++          padding: 6px 8px;
++        }
++        .design-layout {
++          height: auto;
++          display: block;
++        }
++        .layers {
++          padding: 14px 18px;
++          display: block;
++          border-right: 0;
++        }
++        .layers h2 {
++          display: inline;
++          margin-right: 12px;
++        }
++        .layer-item {
++          padding: 10px 0;
++        }
++        .layers .companion,
++        .layers > .hint {
++          display: none;
++        }
++        .map-main {
++          display: block;
++        }
++        .geography {
++          height: 370px;
++        }
++        .map-tools {
++          top: 10px;
++          left: 10px;
++          gap: 0;
++        }
++        .map-tools button {
++          padding: 7px 10px;
++        }
++        .map-float {
++          top: 75px;
++          right: 15px;
++          font-size: 10px;
++        }
++        .map-note {
++          font-size: 9px;
++          max-width: 210px;
++          left: 10px;
++          bottom: 12px;
++        }
++        .scene-key {
++          font-size: 9px;
++          right: 10px;
++        }
++        .attributes {
++          padding: 14px 18px;
++          overflow: auto;
++        }
++        .attributes table {
++          min-width: 560px;
++        }
++        .state-details {
++          margin-top: 6px;
++        }
++        .attributes header {
++          align-items: flex-start;
++        }
++        .map-top .right {
++          margin-left: auto;
++        }
++        .map-top .quiet {
++          display: none;
++        }
++      }
++    </style>
++  </head>
++  <body>
++    <header class="map-top">
++      <a href="index.html" class="brand-mark" aria-label="设计入口">G·</a>
++      <div>
++        <h1 id="project-name">地图工作区</h1>
++        <small>空间观测室 / 地图与属性</small>
++      </div>
++      <span class="tag right">设计页 · 本地草稿</span
++      ><button id="leave" class="quiet">返回工作台 ↗</button>
++    </header>
++    <div class="design-layout">
++      <aside class="layers">
++        <h2>项目图层</h2>
++        <div id="layer-list"></div>
++        <p class="hint">
++          数据颜色沿用图层样式。这里保留真实范围与有限几何，不提供测量比例尺。
++        </p>
++        <details class="state-details">
++          <summary>查看状态设计</summary>
++          <label><input type="checkbox" id="fail-save" />模拟保存失败</label
++          ><label><input type="checkbox" id="empty-map" />查看无范围状态</label
++          ><button id="mobile-leave" class="text-button">返回工作台 ↗</button>
++        </details>
++        <div class="companion">
++          <img src="assets/avatar.png" alt="小G" /><span
++            >选中一条记录，<br />就能查看它的属性。</span
++          >
++        </div>
++      </aside>
++      <main class="map-main">
++        <section class="geography" id="geography">
++          <div id="map-svg" style="width: 100%; height: 100%"></div>
++          <div class="map-tools">
++            <button id="select-tool" aria-pressed="true">选择</button
++            ><button id="fit">查看范围</button
++            ><button id="edit">编辑属性</button>
++          </div>
++          <div class="map-float">
++            <span>局部观察窗</span><br /><span class="mono"
++              >116–123° E / 29–34° N</span
++            >
++          </div>
++          <div class="map-note">真实边界几何 · 简化快照 · 不用于测量</div>
++          <div class="scene-key"><span></span>城市边界</div>
++        </section>
++        <section class="attributes">
++          <header>
++            <h2>属性表 <span class="hint" id="attribute-count"></span></h2>
++            <span class="edit-note" id="draft-state">没有未保存更改</span
++            ><button id="save" class="text-button" disabled>保存草稿</button>
++          </header>
++          <div id="attribute-table"></div>
++        </section>
++      </main>
++    </div>
++    <dialog id="leave-dialog">
++      <h2>还有未保存的更改</h2>
++      <p>离开前，可以保存当前草稿，也可以放弃更改。保存失败会留在这里。</p>
++      <p id="save-error" class="feedback error"></p>
++      <div class="dialog-actions">
++        <button id="save-leave" class="primary">保存并离开</button
++        ><button id="discard-leave" class="quiet">放弃并离开</button
++        ><button id="keep-editing" class="quiet">继续编辑</button>
++      </div>
++    </dialog>
++    <div id="map-feedback" role="status" aria-live="polite"></div>
++    <script type="module" src="map-design.mjs"></script>
++  </body>
++</html>
+diff --git a/map-design.mjs b/map-design.mjs
+new file mode 100644
+index 0000000..5759846
+--- /dev/null
++++ b/map-design.mjs
+@@ -0,0 +1,143 @@
++import { mapSVG, esc } from "./map.mjs";
++const $ = (s) => document.querySelector(s);
++const snapshot = await fetch("./data/snapshot.json").then((r) => r.json());
++const params = new URLSearchParams(location.search);
++const p = snapshot.projects.find((p) => p.id === params.get("projectId"));
++const l = p?.layers.find((l) => l.id === params.get("layerId"));
++const features = snapshot.geometry[l?.id]?.data.features ?? [];
++let selected = features[0]?.id ?? "",
++  editing = false;
++const drafts = new Map(),
++  savedDrafts = new Map();
++try {
++  const saved = JSON.parse(sessionStorage.getItem("D01-map-design-draft"));
++  if (saved?.layerId === l?.id)
++    for (const [id, value] of saved.drafts) savedDrafts.set(id, value);
++} catch {}
++$("#project-name").textContent = (p?.name ?? "尚未选择项目") + " / 地图工作区";
++$("#layer-list").innerHTML =
++  (p?.layers ?? [])
++    .map(
++      (layer) =>
++        `<label class="layer-item"><input type="checkbox" data-layer="${layer.id}" ${layer.id === l?.id ? "checked" : ""}><span>${esc(layer.name)}<br><small class="mono">${esc(layer.geometryType)} · ${layer.featureCount} 要素</small></span></label>`,
++    )
++    .join("") || '<p class="hint">请选择项目后查看图层。</p>';
++function renderMap(empty = false) {
++  $("#map-svg").innerHTML = mapSVG(snapshot, empty ? null : l, 1150, 520);
++  $("#map-svg svg").style.height = "100%";
++  $("#map-svg svg").style.width = "100%";
++}
++function renderTable() {
++  const rows = features.slice(0, 8);
++  $("#attribute-count").textContent =
++    `局部 ${features.length} 项 · 显示前 ${rows.length} 项`;
++  $("#attribute-table").innerHTML =
++    `<table><thead><tr><th>FID</th><th>名称</th><th>行政编码</th><th>层级</th><th>来源图层</th></tr></thead><tbody>${rows.map((f) => `<tr class="${selected === f.id ? "selected" : ""}"><td><button data-select="${f.id}">${esc(f.id)}</button></td><td>${editing && selected === f.id ? `<input id="draft-name" aria-label="编辑名称" value="${esc(drafts.get(f.id) ?? savedDrafts.get(f.id) ?? f.properties.name)}">` : esc(drafts.get(f.id) ?? savedDrafts.get(f.id) ?? f.properties.name)}</td><td class="mono">${esc(f.properties.adcode)}</td><td>${esc(f.properties.level)}</td><td>城市边界</td></tr>`).join("") || '<tr><td colspan="5">当前图层未保存要素属性快照。</td></tr>'}</tbody></table>`;
++  updateDirty();
++}
++function updateDirty() {
++  $("#draft-state").textContent = drafts.size
++    ? `${drafts.size} 条未保存更改`
++    : "没有未保存更改";
++  $("#save").disabled = !drafts.size;
++}
++function inform(text) {
++  $("#map-feedback").textContent = text;
++  setTimeout(() => ($("#map-feedback").textContent = ""), 5500);
++}
++function target() {
++  const q = new URLSearchParams();
++  if (p) q.set("projectId", p.id);
++  if (l) q.set("layerId", l.id);
++  return "prototype.html#/analysis?" + q;
++}
++function leave() {
++  if (drafts.size) {
++    $("#save-error").textContent = "";
++    $("#leave-dialog").showModal();
++    $("#keep-editing").focus();
++  } else location.href = target();
++}
++function save() {
++  if ($("#fail-save").checked) {
++    $("#save-error").textContent = "保存未成功。草稿仍保留，请重试或继续编辑。";
++    inform("保存失败的设计状态：仍保留草稿与页面。");
++    return false;
++  }
++  const merged = new Map([...savedDrafts, ...drafts]);
++  try {
++    sessionStorage.setItem(
++      "D01-map-design-draft",
++      JSON.stringify({
++        projectId: p?.id,
++        layerId: l?.id,
++        drafts: [...merged],
++        savedAt: new Date().toISOString(),
++        scope: "design-page local-only",
++      }),
++    );
++  } catch {
++    $("#save-error").textContent = "当前标签页无法保存草稿。更改仍保留，请继续编辑或重试。";
++    inform("草稿未能保存，更改仍留在当前页面。");
++    return false;
++  }
++  for (const [id, value] of merged) savedDrafts.set(id, value);
++  drafts.clear();
++  updateDirty();
++  inform("设计草稿已保留在当前标签页；没有写入空间数据库。");
++  return true;
++}
++document.addEventListener("click", (e) => {
++  const id = e.target.closest("[data-select]")?.dataset.select;
++  if (id) {
++    selected = id;
++    renderTable();
++  }
++});
++document.addEventListener("input", (e) => {
++  if (e.target.id === "draft-name") {
++    const original =
++      savedDrafts.get(selected) ??
++      features.find((f) => f.id === selected)?.properties.name;
++    if (e.target.value === original) drafts.delete(selected);
++    else drafts.set(selected, e.target.value);
++    updateDirty();
++  }
++});
++$("#edit").onclick = () => {
++  editing = !editing;
++  $("#edit").setAttribute("aria-pressed", String(editing));
++  renderTable();
++  $("#draft-name")?.focus();
++};
++$("#fit").onclick = () => {
++  renderMap($("#empty-map").checked);
++  inform(l ? "已查看同一图层的局部观察范围。" : "当前没有可定位的空间范围。");
++};
++$("#select-tool").onclick = () => inform("选择下方记录，查看对应属性。");
++$("#empty-map").onchange = (e) => renderMap(e.target.checked);
++document.addEventListener("change", (e) => {
++  if (e.target.dataset.layer) {
++    if (e.target.dataset.layer === l?.id) renderMap(!e.target.checked);
++    else inform("此图层未保存要素快照；可返回项目页查看其范围。");
++  }
++});
++$("#leave").onclick = $("#mobile-leave").onclick = leave;
++$("#save").onclick = save;
++$("#keep-editing").onclick = () => $("#leave-dialog").close();
++$("#discard-leave").onclick = () => {
++  drafts.clear();
++  location.href = target();
++};
++$("#save-leave").onclick = () => {
++  if (save()) location.href = target();
++};
++addEventListener("beforeunload", (e) => {
++  if (drafts.size) {
++    e.preventDefault();
++    e.returnValue = "";
++  }
++});
++renderMap();
++renderTable();
++window.mapDesign = { ready: true, drafts, leave, save };
+diff --git a/index.html b/index.html
+new file mode 100644
+index 0000000..315cf11
+--- /dev/null
++++ b/index.html
+@@ -0,0 +1,254 @@
++<!doctype html>
++<html lang="zh-CN">
++  <head>
++    <meta charset="utf-8" />
++    <meta name="viewport" content="width=device-width,initial-scale=1" />
++    <link rel="icon" href="data:," />
++    <title>D01 · 空间观测室设计交付</title>
++    <style>
++      :root {
++        font:
++          16px/1.8 "Microsoft YaHei",
++          system-ui,
++          sans-serif;
++        color: #ece8df;
++        background: #11191f;
++      }
++      * {
++        box-sizing: border-box;
++      }
++      body {
++        max-width: 1344px;
++        margin: auto;
++        padding: 40px;
++      }
++      a {
++        color: #a7d2d3;
++        text-decoration: none;
++      }
++      a:hover {
++        text-decoration: underline;
++      }
++      h1 {
++        font-size: 32px;
++        font-weight: 500;
++        margin: 8px 0 12px;
++      }
++      h2 {
++        font-size: 22px;
++        font-weight: 500;
++        margin: 36px 0 18px;
++      }
++      p {
++        color: #abb7bc;
++        max-width: 850px;
++      }
++      .eyebrow {
++        font-size: 12px;
++        letter-spacing: 0.16em;
++      }
++      nav {
++        display: flex;
++        gap: 12px;
++        flex-wrap: wrap;
++        margin: 26px 0;
++      }
++      nav a,
++      .cta {
++        display: inline-block;
++        padding: 11px 18px;
++        border: 1px solid #607b84;
++        border-radius: 4px;
++      }
++      .cta {
++        background: #98c7ca;
++        color: #11191f;
++        font-weight: 600;
++      }
++      img {
++        width: 100%;
++        display: block;
++        border-radius: 4px;
++      }
++      figure {
++        margin: 0;
++      }
++      figcaption {
++        padding: 10px 0;
++        color: #a7b8c0;
++        font-size: 12px;
++      }
++      .gallery {
++        display: grid;
++        grid-template-columns: repeat(3, 1fr);
++        gap: 24px;
++      }
++      .gallery a {
++        display: block;
++      }
++      .wide {
++        grid-column: 1 / -1;
++      }
++      video {
++        width: 100%;
++        max-height: 700px;
++        background: #1b282f;
++      }
++      .links {
++        display: grid;
++        grid-template-columns: repeat(3, 1fr);
++        gap: 1px;
++        background: #3a515b;
++        border: 1px solid #3a515b;
++      }
++      .links a {
++        padding: 20px;
++        background: #19272e;
++      }
++      .links small {
++        display: block;
++        color: #abb7bc;
++      }
++      .notes {
++        padding: 22px 0;
++        border-top: 1px solid #455a64;
++        font-size: 14px;
++      }
++      footer {
++        border-top: 1px solid #455a64;
++        margin-top: 45px;
++        padding-top: 20px;
++        color: #9eafb8;
++        font-size: 12px;
++      }
++      @media (max-width: 700px) {
++        body {
++          padding: 24px 18px;
++        }
++        h1 {
++          font-size: 27px;
++        }
++        .gallery,
++        .links {
++          grid-template-columns: 1fr;
++        }
++        .wide {
++          grid-column: auto;
++        }
++        nav {
++          gap: 8px;
++        }
++        nav a {
++          font-size: 13px;
++        }
++      }
++    </style>
++  </head>
++  <body>
++    <p class="eyebrow">D01 / 设计原型 · R1 / 2026.09.14</p>
++    <h1>小G · 空间观测室</h1>
++    <p>
++      一个安静的空间，六个观察方向。真实小G与魔方、同一片城市边界，从首次相遇到进入工作台。
++    </p>
++    <nav>
++      <a
++        class="cta"
++        href="prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9"
++        >打开完整交互原型 ↗</a
++      ><a href="#frames">看关键帧</a><a href="#pages">六个目的页</a
++      ><a href="#film">连续镜头</a><a href="design-spec.md">设计规格 ↗</a>
++    </nav>
++    <figure>
++      <a href="evidence/desktop-idle.png"
++        ><img
++          src="evidence/desktop-idle.png"
++          alt="空间观测室桌面首屏，真实小G站在魔方与地图切片旁"
++      /></a>
++      <figcaption>
++        1440 × 900 · 同版实际 GLB 原型画面 · 角色 A-body-refinement-20260914
++      </figcaption>
++    </figure>
++    <p class="notes">
++      这是独立设计原型。项目、图层与任务来自已注明时间的只读快照；表单提供选择与校验，不提交分析、不生成导出文件。请使用文字导航选择方向，预览可以无限停留，点击“展开工作台”才进入目的页。
++    </p>
++    <h2 id="pages">六个目的页</h2>
++    <div class="links" id="page-links"></div>
++    <h2 id="frames">关键帧与构图</h2>
++    <p>
++      Frame 0 是选择“空间分析”的瞬间；Frame 90 / 180 分别是 1.5 / 3
++      秒观察点。展开有独立时间轴。
++    </p>
++    <div class="gallery" id="gallery"></div>
++    <h2 id="film">连续镜头 / 16 秒</h2>
++    <video controls preload="metadata" poster="evidence/desktop-idle.png">
++      <source src="evidence/observatory-film.webm" type="video/webm" />
++    </video>
++    <p class="hint">
++      实际浏览器录屏。约 2 秒选择空间分析，约 6 秒由用户点击展开。具体时间以
++      film-manifest.json 的事件记录为准；录屏不能替代实时性能测试。
++    </p>
++    <h2>地图工作区与未保存编辑</h2>
++    <p>同一项目、原色边界与真实属性；查看图层、地图、属性表和离开分支的完整设计。</p>
++    <nav><a class="cta" href="map-design.html?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&amp;layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9">打开地图工作区设计 ↗</a><a href="evidence/map-unsaved-dialog.png">未保存更改分支</a><a href="evidence/map-save-failure.png">保存失败分支</a></nav>
++    <figure><a href="evidence/map-workspace.png"><img src="evidence/map-workspace.png" alt="地图工作区设计，含图层、真实边界、属性表与小G安全区" loading="lazy"></a><figcaption>1440 × 900 · 地图工作区设计页；本地草稿，不调用业务写 API。</figcaption></figure>
++    <h2>复核与交接</h2>
++    <nav>
++      <a href="evidence/contact-sheet.png">全部画面联系表 ↗</a
++      ><a href="evidence/qa-report.json">交互与性能记录 ↗</a
++      ><a href="evidence/film-manifest.json">样片时序与编码记录 ↗</a
++      ><a href="stage_manifest.json">交付清单 ↗</a
++      ><a href="README.md">运行说明 ↗</a
++      ><a
++        href="prototype.html?static=1#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9"
++        >静态降级路径 ↗</a
++      >
++    </nav>
++    <footer>
++      本包只拥有 artifacts/xiaog/D01。原项目业务代码与 T02
++      模型输入保持原样。原型通过之后，正式 GIS 接入仍需独立实施与验收。
++    </footer>
++    <script>
++      const names = {
++        projects: "项目空间",
++        data: "数据资源",
++        analysis: "空间分析",
++        tasks: "任务进度",
++        exports: "导出交付",
++        overview: "平台概览",
++      };
++      document.querySelector("#page-links").innerHTML = Object.entries(names)
++        .map(
++          ([id, title], i) =>
++            `<a href="prototype.html#/${id}?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9">0${i + 1} ${title} ↗<small>直接打开，可继续页内切换</small></a>`,
++        )
++        .join("");
++      const frames = [
++        ["desktop-f0", "Frame 0 · 0 ms"],
++        ["desktop-f30", "Frame 30 · 500 ms"],
++        ["desktop-f90", "Frame 90 · 1500 ms"],
++        ["desktop-f180", "Frame 180 · 3000 ms"],
++        ["desktop-expanding", "用户点击后 · 280 ms"],
++        ["page-analysis", "目的地 · 空间分析"],
++        ["page-projects", "项目空间"],
++        ["page-data", "数据资源"],
++        ["page-tasks", "任务进度"],
++        ["page-exports", "导出交付"],
++        ["page-overview", "平台概览"],
++        ["desktop-1920", "1920 × 1080 首屏"],
++        ["mobile-idle", "390 × 844 首屏"],
++        ["mobile-preview", "手机预览 · 正常文档流"],
++        ["mobile-destination", "手机分析页"],
++        ["landscape-idle", "窄横屏 · 844 × 390"],
++        ["landscape-preview", "窄横屏预览"],
++        ["landscape-destination", "窄横屏目的页"],
++      ];
++      document.querySelector("#gallery").innerHTML = frames
++        .map(
++          ([id, title]) =>
++            `<figure><a href="evidence/${id}.png"><img src="evidence/${id}.png" alt="${title}" loading="lazy"></a><figcaption>${title} · 原图 PNG</figcaption></figure>`,
++        )
++        .join("");
++    </script>
++    <script type="module" src="media.mjs"></script>
++  </body>
++</html>
+diff --git a/media.mjs b/media.mjs
+new file mode 100644
+index 0000000..f5fbcf1
+--- /dev/null
++++ b/media.mjs
+@@ -0,0 +1,20 @@
++// Buffer this small local review clip so the current preview also seeks on
++// simple static servers which do not advertise byte ranges.
++const video = document.querySelector('video');
++const source = video?.querySelector('source')?.src;
++if (video && source) {
++  try {
++    const response = await fetch(source);
++    if (!response.ok) throw Error('Video unavailable');
++    const blob = await response.blob();
++    const objectURL = URL.createObjectURL(blob);
++    const resume = !video.paused;
++    video.src = objectURL;
++    video.dataset.buffered = 'true';
++    video.load();
++    if (resume) await video.play();
++    addEventListener('pagehide', () => URL.revokeObjectURL(objectURL), {once:true});
++  } catch {
++    // The original local source and native controls remain available.
++  }
++}
+diff --git a/server.mjs b/server.mjs
+new file mode 100644
+index 0000000..74f38e3
+--- /dev/null
++++ b/server.mjs
+@@ -0,0 +1,73 @@
++import http from "node:http";
++import fs from "node:fs/promises";
++import path from "node:path";
++import { fileURLToPath } from "node:url";
++const root = path.dirname(fileURLToPath(import.meta.url));
++const port = Number(process.env.D01_PORT || 18404);
++const mime = {
++  ".html": "text/html; charset=utf-8",
++  ".css": "text/css; charset=utf-8",
++  ".js": "text/javascript; charset=utf-8",
++  ".mjs": "text/javascript; charset=utf-8",
++  ".json": "application/json; charset=utf-8",
++  ".glb": "model/gltf-binary",
++  ".png": "image/png",
++  ".svg": "image/svg+xml",
++  ".webm": "video/webm",
++  ".mp4": "video/mp4",
++  ".md": "text/plain; charset=utf-8",
++  ".txt": "text/plain; charset=utf-8",
++};
++const server = http.createServer(async (req, res) => {
++  try {
++    if (!["GET", "HEAD"].includes(req.method)) {
++      res.writeHead(405);
++      return res.end("Read-only design package");
++    }
++    const raw = decodeURIComponent(
++      new URL(req.url, "http://localhost").pathname,
++    );
++    const file = path.resolve(root, "." + (raw === "/" ? "/index.html" : raw));
++    if (file !== root && !file.startsWith(root + path.sep)) {
++      res.writeHead(403);
++      return res.end();
++    }
++    const b = await fs.readFile(file);
++    // HTML media needs byte ranges for reliable seeking and decoded-frame QA.
++    const range = req.headers.range?.match(/^bytes=(\d+)-(\d*)$/);
++    if (range) {
++      const start = Number(range[1]);
++      const end = Math.min(range[2] ? Number(range[2]) : b.length - 1, b.length - 1);
++      if (start >= b.length || end < start) {
++        res.writeHead(416, { "Content-Range": `bytes */${b.length}` });
++        return res.end();
++      }
++      res.writeHead(206, {
++        "Content-Type": mime[path.extname(file)] || "application/octet-stream",
++        "Accept-Ranges": "bytes",
++        "Content-Range": `bytes ${start}-${end}/${b.length}`,
++        "Content-Length": end - start + 1,
++        "Cache-Control": "no-cache",
++      });
++      return res.end(req.method === "HEAD" ? undefined : b.subarray(start, end + 1));
++    }
++    res.writeHead(200, {
++      "Content-Type": mime[path.extname(file)] || "application/octet-stream",
++      "Content-Length": b.length,
++      "Cache-Control": "no-cache",
++      "Accept-Ranges": "bytes",
++      "X-Content-Type-Options": "nosniff",
++    });
++    res.end(req.method === "HEAD" ? undefined : b);
++  } catch {
++    res.writeHead(404);
++    res.end("Not found");
++  }
++});
++server.on("error", (e) => {
++  console.error(e.message);
++  process.exitCode = 1;
++});
++server.listen(port, "127.0.0.1", () =>
++  console.log("D01_READY http://127.0.0.1:" + port + "/"),
++);

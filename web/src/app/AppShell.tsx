@@ -9,7 +9,7 @@ import {
   type PanelSide,
   type WorkspaceLayout,
 } from './workspaceLayout'
-import { Monogram } from './PlatformShell'
+import { Monogram } from './BrandMark'
 
 export type ResizablePanel = 'sidebar' | 'inspector' | 'drawer'
 
@@ -377,7 +377,7 @@ export function AppShell({
   return (
     <div className="app-shell">
       <header className="app-shell__header">
-        <Link to="/" className="platform__brand" aria-label="Back to dashboard">
+        <Link to="/" className="platform__brand" aria-label="返回主舞台">
           <Monogram />
           <span className="app-header__name">Graticule</span>
         </Link>

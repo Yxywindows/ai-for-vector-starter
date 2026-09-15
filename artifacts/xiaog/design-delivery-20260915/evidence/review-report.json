@@ -1,0 +1,108 @@
+{
+  "version": "D01-R1",
+  "createdAt": "2026-09-14T15:04:42.504Z",
+  "reviewedActualNewFileDiff": true,
+  "diffFile": "evidence/source-review.diff",
+  "runtimeFiles": [
+    {
+      "file": "prototype.html",
+      "checkExit": 1,
+      "whitespaceOutput": "",
+      "bytes": 4495,
+      "sha256": "7a55b4e778beea63bc5d5a84fca5982fd07722fe7762501086eeb4ce550ed4c3"
+    },
+    {
+      "file": "app.mjs",
+      "checkExit": 1,
+      "whitespaceOutput": "",
+      "bytes": 37895,
+      "sha256": "fc3ca675513fc00c0fbe28548dd5b2afad148ef822656ce795e7fe804d628f7c"
+    },
+    {
+      "file": "scene.mjs",
+      "checkExit": 1,
+      "whitespaceOutput": "",
+      "bytes": 24670,
+      "sha256": "3578df58327c18ea85289f2e095ea833b0c68a70d32ce3b6ee71a29f8c31f4af"
+    },
+    {
+      "file": "map.mjs",
+      "checkExit": 1,
+      "whitespaceOutput": "",
+      "bytes": 3596,
+      "sha256": "58aa6edb62a731550415007b0224d26a17c418bcef2e0209a8e2f743d5d71e53"
+    },
+    {
+      "file": "styles.css",
+      "checkExit": 1,
+      "whitespaceOutput": "",
+      "bytes": 34685,
+      "sha256": "5a749a63c9127930edf95f815180587e7d29e96142a8c088be758d6938ab1918"
+    },
+    {
+      "file": "map-design.html",
+      "checkExit": 1,
+      "whitespaceOutput": "",
+      "bytes": 10359,
+      "sha256": "58ff7a908a7e5982f43c505096648812ddaeaaf8ab240c7e716d631b18edb18f"
+    },
+    {
+      "file": "map-design.mjs",
+      "checkExit": 1,
+      "whitespaceOutput": "",
+      "bytes": 5784,
+      "sha256": "2bb5f4df92c2d5c890ae6410b3d16ae47a10212003038a56dad58aaa547d69b2"
+    },
+    {
+      "file": "index.html",
+      "checkExit": 1,
+      "whitespaceOutput": "",
+      "bytes": 8508,
+      "sha256": "829fd871ab6ea800bcd2824d1989298f7aac0227a26aa803f749614b8867c328"
+    },
+    {
+      "file": "media.mjs",
+      "checkExit": 1,
+      "whitespaceOutput": "",
+      "bytes": 780,
+      "sha256": "80a1fdddc54fa3ea480a8fd53b87e919352903df4e9f19ed65889ff5226a286f"
+    },
+    {
+      "file": "server.mjs",
+      "checkExit": 1,
+      "whitespaceOutput": "",
+      "bytes": 2594,
+      "sha256": "7bfbe01a96ddbbc3d50f9a682da7206787f7dcddea786d54d2c7903dbc00af9d"
+    }
+  ],
+  "fixes": [
+    "1280 navigation/intro overlap removed; explicit home observation layer added.",
+    "Preview includes true selected geometry; cube-local face tangents and normal determine the source.",
+    "SVG clipPath IDs made unique across hidden and visible previews.",
+    "Mobile connector restricted to right side, protecting face/chest.",
+    "Companion uses same-canvas face/chest close framing.",
+    "Search state isolated per page; hash restoration now refreshes actual scene context.",
+    "DPR1 for large viewports; fallback and no-data statistics fixed. Consecutive draft saves merge prior rows; storage errors retain pending edits.",
+    "Video evidence uses FFmpeg output seeking and PNG decoding; browser blob buffering restores reliable player seeking."
+  ],
+  "visualReview": [
+    "desktop-idle",
+    "desktop-f90",
+    "contact-sheet",
+    "page-projects",
+    "page-data",
+    "page-analysis",
+    "page-tasks",
+    "page-exports",
+    "page-overview",
+    "mobile-idle",
+    "mobile-preview",
+    "map-workspace",
+    "film decoded frames"
+  ],
+  "knownLimitations": [
+    "Independent design prototype, not production app integration.",
+    "390px measurements are desktop viewport emulation; no phone hardware test.",
+    "No original GLB warning/topology changes; no continuous-time collision proof."
+  ]
+}

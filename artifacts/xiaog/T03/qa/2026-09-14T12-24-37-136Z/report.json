@@ -1,0 +1,114 @@
+{
+  "baseUrl": "http://127.0.0.1:18403",
+  "run": "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z",
+  "mockRequests": false,
+  "checks": [
+    {
+      "name": "Home does not load map engine or claim a 3D model",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Preview → /projects → history → home with focus",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Preview → /data → history → home with focus",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Preview → /analysis → history → home with focus",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Preview → /tasks → history → home with focus",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Preview → /exports → history → home with focus",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Preview → /overview → history → home with focus",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Latest intention cancels stale expansion; Escape prevents later navigation",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Ctrl-click preserves native new-tab navigation",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Manual reduced motion persists; keyboard flow works",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "OS reduced-motion preference honored",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Responsive preview and real platform 1920x1080",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Responsive preview and real platform 1024x768",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Responsive preview and real platform 390x844",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Real project deep link and refresh",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Real dataset schema deep link",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Real map lazy load, own chrome, direct URL",
+      "status": "passed",
+      "details": null
+    },
+    {
+      "name": "Last-project map shortcut preserved",
+      "status": "passed",
+      "details": null
+    }
+  ],
+  "pageErrors": [],
+  "apiFailures": [],
+  "screenshots": [
+    "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z\\01-home-desktop.png",
+    "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z\\02-analysis-preview.png",
+    "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z\\03-preview-1920x1080.png",
+    "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z\\04-platform-1920x1080.png",
+    "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z\\03-preview-1024x768.png",
+    "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z\\04-platform-1024x768.png",
+    "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z\\03-preview-390x844.png",
+    "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z\\04-platform-390x844.png",
+    "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z\\05-dataset-deep-link.png",
+    "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z\\06-map-deep-link.png",
+    "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\T03\\qa\\2026-09-14T12-24-37-136Z\\07-mobile-with-map-shortcut.png"
+  ],
+  "status": "passed",
+  "browserVersion": "151.0.7922.34"
+}

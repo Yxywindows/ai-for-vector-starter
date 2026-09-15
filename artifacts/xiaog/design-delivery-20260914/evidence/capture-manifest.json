@@ -1,0 +1,2020 @@
+{
+  "version": "D01-R1",
+  "createdAt": "2026-09-14T14:50:56.485Z",
+  "sameAssets": "assets/runtime_manifest.json",
+  "timing": "Deterministic storyboard points, not timing-performance measurements.",
+  "errors": [],
+  "records": [
+    {
+      "name": "desktop-idle",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "home",
+        "feature": null,
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          1440,
+          900
+        ],
+        "drawingBuffer": [
+          1440,
+          900
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 61,
+        "triangles": 115394,
+        "frameSamples": 21,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 29.200000000000273,
+        "meanRenderCPUMs": 3.340909090909091,
+        "faceDotView": null,
+        "sourcePlaneOffset": null,
+        "cubeQuaternion": [
+          0.09689359458499672,
+          0.1638597435768746,
+          0.06424620546711426,
+          0.9796091265634456
+        ],
+        "cubeScreen": [
+          914.3933148498335,
+          441.43901811107645
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 26
+      }
+    },
+    {
+      "name": "desktop-f0",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "preview",
+        "feature": "analysis",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          1440,
+          900
+        ],
+        "drawingBuffer": [
+          1440,
+          900
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 66,
+        "triangles": 115402,
+        "frameSamples": 21,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 29.200000000000273,
+        "meanRenderCPUMs": 3.340909090909091,
+        "faceDotView": -0.8419482955670471,
+        "worldNormal": [
+          -0.3334870921408145,
+          0.16878096561474537,
+          -0.9275232315266384
+        ],
+        "sourcePlaneOffset": 0.21600000000000003,
+        "faceSourceScreen": [
+          921.3848255795878,
+          383.9087007456167
+        ],
+        "projectionQuad": [
+          [
+            921.5412559284285,
+            383.58870074561673
+          ],
+          [
+            922.2892559284286,
+            383.6067007456167
+          ],
+          [
+            922.2812559284285,
+            384.6087007456167
+          ],
+          [
+            921.5292559284286,
+            384.59070074561674
+          ]
+        ],
+        "cubeQuaternion": [
+          0.09689359458499672,
+          0.1638597435768746,
+          0.06424620546711426,
+          0.9796091265634456
+        ],
+        "cubeScreen": [
+          914.3933148498335,
+          441.43901811107645
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 28
+      }
+    },
+    {
+      "name": "desktop-f30",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "preview",
+        "feature": "analysis",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          1440,
+          900
+        ],
+        "drawingBuffer": [
+          1440,
+          900
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 66,
+        "triangles": 115402,
+        "frameSamples": 21,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 29.200000000000273,
+        "meanRenderCPUMs": 3.340909090909091,
+        "faceDotView": 0.9999956853901174,
+        "worldNormal": [
+          -0.12488021849717702,
+          0.15739419752171105,
+          0.9796080836817315
+        ],
+        "sourcePlaneOffset": 0.21600000000000003,
+        "faceSourceScreen": [
+          961.3241110846292,
+          413.06148883195794
+        ],
+        "projectionQuad": [
+          [
+            975.1483034212182,
+            364.97734157425697
+          ],
+          [
+            1087.5449976360942,
+            367.68207485750264
+          ],
+          [
+            1086.3428939546518,
+            518.2455609581789
+          ],
+          [
+            973.3451478990544,
+            515.5408276749331
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7799736165517265,
+          0.617612499326306,
+          0.00009832852662871721,
+          0.100974989431221
+        ],
+        "cubeScreen": [
+          914.3933148498335,
+          441.43901811107645
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 30
+      }
+    },
+    {
+      "name": "desktop-f90",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "preview",
+        "feature": "analysis",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          1440,
+          900
+        ],
+        "drawingBuffer": [
+          1440,
+          900
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 66,
+        "triangles": 115402,
+        "frameSamples": 21,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 29.200000000000273,
+        "meanRenderCPUMs": 3.340909090909091,
+        "faceDotView": 1,
+        "worldNormal": [
+          -0.1229284323451866,
+          0.15527801980444617,
+          0.9801925000155659
+        ],
+        "sourcePlaneOffset": 0.2160000000000001,
+        "faceSourceScreen": [
+          961.4428508579209,
+          413.1959709667231
+        ],
+        "projectionQuad": [
+          [
+            1007.4428508579209,
+            253.1959709667231
+          ],
+          [
+            1381.4428508579208,
+            262.1959709667231
+          ],
+          [
+            1377.4428508579208,
+            763.195970966723
+          ],
+          [
+            1001.4428508579209,
+            754.195970966723
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7801536668299253,
+          0.6176216529070245,
+          0,
+          0.09951758634641977
+        ],
+        "cubeScreen": [
+          914.3933148498335,
+          441.43901811107645
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 32
+      }
+    },
+    {
+      "name": "desktop-f180",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "preview",
+        "feature": "analysis",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          1440,
+          900
+        ],
+        "drawingBuffer": [
+          1440,
+          900
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 66,
+        "triangles": 115402,
+        "frameSamples": 21,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 29.200000000000273,
+        "meanRenderCPUMs": 3.340909090909091,
+        "faceDotView": 1,
+        "worldNormal": [
+          -0.1229284323451866,
+          0.15527801980444617,
+          0.9801925000155659
+        ],
+        "sourcePlaneOffset": 0.2160000000000001,
+        "faceSourceScreen": [
+          961.4428508579209,
+          413.1959709667231
+        ],
+        "projectionQuad": [
+          [
+            1007.4428508579209,
+            253.1959709667231
+          ],
+          [
+            1381.4428508579208,
+            262.1959709667231
+          ],
+          [
+            1377.4428508579208,
+            763.195970966723
+          ],
+          [
+            1001.4428508579209,
+            754.195970966723
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7801536668299253,
+          0.6176216529070245,
+          0,
+          0.09951758634641977
+        ],
+        "cubeScreen": [
+          914.3933148498335,
+          441.43901811107645
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 34
+      }
+    },
+    {
+      "name": "desktop-expanding",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "expanding",
+        "feature": "analysis",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          1440,
+          900
+        ],
+        "drawingBuffer": [
+          1440,
+          900
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 66,
+        "triangles": 115402,
+        "frameSamples": 21,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 29.200000000000273,
+        "meanRenderCPUMs": 3.340909090909091,
+        "faceDotView": 0.9994595455689823,
+        "worldNormal": [
+          -0.14473271974314364,
+          0.17886138343189628,
+          0.9731706147190126
+        ],
+        "sourcePlaneOffset": 0.1296,
+        "faceSourceScreen": [
+          941.388276612508,
+          423.8714135079004
+        ],
+        "projectionQuad": [
+          [
+            630.8,
+            201.4357067539502
+          ],
+          [
+            1383.8,
+            205.9357067539502
+          ],
+          [
+            1381.8,
+            820.9357067539502
+          ],
+          [
+            627.8,
+            816.4357067539502
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7780421453629185,
+          0.6174428940384479,
+          0.0011004955876885623,
+          0.1158165858154833
+        ],
+        "cubeScreen": [
+          914.3933148498335,
+          441.43901811107645
+        ],
+        "robotBounds": {
+          "min": [
+            -1.2049247460812258,
+            0.8249999716586198,
+            -0.44349559981405823
+          ],
+          "max": [
+            -0.3194353874701279,
+            2.100039152252808,
+            0.45229432200455205
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 36
+      }
+    },
+    {
+      "name": "page-projects",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/projects?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "work",
+        "feature": "projects",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          165,
+          100
+        ],
+        "drawingBuffer": [
+          165,
+          100
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 26,
+        "triangles": 90224,
+        "frameSamples": 24,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 54.09999999999991,
+        "meanRenderCPUMs": 3.0479999999701977,
+        "faceDotView": -0.9783489878824072,
+        "worldNormal": [
+          0.14473271974314364,
+          -0.17886138343189628,
+          -0.9731706147190126
+        ],
+        "sourcePlaneOffset": -0.1296,
+        "faceSourceScreen": [
+          941.388276612508,
+          423.8714135079004
+        ],
+        "projectionQuad": [
+          [
+            630.8,
+            201.4357067539502
+          ],
+          [
+            1383.8,
+            205.9357067539502
+          ],
+          [
+            1381.8,
+            820.9357067539502
+          ],
+          [
+            627.8,
+            816.4357067539502
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7780421453629185,
+          0.6174428940384479,
+          0.0011004955876885623,
+          0.1158165858154833
+        ],
+        "cubeScreen": [
+          178.71401903910234,
+          95.9879588607312
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0,
+            1.7,
+            3.2
+          ],
+          "fov": 22
+        },
+        "rendered": 40
+      }
+    },
+    {
+      "name": "page-data",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/data?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "work",
+        "feature": "data",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          165,
+          100
+        ],
+        "drawingBuffer": [
+          165,
+          100
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 26,
+        "triangles": 90224,
+        "frameSamples": 26,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 54.09999999999991,
+        "meanRenderCPUMs": 2.8851851851299957,
+        "faceDotView": -0.031124221668042143,
+        "worldNormal": [
+          0.23752612302177495,
+          0.9610480991168683,
+          -0.14130779195111323
+        ],
+        "sourcePlaneOffset": 0.087,
+        "faceSourceScreen": [
+          941.388276612508,
+          423.8714135079004
+        ],
+        "projectionQuad": [
+          [
+            630.8,
+            201.4357067539502
+          ],
+          [
+            1383.8,
+            205.9357067539502
+          ],
+          [
+            1381.8,
+            820.9357067539502
+          ],
+          [
+            627.8,
+            816.4357067539502
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7780421453629185,
+          0.6174428940384479,
+          0.0011004955876885623,
+          0.1158165858154833
+        ],
+        "cubeScreen": [
+          178.71401903910234,
+          95.9879588607312
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0,
+            1.7,
+            3.2
+          ],
+          "fov": 22
+        },
+        "rendered": 43
+      }
+    },
+    {
+      "name": "page-analysis",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/analysis?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "work",
+        "feature": "analysis",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          165,
+          100
+        ],
+        "drawingBuffer": [
+          165,
+          100
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 26,
+        "triangles": 90224,
+        "frameSamples": 28,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 54.09999999999991,
+        "meanRenderCPUMs": 2.7413793102163693,
+        "faceDotView": 0.9783489878824072,
+        "worldNormal": [
+          -0.14473271974314364,
+          0.17886138343189628,
+          0.9731706147190126
+        ],
+        "sourcePlaneOffset": 0.1296,
+        "faceSourceScreen": [
+          941.388276612508,
+          423.8714135079004
+        ],
+        "projectionQuad": [
+          [
+            630.8,
+            201.4357067539502
+          ],
+          [
+            1383.8,
+            205.9357067539502
+          ],
+          [
+            1381.8,
+            820.9357067539502
+          ],
+          [
+            627.8,
+            816.4357067539502
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7780421453629185,
+          0.6174428940384479,
+          0.0011004955876885623,
+          0.1158165858154833
+        ],
+        "cubeScreen": [
+          178.71401903910234,
+          95.9879588607312
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0,
+            1.7,
+            3.2
+          ],
+          "fov": 22
+        },
+        "rendered": 46
+      }
+    },
+    {
+      "name": "page-tasks",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/tasks?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9&taskId=a97b61b3-dffd-4cde-9555-d6608ebdfa13",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "work",
+        "feature": "tasks",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          165,
+          100
+        ],
+        "drawingBuffer": [
+          165,
+          100
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 26,
+        "triangles": 90224,
+        "frameSamples": 30,
+        "p50FrameMs": 8.299999999999727,
+        "p95FrameMs": 54.09999999999991,
+        "meanRenderCPUMs": 2.622580645065154,
+        "faceDotView": 0.031124221668042143,
+        "worldNormal": [
+          -0.23752612302177495,
+          -0.9610480991168683,
+          0.14130779195111323
+        ],
+        "sourcePlaneOffset": -0.087,
+        "faceSourceScreen": [
+          941.388276612508,
+          423.8714135079004
+        ],
+        "projectionQuad": [
+          [
+            630.8,
+            201.4357067539502
+          ],
+          [
+            1383.8,
+            205.9357067539502
+          ],
+          [
+            1381.8,
+            820.9357067539502
+          ],
+          [
+            627.8,
+            816.4357067539502
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7780421453629185,
+          0.6174428940384479,
+          0.0011004955876885623,
+          0.1158165858154833
+        ],
+        "cubeScreen": [
+          178.71401903910234,
+          95.9879588607312
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0,
+            1.7,
+            3.2
+          ],
+          "fov": 22
+        },
+        "rendered": 49
+      }
+    },
+    {
+      "name": "page-exports",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/exports?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "work",
+        "feature": "exports",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          165,
+          100
+        ],
+        "drawingBuffer": [
+          165,
+          100
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 26,
+        "triangles": 90224,
+        "frameSamples": 32,
+        "p50FrameMs": 8.200000000000728,
+        "p95FrameMs": 54.09999999999991,
+        "meanRenderCPUMs": 2.5212121211895435,
+        "faceDotView": -0.20460826164900553,
+        "worldNormal": [
+          0.9605382765501836,
+          -0.21070158210294246,
+          0.1815793561540522
+        ],
+        "sourcePlaneOffset": 0.08699999999999981,
+        "faceSourceScreen": [
+          941.388276612508,
+          423.8714135079004
+        ],
+        "projectionQuad": [
+          [
+            630.8,
+            201.4357067539502
+          ],
+          [
+            1383.8,
+            205.9357067539502
+          ],
+          [
+            1381.8,
+            820.9357067539502
+          ],
+          [
+            627.8,
+            816.4357067539502
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7780421453629185,
+          0.6174428940384479,
+          0.0011004955876885623,
+          0.1158165858154833
+        ],
+        "cubeScreen": [
+          178.71401903910234,
+          95.9879588607312
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0,
+            1.7,
+            3.2
+          ],
+          "fov": 22
+        },
+        "rendered": 52
+      }
+    },
+    {
+      "name": "page-overview",
+      "fullPage": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/overview",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "work",
+        "feature": "overview",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          165,
+          100
+        ],
+        "drawingBuffer": [
+          165,
+          100
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 26,
+        "triangles": 90224,
+        "frameSamples": 35,
+        "p50FrameMs": 8.199999999999818,
+        "p95FrameMs": 54.09999999999991,
+        "meanRenderCPUMs": 2.386111111069719,
+        "faceDotView": 0.20460826164900553,
+        "worldNormal": [
+          -0.9605382765501836,
+          0.21070158210294246,
+          -0.1815793561540522
+        ],
+        "sourcePlaneOffset": -0.08699999999999981,
+        "faceSourceScreen": [
+          941.388276612508,
+          423.8714135079004
+        ],
+        "projectionQuad": [
+          [
+            630.8,
+            201.4357067539502
+          ],
+          [
+            1383.8,
+            205.9357067539502
+          ],
+          [
+            1381.8,
+            820.9357067539502
+          ],
+          [
+            627.8,
+            816.4357067539502
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7780421453629185,
+          0.6174428940384479,
+          0.0011004955876885623,
+          0.1158165858154833
+        ],
+        "cubeScreen": [
+          178.71401903910234,
+          95.9879588607312
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0,
+            1.7,
+            3.2
+          ],
+          "fov": 22
+        },
+        "rendered": 56
+      }
+    },
+    {
+      "name": "laptop-idle",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "home",
+        "feature": null,
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1280,
+          720
+        ],
+        "canvasCSS": [
+          1280,
+          720
+        ],
+        "drawingBuffer": [
+          1280,
+          720
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 61,
+        "triangles": 115394,
+        "frameSamples": 60,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 29.200000000000273,
+        "meanRenderCPUMs": 2.3081967213847596,
+        "faceDotView": null,
+        "sourcePlaneOffset": null,
+        "faceSourceScreen": [
+          941.388276612508,
+          423.8714135079004
+        ],
+        "projectionQuad": [
+          [
+            630.8,
+            201.4357067539502
+          ],
+          [
+            1383.8,
+            205.9357067539502
+          ],
+          [
+            1381.8,
+            820.9357067539502
+          ],
+          [
+            627.8,
+            816.4357067539502
+          ]
+        ],
+        "cubeQuaternion": [
+          0.09689359458499672,
+          0.1638597435768746,
+          0.06424620546711426,
+          0.9796091265634456
+        ],
+        "cubeScreen": [
+          795.5146518798666,
+          353.15121448886117
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 84
+      }
+    },
+    {
+      "name": "laptop-preview",
+      "fullPage": false,
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "preview",
+        "feature": "analysis",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1280,
+          720
+        ],
+        "canvasCSS": [
+          1280,
+          720
+        ],
+        "drawingBuffer": [
+          1280,
+          720
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 66,
+        "triangles": 115402,
+        "frameSamples": 60,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 29.200000000000273,
+        "meanRenderCPUMs": 2.3081967213847596,
+        "faceDotView": 1,
+        "worldNormal": [
+          -0.1229284323451866,
+          0.15527801980444617,
+          0.9801925000155659
+        ],
+        "sourcePlaneOffset": 0.2160000000000001,
+        "faceSourceScreen": [
+          833.1542806863367,
+          330.5567767733785
+        ],
+        "projectionQuad": [
+          [
+            889.1999999999999,
+            150
+          ],
+          [
+            1235.1999999999998,
+            159
+          ],
+          [
+            1231.1999999999998,
+            660
+          ],
+          [
+            883.1999999999999,
+            651
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7801536668299253,
+          0.6176216529070245,
+          0,
+          0.09951758634641977
+        ],
+        "cubeScreen": [
+          795.5146518798666,
+          353.15121448886117
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 86
+      }
+    },
+    {
+      "name": "desktop-1920",
+      "fullPage": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "home",
+        "feature": null,
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1920,
+          1080
+        ],
+        "canvasCSS": [
+          1920,
+          1080
+        ],
+        "drawingBuffer": [
+          1920,
+          1080
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 61,
+        "triangles": 115394,
+        "frameSamples": 80,
+        "p50FrameMs": 8.300000000000182,
+        "p95FrameMs": 21,
+        "meanRenderCPUMs": 2.2382716050394524,
+        "faceDotView": null,
+        "sourcePlaneOffset": null,
+        "faceSourceScreen": [
+          833.1542806863367,
+          330.5567767733785
+        ],
+        "projectionQuad": [
+          [
+            889.1999999999999,
+            150
+          ],
+          [
+            1235.1999999999998,
+            159
+          ],
+          [
+            1231.1999999999998,
+            660
+          ],
+          [
+            883.1999999999999,
+            651
+          ]
+        ],
+        "cubeQuaternion": [
+          0.09689359458499672,
+          0.1638597435768746,
+          0.06424620546711426,
+          0.9796091265634456
+        ],
+        "cubeScreen": [
+          1193.2719778198,
+          529.7268217332918
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 109
+      }
+    },
+    {
+      "name": "mobile-idle",
+      "fullPage": false,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "home",
+        "feature": null,
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          390,
+          844
+        ],
+        "canvasCSS": [
+          390,
+          370
+        ],
+        "drawingBuffer": [
+          390,
+          370
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 59,
+        "triangles": 115018,
+        "frameSamples": 122,
+        "p50FrameMs": 8.200000000000728,
+        "p95FrameMs": 16.699999999999818,
+        "meanRenderCPUMs": 2.113821138241669,
+        "faceDotView": null,
+        "sourcePlaneOffset": null,
+        "faceSourceScreen": [
+          833.1542806863367,
+          330.5567767733785
+        ],
+        "projectionQuad": [
+          [
+            889.1999999999999,
+            150
+          ],
+          [
+            1235.1999999999998,
+            159
+          ],
+          [
+            1231.1999999999998,
+            660
+          ],
+          [
+            883.1999999999999,
+            651
+          ]
+        ],
+        "cubeQuaternion": [
+          0.09689359458499672,
+          0.1638597435768746,
+          0.06424620546711426,
+          0.9796091265634456
+        ],
+        "cubeScreen": [
+          313.28726469713524,
+          228.02988333650245
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.26,
+            1.75,
+            3.65
+          ],
+          "fov": 34
+        },
+        "rendered": 154
+      }
+    },
+    {
+      "name": "mobile-preview",
+      "fullPage": true,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "preview",
+        "feature": "analysis",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          390,
+          844
+        ],
+        "canvasCSS": [
+          390,
+          370
+        ],
+        "drawingBuffer": [
+          390,
+          370
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 64,
+        "triangles": 115026,
+        "frameSamples": 122,
+        "p50FrameMs": 8.200000000000728,
+        "p95FrameMs": 16.699999999999818,
+        "meanRenderCPUMs": 2.113821138241669,
+        "faceDotView": 1,
+        "worldNormal": [
+          -0.1913845959330667,
+          0.17731219917328234,
+          0.9653664177212045
+        ],
+        "sourcePlaneOffset": 0.216,
+        "faceSourceScreen": [
+          338.72044358144126,
+          199.44066184223126
+        ],
+        "projectionQuad": [
+          [
+            290,
+            189.44066184223126
+          ],
+          [
+            382,
+            209.44066184223126
+          ],
+          [
+            370,
+            367
+          ],
+          [
+            343.72044358144126,
+            367
+          ]
+        ],
+        "cubeQuaternion": [
+          0.6737129745767731,
+          0.7271822582733426,
+          0,
+          0.13159327923339306
+        ],
+        "cubeScreen": [
+          313.28726469713524,
+          228.02988333650245
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.26,
+            1.75,
+            3.65
+          ],
+          "fov": 34
+        },
+        "rendered": 156
+      }
+    },
+    {
+      "name": "mobile-destination",
+      "fullPage": true,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/analysis?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "work",
+        "feature": "analysis",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          390,
+          844
+        ],
+        "canvasCSS": [
+          70,
+          75
+        ],
+        "drawingBuffer": [
+          70,
+          75
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 25,
+        "triangles": 89264,
+        "frameSamples": 125,
+        "p50FrameMs": 8.200000000000728,
+        "p95FrameMs": 16.699999999999818,
+        "meanRenderCPUMs": 2.083333333362899,
+        "faceDotView": 0.9941543522767697,
+        "worldNormal": [
+          -0.1913845959330667,
+          0.17731219917328234,
+          0.9653664177212045
+        ],
+        "sourcePlaneOffset": 0.216,
+        "faceSourceScreen": [
+          338.72044358144126,
+          199.44066184223126
+        ],
+        "projectionQuad": [
+          [
+            290,
+            189.44066184223126
+          ],
+          [
+            382,
+            209.44066184223126
+          ],
+          [
+            370,
+            367
+          ],
+          [
+            343.72044358144126,
+            367
+          ]
+        ],
+        "cubeQuaternion": [
+          0.6737129745767731,
+          0.7271822582733426,
+          0,
+          0.13159327923339306
+        ],
+        "cubeScreen": [
+          95.57845740149924,
+          70.0668565921647
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0,
+            1.7,
+            3.2
+          ],
+          "fov": 22
+        },
+        "rendered": 160
+      }
+    },
+    {
+      "name": "landscape-idle",
+      "fullPage": false,
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "home",
+        "feature": null,
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          844,
+          390
+        ],
+        "canvasCSS": [
+          844,
+          390
+        ],
+        "drawingBuffer": [
+          844,
+          390
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 61,
+        "triangles": 115394,
+        "frameSamples": 163,
+        "p50FrameMs": 4.300000000000182,
+        "p95FrameMs": 16.699999999999818,
+        "meanRenderCPUMs": 2.1121951220784245,
+        "faceDotView": null,
+        "sourcePlaneOffset": null,
+        "faceSourceScreen": [
+          338.72044358144126,
+          199.44066184223126
+        ],
+        "projectionQuad": [
+          [
+            290,
+            189.44066184223126
+          ],
+          [
+            382,
+            209.44066184223126
+          ],
+          [
+            370,
+            367
+          ],
+          [
+            343.72044358144126,
+            367
+          ]
+        ],
+        "cubeQuaternion": [
+          0.09689359458499672,
+          0.1638597435768746,
+          0.06424620546711426,
+          0.9796091265634456
+        ],
+        "cubeScreen": [
+          506.23710310159447,
+          191.29024118146646
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 201
+      }
+    },
+    {
+      "name": "landscape-preview",
+      "fullPage": false,
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "preview",
+        "feature": "analysis",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          844,
+          390
+        ],
+        "canvasCSS": [
+          844,
+          390
+        ],
+        "drawingBuffer": [
+          844,
+          390
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 66,
+        "triangles": 115402,
+        "frameSamples": 163,
+        "p50FrameMs": 4.300000000000182,
+        "p95FrameMs": 16.699999999999818,
+        "meanRenderCPUMs": 2.1121951220784245,
+        "faceDotView": 1,
+        "worldNormal": [
+          -0.1229284323451866,
+          0.15527801980444617,
+          0.9801925000155659
+        ],
+        "sourcePlaneOffset": 0.2160000000000001,
+        "faceSourceScreen": [
+          526.6252353717657,
+          179.05158741891336
+        ],
+        "projectionQuad": [
+          [
+            555,
+            75
+          ],
+          [
+            809,
+            84
+          ],
+          [
+            805,
+            371
+          ],
+          [
+            549,
+            362
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7801536668299253,
+          0.6176216529070245,
+          0,
+          0.09951758634641977
+        ],
+        "cubeScreen": [
+          506.23710310159447,
+          191.29024118146646
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 203
+      }
+    },
+    {
+      "name": "landscape-destination",
+      "fullPage": true,
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "url": "http://127.0.0.1:18404/prototype.html#/analysis?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+      "metrics": {
+        "version": "D01-R1",
+        "mode": "work",
+        "feature": "analysis",
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          844,
+          390
+        ],
+        "canvasCSS": [
+          120,
+          75
+        ],
+        "drawingBuffer": [
+          120,
+          75
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 26,
+        "triangles": 90224,
+        "frameSamples": 166,
+        "p50FrameMs": 4.300000000001091,
+        "p95FrameMs": 16.700000000000728,
+        "meanRenderCPUMs": 2.0958083833450685,
+        "faceDotView": 0.9728324693509931,
+        "worldNormal": [
+          -0.1229284323451866,
+          0.15527801980444617,
+          0.9801925000155659
+        ],
+        "sourcePlaneOffset": 0.2160000000000001,
+        "faceSourceScreen": [
+          526.6252353717657,
+          179.05158741891336
+        ],
+        "projectionQuad": [
+          [
+            555,
+            75
+          ],
+          [
+            809,
+            84
+          ],
+          [
+            805,
+            371
+          ],
+          [
+            549,
+            362
+          ]
+        ],
+        "cubeQuaternion": [
+          0.7801536668299253,
+          0.6176216529070245,
+          0,
+          0.09951758634641977
+        ],
+        "cubeScreen": [
+          132.16051427932675,
+          71.99096914554839
+        ],
+        "robotBounds": {
+          "min": [
+            -0.7582079101353765,
+            -4.723563351571869e-8,
+            -0.7391593330234304
+          ],
+          "max": [
+            0.717607687549787,
+            2.1250652537546793,
+            0.7538238700075864
+          ]
+        },
+        "camera": {
+          "position": [
+            0,
+            1.7,
+            3.2
+          ],
+          "fov": 22
+        },
+        "rendered": 207
+      }
+    }
+  ]
+}

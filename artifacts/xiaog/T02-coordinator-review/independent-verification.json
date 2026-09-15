@@ -1,0 +1,265 @@
+{
+  "checks": [
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\source\\RobotExpressive.glb",
+      "sha256": "047f5e5fb3bb6d378bd1df16ca6137f2a596c99b3a1b5690b4020c05aaf6f319",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\OpenGMS_A_editable.blend",
+      "sha256": "68d58c249506963c4fc4b9fc518d5c302c54780bbb29690b627ade6a2e85f771",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\cube_editable.blend",
+      "sha256": "c7cbb7292343a353fcdbce3642e5c80f123fce46a868c9375dbd72427139981f",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\exports\\OpenGMS_A.glb",
+      "sha256": "6c1c45e83743ae79767613c3ce690130546b95a93beb1ca8e5ca2eac2caa1ac3",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\exports\\cube.glb",
+      "sha256": "ffbeee194a53049b1555db8b75d5c58326110d8be9d3e267aa4d7753e521b2c9",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\hero.png",
+      "sha256": "874c528198b8c3680c4ecf68d0f9d32e6b0a96d5e3850e4d543beb3101e66ed7",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\avatar.png",
+      "sha256": "3ade06b15e0b93ff986678cd152ec3c272b694bc293fa52910c460fe8447df4c",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\chest_oblique.png",
+      "sha256": "067b782edf1e0be6829b4ac5f8a6f0b57d2d46c464b3852bff65688713c5a57a",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\OpenGMS_A_editable.blend",
+      "sha256": "68d58c249506963c4fc4b9fc518d5c302c54780bbb29690b627ade6a2e85f771",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\exports\\OpenGMS_A.glb",
+      "sha256": "6c1c45e83743ae79767613c3ce690130546b95a93beb1ca8e5ca2eac2caa1ac3",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\exports\\cube.glb",
+      "sha256": "ffbeee194a53049b1555db8b75d5c58326110d8be9d3e267aa4d7753e521b2c9",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\hero.png",
+      "sha256": "da16fd89dc3bdb7aa8ee8b58bcbd78cfe5d65cfc1cfe1a65683b2bcd2070db0b",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\front.png",
+      "sha256": "bcbbd4c03f698b29270c56786b69f97e0ce73b19c17b42dd503f4eeb471ea46f",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\back.png",
+      "sha256": "a1cef324175118ef4859a841251c8e11c71e358ff2b4dcfe365d1d263427b0dd",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\left.png",
+      "sha256": "7dc236cbf07adbc121aa899663a51c7d5da6a3c2b788ee175873e13f124051a3",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\right.png",
+      "sha256": "9c2c96c653038c0eaf2066617e50dd735d74668752b6703fd20bbb90424ddac7",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\top.png",
+      "sha256": "0587dd69b6ed9dcde4a4cea3f44dde2b22119699d13e7662e63faffffdae08f5",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\editable_inspection.json",
+      "sha256": "c3837ee099fa991a2422a10c65c6d2edb50779f75f3ae31841b7abf2d164ef19",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\glb_inspection.json",
+      "sha256": "a023319e30568d6912a84fc66173b7ceef7fd9fa075996ee1618aa3408996ab3",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\back.png",
+      "sha256": "a1cef324175118ef4859a841251c8e11c71e358ff2b4dcfe365d1d263427b0dd",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\contact_sheet.html",
+      "sha256": "7bbf969630bc6e4659bdb648b6f7db768c9b2a0f373d008f1347b5155a11436b",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\contact_sheet.png",
+      "sha256": "945565cc0247c1d8dc063c0062e3f027599803ca8415623bbed4582aa1a7e84d",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\editable_inspection.json",
+      "sha256": "c3837ee099fa991a2422a10c65c6d2edb50779f75f3ae31841b7abf2d164ef19",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\evidence_manifest.json",
+      "sha256": "bdafb33bfa9b34f1676c87f8c5dcf824399bbed2086e6060401bb87e5c2818f7",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\front.png",
+      "sha256": "bcbbd4c03f698b29270c56786b69f97e0ce73b19c17b42dd503f4eeb471ea46f",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\glb_inspection.json",
+      "sha256": "a023319e30568d6912a84fc66173b7ceef7fd9fa075996ee1618aa3408996ab3",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\hero.png",
+      "sha256": "da16fd89dc3bdb7aa8ee8b58bcbd78cfe5d65cfc1cfe1a65683b2bcd2070db0b",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\left.png",
+      "sha256": "7dc236cbf07adbc121aa899663a51c7d5da6a3c2b788ee175873e13f124051a3",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\right.png",
+      "sha256": "9c2c96c653038c0eaf2066617e50dd735d74668752b6703fd20bbb90424ddac7",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\top.png",
+      "sha256": "0587dd69b6ed9dcde4a4cea3f44dde2b22119699d13e7662e63faffffdae08f5",
+      "pass": true
+    },
+    {
+      "file": "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\verification_addendum.md",
+      "sha256": "d3a3b2e9984dae968f77dedc95ae16e714ff2ee561d327fd51102d743c7e537d",
+      "pass": true
+    }
+  ],
+  "check_count": 31,
+  "failures": 0,
+  "glb": {
+    "OpenGMS_A.glb": {
+      "sha256": "6c1c45e83743ae79767613c3ce690130546b95a93beb1ca8e5ca2eac2caa1ac3",
+      "bytes": 3568508,
+      "triangles": 97816,
+      "primitives": 44,
+      "duplicate_index_triangles": 0,
+      "duplicate_index_meshes": {},
+      "root_names": [
+        "XiaoG_Root"
+      ],
+      "clips": [
+        "Dance",
+        "Death",
+        "Idle",
+        "Jump",
+        "No",
+        "Punch",
+        "Running",
+        "Sitting",
+        "Standing",
+        "ThumbsUp",
+        "Walking",
+        "WalkJump",
+        "Wave",
+        "Yes"
+      ],
+      "cameras": 0,
+      "lights": 0,
+      "face_markers": [],
+      "external_images": []
+    },
+    "cube.glb": {
+      "sha256": "ffbeee194a53049b1555db8b75d5c58326110d8be9d3e267aa4d7753e521b2c9",
+      "bytes": 565652,
+      "triangles": 17560,
+      "primitives": 13,
+      "duplicate_index_triangles": 0,
+      "duplicate_index_meshes": {},
+      "root_names": [
+        "Cube_Root"
+      ],
+      "clips": [],
+      "cameras": 0,
+      "lights": 0,
+      "face_markers": [
+        "Face_analysis",
+        "Face_data",
+        "Face_exports",
+        "Face_overview",
+        "Face_projects",
+        "Face_tasks"
+      ],
+      "external_images": []
+    }
+  },
+  "inspections": {
+    "editable_inspection.json": {
+      "vertices": 51765,
+      "edges": 113142,
+      "polygons": 61488,
+      "triangles": 97816,
+      "invalid_vertices": 0,
+      "degenerate_faces": 0,
+      "zero_length_edges": 0,
+      "boundary_edges": 5492,
+      "non_manifold_edges": 5492,
+      "wire_edges": 0,
+      "isolated_vertices": 0,
+      "missing_material_faces": 0,
+      "world_area_below_1e_14_triangles": 57,
+      "world_invalid_coordinates": 0,
+      "invalid_uv_values": 0
+    },
+    "glb_inspection.json": {
+      "vertices": 62456,
+      "edges": 156407,
+      "polygons": 97808,
+      "triangles": 97808,
+      "invalid_vertices": 0,
+      "degenerate_faces": 2,
+      "zero_length_edges": 0,
+      "boundary_edges": 19398,
+      "non_manifold_edges": 19406,
+      "wire_edges": 0,
+      "isolated_vertices": 0,
+      "missing_material_faces": 0,
+      "world_area_below_1e_14_triangles": 58,
+      "world_invalid_coordinates": 0,
+      "invalid_uv_values": 0
+    }
+  },
+  "reviewed_files": {
+    "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\stage_manifest.json": "595a5fd3664f74c9fb816b2e9b2409abf7eb3628efd795a24e97d743c552e7ef",
+    "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\runtime_manifest.json": "95c9371527b780ffc00a6496a2a001985e4a5a0a7bdcb252ae74f8b9b2cedf6c",
+    "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\delivery_report.md": "0d59ef78df8b80c5fefd094f60a06775f1f5c2c8fbcfacade268e0d6deea160e",
+    "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\evidence_manifest.json": "bdafb33bfa9b34f1676c87f8c5dcf824399bbed2086e6060401bb87e5c2818f7",
+    "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\contact_sheet.png": "945565cc0247c1d8dc063c0062e3f027599803ca8415623bbed4582aa1a7e84d",
+    "C:\\Users\\yxy\\.codex\\worktrees\\7862\\AI_FOR_VECTOR\\artifacts\\xiaog\\T02\\robot\\evidence\\final_same_version\\verification_addendum.md": "d3a3b2e9984dae968f77dedc95ae16e714ff2ee561d327fd51102d743c7e537d"
+  },
+  "frontend_baseline": {
+    "file_count": 128,
+    "changed_or_missing": []
+  }
+}

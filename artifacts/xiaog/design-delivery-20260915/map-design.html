@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>空间观测室 · 地图工作区设计</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        height: 100vh;
+        overflow: hidden;
+      }
+      .map-top {
+        height: 76px;
+        display: flex;
+        align-items: center;
+        padding: 0 28px;
+        gap: 20px;
+        border-bottom: 1px solid #50606a;
+      }
+      .map-top h1 {
+        font-size: 18px;
+      }
+      .map-top small {
+        font-size: 11px;
+        color: #adbec6;
+      }
+      .map-top .right {
+        margin-left: auto;
+      }
+      .design-layout {
+        height: calc(100vh - 76px);
+        display: grid;
+        grid-template-columns: 236px 1fr;
+      }
+      .layers {
+        padding: 25px 20px;
+        background: #17242c;
+        border-right: 1px solid #445862;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        overflow: auto;
+      }
+      .layers h2 {
+        font-size: 14px;
+      }
+      .layer-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 18px 0;
+        border-bottom: 1px solid #485b65;
+        font-size: 12px;
+        overflow-wrap: anywhere;
+      }
+      .layer-item input {
+        margin-top: 4px;
+        flex-shrink: 0;
+      }
+      .layers .companion {
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #b1c4cc;
+        line-height: 1.8;
+      }
+      .companion img {
+        width: 66px;
+        height: 77px;
+        object-fit: cover;
+        object-position: center 25%;
+      }
+      .map-main {
+        min-width: 0;
+        display: grid;
+        grid-template-rows: minmax(260px, 1fr) 251px;
+      }
+      .geography {
+        position: relative;
+        background: #dce1db;
+        color: #233e4d;
+        overflow: hidden;
+      }
+      .geography > .map-art {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+      }
+      .map-tools {
+        position: absolute;
+        top: 16px;
+        left: 20px;
+        display: flex;
+        gap: 4px;
+        background: #eef1eaf2;
+        border: 1px solid #7e939b;
+        padding: 4px;
+        border-radius: 4px;
+        color: #1f3949;
+      }
+      .map-tools button {
+        font-size: 12px;
+        padding: 8px 15px;
+      }
+      .map-tools button[aria-pressed="true"] {
+        background: #cad8d9;
+      }
+      .map-note {
+        position: absolute;
+        bottom: 16px;
+        left: 20px;
+        background: #ecf0e9ed;
+        padding: 8px 12px;
+        font-size: 11px;
+      }
+      .map-float {
+        position: absolute;
+        top: 22px;
+        right: 23px;
+        font-size: 12px;
+        line-height: 1.7;
+        max-width: 230px;
+      }
+      .attributes {
+        background: #202e36;
+        min-width: 0;
+        overflow: auto;
+        padding: 14px 24px;
+      }
+      .attributes header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+      .attributes h2 {
+        font-size: 14px;
+      }
+      .attributes table {
+        font-size: 12px;
+      }
+      .attributes td {
+        padding: 10px 12px;
+      }
+      .attributes th {
+        padding: 11px 12px;
+      }
+      .attributes input {
+        font-size: 12px;
+        min-height: 36px;
+        padding: 6px 9px;
+        max-width: 160px;
+      }
+      .attributes td button {
+        min-height: 36px;
+      }
+      .selected {
+        background: #86bbc414;
+      }
+      .edit-note {
+        font-size: 11px;
+        color: #b7d5d7;
+      }
+      .scene-key {
+        position: absolute;
+        right: 20px;
+        bottom: 16px;
+        font-size: 11px;
+      }
+      .scene-key span {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: #3b82f6;
+        margin-right: 7px;
+      }
+      dialog {
+        background: #24363e;
+        color: #ece8df;
+        border: 1px solid #83a4ad;
+        padding: 30px;
+        width: min(470px, calc(100vw - 32px));
+        border-radius: 6px;
+      }
+      dialog::backdrop {
+        background: #0911199c;
+      }
+      dialog h2 {
+        font-size: 22px;
+        margin-bottom: 15px;
+      }
+      dialog p {
+        font-size: 14px;
+        color: #b5c7ce;
+      }
+      .dialog-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+      }
+      .dialog-actions button {
+        font-size: 13px;
+      }
+      .state-details {
+        font-size: 11px;
+        color: #a5b8c2;
+      }
+      .state-details summary {
+        cursor: pointer;
+        min-height: 44px;
+        padding-top: 12px;
+      }
+      .state-details label {
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        gap: 8px;
+      }
+      #map-feedback {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        max-width: 420px;
+        background: #29484c;
+        border-radius: 4px;
+        font-size: 13px;
+        z-index: 10;
+      }
+      #map-feedback:not(:empty) {
+        padding: 16px 22px;
+      }
+      @media (max-width: 700px) {
+        body {
+          height: auto;
+          overflow: auto;
+        }
+        .map-top {
+          padding: 10px 16px;
+          height: 80px;
+          gap: 10px;
+        }
+        .map-top h1 {
+          font-size: 15px;
+        }
+        .map-top small {
+          display: none;
+        }
+        .map-top button,
+        .map-top a {
+          font-size: 11px;
+          padding: 6px 8px;
+        }
+        .design-layout {
+          height: auto;
+          display: block;
+        }
+        .layers {
+          padding: 14px 18px;
+          display: block;
+          border-right: 0;
+        }
+        .layers h2 {
+          display: inline;
+          margin-right: 12px;
+        }
+        .layer-item {
+          padding: 10px 0;
+        }
+        .layers .companion,
+        .layers > .hint {
+          display: none;
+        }
+        .map-main {
+          display: block;
+        }
+        .geography {
+          height: 370px;
+        }
+        .map-tools {
+          top: 10px;
+          left: 10px;
+          gap: 0;
+        }
+        .map-tools button {
+          padding: 7px 10px;
+        }
+        .map-float {
+          top: 75px;
+          right: 15px;
+          font-size: 10px;
+        }
+        .map-note {
+          font-size: 9px;
+          max-width: 210px;
+          left: 10px;
+          bottom: 12px;
+        }
+        .scene-key {
+          font-size: 9px;
+          right: 10px;
+        }
+        .attributes {
+          padding: 14px 18px;
+          overflow: auto;
+        }
+        .attributes table {
+          min-width: 560px;
+        }
+        .state-details {
+          margin-top: 6px;
+        }
+        .attributes header {
+          align-items: flex-start;
+        }
+        .map-top .right {
+          margin-left: auto;
+        }
+        .map-top .quiet {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="map-top">
+      <a href="index.html" class="brand-mark" aria-label="设计入口">G·</a>
+      <div>
+        <h1 id="project-name">地图工作区</h1>
+        <small>空间观测室 / 地图与属性</small>
+      </div>
+      <span class="tag right">设计页 · 本地草稿</span
+      ><button id="leave" class="quiet">返回工作台 ↗</button>
+    </header>
+    <div class="design-layout">
+      <aside class="layers">
+        <h2>项目图层</h2>
+        <div id="layer-list"></div>
+        <p class="hint">
+          数据颜色沿用图层样式。这里保留真实范围与有限几何，不提供测量比例尺。
+        </p>
+        <details class="state-details">
+          <summary>查看状态设计</summary>
+          <label><input type="checkbox" id="fail-save" />模拟保存失败</label
+          ><label><input type="checkbox" id="empty-map" />查看无范围状态</label
+          ><button id="mobile-leave" class="text-button">返回工作台 ↗</button>
+        </details>
+        <div class="companion">
+          <img src="assets/avatar.png" alt="小G" /><span
+            >选中一条记录，<br />就能查看它的属性。</span
+          >
+        </div>
+      </aside>
+      <main class="map-main">
+        <section class="geography" id="geography">
+          <div id="map-svg" style="width: 100%; height: 100%"></div>
+          <div class="map-tools">
+            <button id="select-tool" aria-pressed="true">选择</button
+            ><button id="fit">查看范围</button
+            ><button id="edit">编辑属性</button>
+          </div>
+          <div class="map-float">
+            <span>局部观察窗</span><br /><span class="mono"
+              >116–123° E / 29–34° N</span
+            >
+          </div>
+          <div class="map-note">真实边界几何 · 简化快照 · 不用于测量</div>
+          <div class="scene-key"><span></span>城市边界</div>
+        </section>
+        <section class="attributes">
+          <header>
+            <h2>属性表 <span class="hint" id="attribute-count"></span></h2>
+            <span class="edit-note" id="draft-state">没有未保存更改</span
+            ><button id="save" class="text-button" disabled>保存草稿</button>
+          </header>
+          <div id="attribute-table"></div>
+        </section>
+      </main>
+    </div>
+    <dialog id="leave-dialog">
+      <h2>还有未保存的更改</h2>
+      <p>离开前，可以保存当前草稿，也可以放弃更改。保存失败会留在这里。</p>
+      <p id="save-error" class="feedback error"></p>
+      <div class="dialog-actions">
+        <button id="save-leave" class="primary">保存并离开</button
+        ><button id="discard-leave" class="quiet">放弃并离开</button
+        ><button id="keep-editing" class="quiet">继续编辑</button>
+      </div>
+    </dialog>
+    <div id="map-feedback" role="status" aria-live="polite"></div>
+    <script type="module" src="map-design.mjs"></script>
+  </body>
+</html>

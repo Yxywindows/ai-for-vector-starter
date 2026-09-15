@@ -1,0 +1,14 @@
+
+> web@0.0.0 test
+> vitest --run src/experience
+
+
+ RUN  v4.1.10 C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web
+
+Not implemented: navigation to another Document
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  20:27:58
+   Duration  2.61s (transform 141ms, setup 437ms, import 378ms, tests 752ms, environment 2.24s)
+

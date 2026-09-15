@@ -1,165 +1,29 @@
-# 01 · Architecture Overview
+# 01 系统架构与请求生命周期
 
-This platform reimplements, over HTTP, the same mental model a desktop GIS
-like QGIS gives you locally: a **layer tree** (the set of datasets currently
-loaded into a map), each layer backed by a **data provider** (the thing that
-actually knows how to read PostGIS rows or a raster file), a **renderer**
-(the styling rules that turn geometry/pixels into a picture), an **attribute
-table** (paged, filterable access to a layer's non-spatial columns), and an
-**edit buffer** (pending geometry/attribute changes staged before they are
-committed back to storage). Where QGIS keeps all of that in one desktop
-process talking to local files and databases, this platform splits it across
-a browser client, a stateless API, and a spatial database — the rest of this
-document explains how those three pieces fit together.
+本文按当前代码说明 GIS 应用的启动、API 和前端地图边界；导航见[文档目录](../README.md)，项目入口见[根 README](../../README.md)。
 
-## The three tiers
+## 启动与请求
 
-```
-┌───────────────────────┐        HTTP/JSON        ┌───────────────────────┐        SQL / file I/O        ┌───────────────────────┐
-│   Browser (OpenLayers) │ ───────────────────────▶│        FastAPI        │ ─────────────────────────────▶│   PostGIS / COG files │
-│   port 1317            │◀─────────────────────── │        port 1316      │◀───────────────────────────── │   port 5401            │
-└───────────────────────┘                          └───────────────────────┘                              └───────────────────────┘
-   layer tree, map canvas                             routes / services /                                   gis schema (platform),
-   attribute table UI                                 repositories / models                                 gis_data schema (user data),
-                                                                                                              raster files on disk
-```
+FastAPI 应用由 [main.py](../../backend/app/main.py) 创建，API 路由集中挂载在 [router.py](../../backend/app/api/v1/router.py)，涵盖项目、图层、目录、导入、要素、瓦片、任务、分析、导出和系统接口。启动生命周期准备栅格/临时目录，创建 Rasterio 数据集池；启用任务 worker 时恢复遗留任务并启动进程内 worker，退出时停止 worker、关闭数据集池。
 
-The browser never talks to PostGIS directly. It renders map tiles and
-attribute data it receives from the API, and it stages edits locally before
-sending them back as HTTP requests.
+[SessionDep](../../backend/app/db/session.py) 为请求提供 AsyncSession：正常结束时提交，异常时回滚；依赖使用 function scope，在响应返回前完成收尾。请求级数据库事务不意味着文件写入、同步导入引擎或整批前端操作也在同一个事务中，详见[第 09 章](09-editing-and-transactions.md)。
 
-## Why layered backend
+接口错误由 [errors.py](../../backend/app/core/errors.py) 统一转换为包含 code、message、details 的 JSON 错误结构；配置项集中在 [config.py](../../backend/app/core/config.py)。
 
-The backend is organized in layers, each with one job:
+## Web 与地图
 
-| Layer          | Responsibility                                                          |
-|-----------------|--------------------------------------------------------------------------|
-| `routes`        | HTTP shape only — parse the request, call a service, return a response. No SQL. |
-| `services`      | Business rules, orchestration across repositories, transaction boundaries. |
-| `repositories`  | The only place SQL is written — ORM queries or validated raw SQL.        |
-| `models/schemas`| `models`: SQLAlchemy tables (how data is stored). `schemas`: Pydantic wire contracts (how data is shaped over HTTP). |
+Web 端通过 [client.ts](../../web/src/api/client.ts) 请求 API，由 [router.tsx](../../web/src/app/router.tsx) 组织页面；地图的数据加载和图层创建分别见 [featureLoader.ts](../../web/src/map/featureLoader.ts) 与 [layerFactory.ts](../../web/src/map/layerFactory.ts)。
 
-Keeping SQL out of routes and services means every query lives in exactly
-one place, and swapping how a table is queried never touches HTTP handling
-or business logic.
+[WorkspaceSync.tsx](../../web/src/map/WorkspaceSync.tsx) 将当前地图视图同步到浏览器 URL。Project.view 有后端字段和 PATCH 接口，但当前前端没有调用 updateProject 的路径；因此不能把地图平移理解为自动保存到 Project.view。项目缩略图接口是另一条独立路径。
 
-## Two kinds of SQL
+## 当前边界
 
-The platform's own bookkeeping — layers, styles, users, whatever it needs to
-track about itself — lives in a fixed `gis` schema with tables the
-SQLAlchemy models declare up front. Because those table and column names are
-known at development time, that data is accessed through the SQLAlchemy ORM
-like any normal application.
+- 任务 worker 是每个应用进程内的单 worker。启动恢复会把数据库中所有 running/cancelling 任务标记为 failed；这不等于可安全多进程部署。数据库领取任务时即使使用 SKIP LOCKED，也不能消除此启动恢复行为。
+- 项目删除级联清理的是图层/任务元数据，不代表磁盘栅格、导入表或导出文件会一起删除，见[第 02 章](02-spatial-data-model.md)。
+- 源码旁的测试说明局部契约，不是此文档执行过完整运行或部署验收的证明。
 
-User-imported datasets are different: a user can upload a shapefile or
-GeoPackage with arbitrary table and column names chosen at import time, not
-at development time. The ORM can't declare a model for a table it doesn't
-know about yet, so those tables — living in the `gis_data` schema — are
-queried with raw SQL that is built carefully and validated, because here the
-table and column names are *data* the request carries, not *code* the
-application wrote. Never string-formatted into SQL as data ordinarily would
-be. See `03-postgis-and-dynamic-sql.md` for how identifiers are validated
-before they're interpolated into a query.
+## 代码与测试
 
-## The error envelope
-
-Every non-2xx response from application code is exactly one shape. It is
-built by `_envelope` in `app/core/errors.py`:
-
-```python
-def _envelope(code: str, message: str, details: dict[str, Any] | None = None) -> dict[str, Any]:
-    return {"error": {"code": code, "message": message, "details": details}}
-```
-
-For example, raising `NotFoundError("Layer 7 not found", details={"layerId": 7})`
-from a route produces:
-
-```json
-{
-  "error": {
-    "code": "not_found",
-    "message": "Layer 7 not found",
-    "details": { "layerId": 7 }
-  }
-}
-```
-
-`register_exception_handlers` wires this envelope up for four cases: an
-`AppError` subclass raised deliberately (uses its own `status_code`/`code`),
-a FastAPI `RequestValidationError` (422, `invalid_request`), a Starlette
-`HTTPException` (its own status, `http_error`), and any other unhandled
-exception, which is masked as a 500 `internal_error` so internals never leak
-to the client.
-
-## Configuration
-
-All configuration is a single typed `Settings` object, loaded from
-environment variables (or a `.env` file) with the `GIS_` prefix — e.g.
-`GIS_LOG_LEVEL=DEBUG` sets `Settings.log_level`. This keeps every setting
-discoverable in one file and type-checked at startup instead of scattered
-`os.environ` reads.
-
-```python
-class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=".env", env_prefix="GIS_", extra="ignore", case_sensitive=False
-    )
-
-    environment: str = "development"
-    log_level: str = "INFO"
-    api_prefix: str = "/api/v1"
-    cors_origins: list[str] = ["http://localhost:1317"]
-
-    # Async URL used by the app; the sync URL is derived from it in db/sync_engine.py.
-    database_url: str = "postgresql+asyncpg://gis:gis@localhost:5401/gis_platform"
-    db_pool_size: int = 10
-    db_max_overflow: int = 5
-    db_echo: bool = False
-
-    # Filesystem
-    data_dir: Path = Path("var/data")
-    upload_max_bytes: int = 512 * 1024 * 1024
-
-    # Schemas the platform owns
-    metadata_schema: str = "gis"
-    import_schema: str = "gis_data"
-
-    # Memory guard rails
-    feature_bbox_limit: int = 2000
-    attribute_page_max: int = 500
-    raster_pool_max_open: int = 8
-    raster_pool_idle_ttl_seconds: float = 300.0
-
-    @property
-    def raster_dir(self) -> Path:
-        return self.data_dir / "rasters"
-
-    @property
-    def upload_tmp_dir(self) -> Path:
-        return self.data_dir / "tmp"
-```
-
-`get_settings()` is `lru_cache`-wrapped, so the whole application shares one
-`Settings` instance built once at first access. `.env.example` in
-`gis-platform/backend/` documents every variable a developer needs to copy
-into their own `.env` before running the app.
-
-## Running it
-
-From `gis-platform/backend/`:
-
-```bash
-python -m venv .venv
-.venv/Scripts/activate          # Windows;  source .venv/bin/activate on POSIX
-pip install -e ".[dev]"
-```
-
-Then start the API:
-
-```bash
-uvicorn app.main:app --reload --port 1316
-```
-
-`curl http://localhost:1316/api/v1/health` should return
-`{"status":"ok","environment":"development"}`, and
-`http://localhost:1316/docs` renders the interactive OpenAPI page.
+- 启动/API：[main.py](../../backend/app/main.py)、[router.py](../../backend/app/api/v1/router.py)、[session.py](../../backend/app/db/session.py)
+- Web：[router.tsx](../../web/src/app/router.tsx)、[WorkspaceSync.tsx](../../web/src/map/WorkspaceSync.tsx)
+- 测试：[test_session.py](../../backend/tests/test_session.py)、[test_tasks.py](../../backend/tests/test_tasks.py)、[test_system_api.py](../../backend/tests/test_system_api.py)

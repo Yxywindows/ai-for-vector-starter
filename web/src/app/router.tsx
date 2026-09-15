@@ -10,6 +10,7 @@ import { TasksPage } from '../pages/TasksPage'
 import { AnalysisPage } from '../pages/AnalysisPage'
 import { ExportsPage } from '../pages/ExportsPage'
 import { PlatformShell } from './PlatformShell'
+import { ExperienceRoot } from '../experience/ExperienceRoot'
 
 // The workspace chunk carries the whole map engine; nothing outside this
 // lazy boundary may import `ol` or `ag-grid` (IA acceptance §9.3).
@@ -31,7 +32,7 @@ function RouteError() {
         <button type="button" onClick={() => window.location.reload()}>
           Reload
         </button>{' '}
-        or go back to the <Link to="/">dashboard</Link>.
+        or go back to the <Link to="/">main stage</Link>.
       </p>
     </div>
   )
@@ -39,29 +40,35 @@ function RouteError() {
 
 export const router = createBrowserRouter([
   {
-    element: <PlatformShell />,
+    element: <ExperienceRoot />,
     errorElement: <RouteError />,
     children: [
-      { path: '/', element: <DashboardPage /> },
-      { path: '/projects', element: <ProjectsPage /> },
-      { path: '/projects/:projectId', element: <ProjectOverviewPage /> },
-      { path: '/data', element: <DataCatalogPage /> },
-      { path: '/data/:layerId/*', element: <DatasetDetailsPage /> },
-      { path: '/tasks', element: <TasksPage /> },
-      { path: '/analysis', element: <AnalysisPage /> },
-      { path: '/exports', element: <ExportsPage /> },
+      { path: '/', element: null },
+      {
+        element: <PlatformShell />,
+        children: [
+          { path: '/overview', element: <DashboardPage /> },
+          { path: '/projects', element: <ProjectsPage /> },
+          { path: '/projects/:projectId', element: <ProjectOverviewPage /> },
+          { path: '/data', element: <DataCatalogPage /> },
+          { path: '/data/:layerId/*', element: <DatasetDetailsPage /> },
+          { path: '/tasks', element: <TasksPage /> },
+          { path: '/analysis', element: <AnalysisPage /> },
+          { path: '/exports', element: <ExportsPage /> },
+        ],
+      },
+      // The map workspace keeps its own chrome (WorkspaceShell in R3); it is a
+      // sibling of the platform shell, not a child.
+      {
+        path: '/projects/:projectId/map',
+        errorElement: <RouteError />,
+        element: (
+          <Suspense fallback={<div className="route-fallback">Loading workspace…</div>}>
+            <App />
+          </Suspense>
+        ),
+      },
+      { path: '*', element: <Navigate to="/" replace /> },
     ],
   },
-  // The map workspace keeps its own chrome (WorkspaceShell in R3); it is a
-  // sibling of the platform shell, not a child.
-  {
-    path: '/projects/:projectId/map',
-    errorElement: <RouteError />,
-    element: (
-      <Suspense fallback={<div className="route-fallback">Loading workspace…</div>}>
-        <App />
-      </Suspense>
-    ),
-  },
-  { path: '*', element: <Navigate to="/" replace /> },
 ])

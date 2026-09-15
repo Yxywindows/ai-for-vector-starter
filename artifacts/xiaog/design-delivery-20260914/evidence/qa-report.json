@@ -1,0 +1,1276 @@
+{
+  "version": "D01-R1",
+  "createdAt": "2026-09-14T14:49:13.309Z",
+  "browser": "152.0.7977.83",
+  "platform": "win32",
+  "node": "v24.15.0",
+  "passed": 25,
+  "failed": 0,
+  "results": [
+    {
+      "name": "actual models load / one canvas",
+      "pass": true,
+      "detail": {
+        "version": "D01-R1",
+        "mode": "home",
+        "feature": null,
+        "ready": true,
+        "canvasCount": 1,
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvasCSS": [
+          1440,
+          900
+        ],
+        "drawingBuffer": [
+          1440,
+          900
+        ],
+        "dpr": 1,
+        "quality": "standard",
+        "reduced": false,
+        "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "drawCalls": 61,
+        "triangles": 115394,
+        "frameSamples": 21,
+        "p50FrameMs": 8.400000000000091,
+        "p95FrameMs": 16.699999999999818,
+        "meanRenderCPUMs": 3.836363636465235,
+        "faceDotView": null,
+        "sourcePlaneOffset": null,
+        "cubeQuaternion": [
+          0.10098691975556899,
+          0.22923527478595393,
+          0.05759848632391857,
+          0.9664032518598453
+        ],
+        "cubeScreen": [
+          914.3933148498335,
+          441.43901811107645
+        ],
+        "robotBounds": {
+          "min": [
+            -0.6844248449862468,
+            -4.723563351571869e-8,
+            -0.615204932081381
+          ],
+          "max": [
+            0.7105606643756469,
+            2.133796171303848,
+            0.6892875867306361
+          ]
+        },
+        "camera": {
+          "position": [
+            0.36,
+            2.05,
+            6.28
+          ],
+          "fov": 32
+        },
+        "rendered": 24
+      }
+    },
+    {
+      "name": "idle moves cube with independent root / reduced angular speed envelope",
+      "pass": true,
+      "detail": {
+        "samples": [
+          [
+            0.10122826372717685,
+            0.23329756761367096,
+            0.057173264829861674,
+            0.9654306300076768
+          ],
+          [
+            0.10457504259832272,
+            0.2926453492718892,
+            0.05079374030412951,
+            0.9491273655105567
+          ],
+          [
+            0.10769593893188922,
+            0.35457599407937457,
+            0.043789591527018785,
+            0.9277714809338015
+          ],
+          [
+            0.11038524428429912,
+            0.41587561210887247,
+            0.036483440528820556,
+            0.90195982818779
+          ],
+          [
+            0.11265913185577617,
+            0.47771408304240465,
+            0.02870302419654096,
+            0.8707889016715996
+          ]
+        ],
+        "independence": {
+          "parent": "Scene",
+          "robotParent": "Scene",
+          "handBinding": true
+        }
+      }
+    },
+    {
+      "name": "six face normals align with camera",
+      "pass": true,
+      "detail": [
+        {
+          "id": "projects",
+          "dot": 1,
+          "source": [
+            953.6424118728756,
+            403.2615848938724
+          ],
+          "quad": [
+            [
+              999.6424118728756,
+              243.2615848938724
+            ],
+            [
+              1373.6424118728755,
+              252.2615848938724
+            ],
+            [
+              1369.6424118728755,
+              753.2615848938724
+            ],
+            [
+              993.6424118728756,
+              744.2615848938724
+            ]
+          ]
+        },
+        {
+          "id": "data",
+          "dot": 1,
+          "source": [
+            946.6973996057013,
+            397.35068266456216
+          ],
+          "quad": [
+            [
+              999.5999999999999,
+              237.35068266456216
+            ],
+            [
+              1373.6,
+              246.35068266456216
+            ],
+            [
+              1369.6,
+              747.3506826645621
+            ],
+            [
+              993.5999999999999,
+              738.3506826645621
+            ]
+          ]
+        },
+        {
+          "id": "analysis",
+          "dot": 1,
+          "source": [
+            961.4428508579209,
+            413.1959709667231
+          ],
+          "quad": [
+            [
+              1007.4428508579209,
+              253.1959709667231
+            ],
+            [
+              1381.4428508579208,
+              262.1959709667231
+            ],
+            [
+              1377.4428508579208,
+              763.195970966723
+            ],
+            [
+              1001.4428508579209,
+              754.195970966723
+            ]
+          ]
+        },
+        {
+          "id": "tasks",
+          "dot": 1,
+          "source": [
+            958.8797277368024,
+            409.3800942658828
+          ],
+          "quad": [
+            [
+              1004.8797277368024,
+              249.3800942658828
+            ],
+            [
+              1378.8797277368024,
+              258.3800942658828
+            ],
+            [
+              1374.8797277368024,
+              759.3800942658828
+            ],
+            [
+              998.8797277368024,
+              750.3800942658828
+            ]
+          ]
+        },
+        {
+          "id": "exports",
+          "dot": 0.9999999999999999,
+          "source": [
+            948.9598477954212,
+            399.06174692664456
+          ],
+          "quad": [
+            [
+              999.5999999999999,
+              239.06174692664456
+            ],
+            [
+              1373.6,
+              248.06174692664456
+            ],
+            [
+              1369.6,
+              749.0617469266446
+            ],
+            [
+              993.5999999999999,
+              740.0617469266446
+            ]
+          ]
+        },
+        {
+          "id": "overview",
+          "dot": 1,
+          "source": [
+            958.4590879045052,
+            408.8154970073322
+          ],
+          "quad": [
+            [
+              1004.4590879045052,
+              248.81549700733223
+            ],
+            [
+              1378.4590879045052,
+              257.8154970073322
+            ],
+            [
+              1374.4590879045052,
+              758.8154970073322
+            ],
+            [
+              998.4590879045052,
+              749.8154970073322
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "preview holds at 1.5 and 3 seconds / no auto expansion",
+      "pass": true,
+      "detail": {
+        "first": {
+          "version": "D01-R1",
+          "mode": "preview",
+          "feature": "analysis",
+          "ready": true,
+          "canvasCount": 1,
+          "viewport": [
+            1440,
+            900
+          ],
+          "canvasCSS": [
+            1440,
+            900
+          ],
+          "drawingBuffer": [
+            1440,
+            900
+          ],
+          "dpr": 1,
+          "quality": "standard",
+          "reduced": false,
+          "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "drawCalls": 66,
+          "triangles": 115402,
+          "frameSamples": 360,
+          "p50FrameMs": 12.399999999999636,
+          "p95FrameMs": 16.700000000000728,
+          "meanRenderCPUMs": 1.609999999931703,
+          "faceDotView": 1,
+          "worldNormal": [
+            -0.1229284323451866,
+            0.15527801980444617,
+            0.9801925000155659
+          ],
+          "sourcePlaneOffset": 0.2160000000000001,
+          "faceSourceScreen": [
+            961.4428508579209,
+            413.1959709667231
+          ],
+          "projectionQuad": [
+            [
+              1007.4428508579209,
+              253.1959709667231
+            ],
+            [
+              1381.4428508579208,
+              262.1959709667231
+            ],
+            [
+              1377.4428508579208,
+              763.195970966723
+            ],
+            [
+              1001.4428508579209,
+              754.195970966723
+            ]
+          ],
+          "cubeQuaternion": [
+            0.7801536668299253,
+            0.6176216529070245,
+            0,
+            0.09951758634641977
+          ],
+          "cubeScreen": [
+            914.3933148498335,
+            441.43901811107645
+          ],
+          "robotBounds": {
+            "min": [
+              -0.6844248449862468,
+              -4.723563351571869e-8,
+              -0.6152048852154964
+            ],
+            "max": [
+              0.7105606643756469,
+              2.131697642860243,
+              0.6892876335965207
+            ]
+          },
+          "camera": {
+            "position": [
+              0.36,
+              2.05,
+              6.28
+            ],
+            "fov": 32
+          },
+          "rendered": 678
+        },
+        "last": {
+          "version": "D01-R1",
+          "mode": "preview",
+          "feature": "analysis",
+          "ready": true,
+          "canvasCount": 1,
+          "viewport": [
+            1440,
+            900
+          ],
+          "canvasCSS": [
+            1440,
+            900
+          ],
+          "drawingBuffer": [
+            1440,
+            900
+          ],
+          "dpr": 1,
+          "quality": "standard",
+          "reduced": false,
+          "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "drawCalls": 66,
+          "triangles": 115402,
+          "frameSamples": 360,
+          "p50FrameMs": 12.399999999999636,
+          "p95FrameMs": 16.700000000000728,
+          "meanRenderCPUMs": 1.609999999931703,
+          "faceDotView": 1,
+          "worldNormal": [
+            -0.1229284323451866,
+            0.15527801980444617,
+            0.9801925000155659
+          ],
+          "sourcePlaneOffset": 0.2160000000000001,
+          "faceSourceScreen": [
+            961.4428508579209,
+            413.1959709667231
+          ],
+          "projectionQuad": [
+            [
+              1007.4428508579209,
+              253.1959709667231
+            ],
+            [
+              1381.4428508579208,
+              262.1959709667231
+            ],
+            [
+              1377.4428508579208,
+              763.195970966723
+            ],
+            [
+              1001.4428508579209,
+              754.195970966723
+            ]
+          ],
+          "cubeQuaternion": [
+            0.7801536668299253,
+            0.6176216529070245,
+            0,
+            0.09951758634641977
+          ],
+          "cubeScreen": [
+            914.3933148498335,
+            441.43901811107645
+          ],
+          "robotBounds": {
+            "min": [
+              -0.6844248449862468,
+              -4.723563351571869e-8,
+              -0.6152048852154964
+            ],
+            "max": [
+              0.7105606643756469,
+              2.131697642860243,
+              0.6892876335965207
+            ]
+          },
+          "camera": {
+            "position": [
+              0.36,
+              2.05,
+              6.28
+            ],
+            "fov": 32
+          },
+          "rendered": 678
+        }
+      }
+    },
+    {
+      "name": "explicit expand / heading focus / project and layer continuity",
+      "pass": true,
+      "detail": {
+        "mode": "work",
+        "project": "18cb3488-119b-4d8d-958f-e20a0a70d0ae",
+        "layer": "76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+        "focus": "workspace-title",
+        "canvas": 1
+      }
+    },
+    {
+      "name": "seven tool forms / invalid and valid checks / no fabricated result",
+      "pass": true,
+      "detail": {
+        "tools": [
+          "buffer",
+          "clip",
+          "intersection",
+          "dissolve",
+          "spatial-join",
+          "validate-repair",
+          "point-in-polygon"
+        ],
+        "feedback": "参数检查通过。设计预演已保留设置；尚未提交作业，没有新结果。"
+      }
+    },
+    {
+      "name": "work-to-work navigation is immediate and keeps canvas",
+      "pass": true,
+      "detail": {
+        "before": 727,
+        "mode": "work",
+        "id": "exports",
+        "canvas": 1,
+        "rendered": 729
+      }
+    },
+    {
+      "name": "export CRS / all-excluded fields / local feedback",
+      "pass": true,
+      "detail": "交付设置检查通过。设计预演不生成文件；坐标系可用性将在正式提交时确认。"
+    },
+    {
+      "name": "data filter / unbound table identity / no invented extent",
+      "pass": true,
+      "detail": "unbound table and empty search visible"
+    },
+    {
+      "name": "task state filter / logs and historical error",
+      "pass": true,
+      "detail": "作业详情 / 关联对象\n\nbroken.geojson\nceae01a8-3ef4-4416-ad89-2a5ad750487e\n失败\n\nWalkthrough · 55 ms\n\nupstream_data_error\nCould not read the uploaded dataset\n\n未保存这条任务的日志快照。\n\n这条记录没有可定位的图层。"
+    },
+    {
+      "name": "overview retains global totals under project selector",
+      "pass": true,
+      "detail": "2\n项目\n4\n已绑定图层\n9\n已读取的历史作业\n2\n失败记录"
+    },
+    {
+      "name": "Escape / focus returns to invoking navigation",
+      "pass": true,
+      "detail": {
+        "mode": "home",
+        "focus": "overview"
+      }
+    },
+    {
+      "name": "rapid selection and expansion interruption",
+      "pass": true,
+      "detail": "latest choice wins; Escape cancels pending expansion"
+    },
+    {
+      "name": "browser back restores preview / deep link enters page",
+      "pass": true,
+      "detail": "direct entry and both history steps verified"
+    },
+    {
+      "name": "invalid / cross-project context clears rather than reassigns",
+      "pass": true,
+      "detail": "project/layer invalidation shown"
+    },
+    {
+      "name": "explicit home layer selection creates meaningful spatial foreground",
+      "pass": true,
+      "detail": "project selection is separate from explicit observation layer"
+    },
+    {
+      "name": "reduced motion reaches usable final preview; no frame loop",
+      "pass": true,
+      "detail": {
+        "frames": [
+          1240,
+          1240
+        ]
+      }
+    },
+    {
+      "name": "1280×720 safe areas / 390 and 844×390 no horizontal overflow",
+      "pass": true,
+      "detail": [
+        {
+          "size": {
+            "width": 1280,
+            "height": 720
+          },
+          "route": "home",
+          "width": 1280,
+          "scroll": 1280,
+          "body": 1280
+        },
+        {
+          "size": {
+            "width": 1280,
+            "height": 720
+          },
+          "route": "preview/analysis",
+          "width": 1280,
+          "scroll": 1280,
+          "body": 1280
+        },
+        {
+          "size": {
+            "width": 1280,
+            "height": 720
+          },
+          "route": "analysis",
+          "width": 1280,
+          "scroll": 1280,
+          "body": 1280
+        },
+        {
+          "size": {
+            "width": 1280,
+            "height": 720
+          },
+          "route": "projects",
+          "width": 1280,
+          "scroll": 1280,
+          "body": 1280
+        },
+        {
+          "size": {
+            "width": 1280,
+            "height": 720
+          },
+          "route": "data",
+          "width": 1280,
+          "scroll": 1280,
+          "body": 1280
+        },
+        {
+          "size": {
+            "width": 1280,
+            "height": 720
+          },
+          "route": "tasks",
+          "width": 1280,
+          "scroll": 1280,
+          "body": 1280
+        },
+        {
+          "size": {
+            "width": 1280,
+            "height": 720
+          },
+          "route": "exports",
+          "width": 1280,
+          "scroll": 1280,
+          "body": 1280
+        },
+        {
+          "size": {
+            "width": 1280,
+            "height": 720
+          },
+          "route": "overview",
+          "width": 1280,
+          "scroll": 1280,
+          "body": 1280
+        },
+        {
+          "size": {
+            "width": 390,
+            "height": 844
+          },
+          "route": "home",
+          "width": 390,
+          "scroll": 390,
+          "body": 390
+        },
+        {
+          "size": {
+            "width": 390,
+            "height": 844
+          },
+          "route": "preview/analysis",
+          "width": 390,
+          "scroll": 390,
+          "body": 390
+        },
+        {
+          "size": {
+            "width": 390,
+            "height": 844
+          },
+          "route": "analysis",
+          "width": 390,
+          "scroll": 390,
+          "body": 390
+        },
+        {
+          "size": {
+            "width": 390,
+            "height": 844
+          },
+          "route": "projects",
+          "width": 390,
+          "scroll": 390,
+          "body": 390
+        },
+        {
+          "size": {
+            "width": 390,
+            "height": 844
+          },
+          "route": "data",
+          "width": 390,
+          "scroll": 390,
+          "body": 390
+        },
+        {
+          "size": {
+            "width": 390,
+            "height": 844
+          },
+          "route": "tasks",
+          "width": 390,
+          "scroll": 390,
+          "body": 390
+        },
+        {
+          "size": {
+            "width": 390,
+            "height": 844
+          },
+          "route": "exports",
+          "width": 390,
+          "scroll": 390,
+          "body": 390
+        },
+        {
+          "size": {
+            "width": 390,
+            "height": 844
+          },
+          "route": "overview",
+          "width": 390,
+          "scroll": 390,
+          "body": 390
+        },
+        {
+          "size": {
+            "width": 844,
+            "height": 390
+          },
+          "route": "home",
+          "width": 844,
+          "scroll": 844,
+          "body": 844
+        },
+        {
+          "size": {
+            "width": 844,
+            "height": 390
+          },
+          "route": "preview/analysis",
+          "width": 844,
+          "scroll": 844,
+          "body": 844
+        },
+        {
+          "size": {
+            "width": 844,
+            "height": 390
+          },
+          "route": "analysis",
+          "width": 844,
+          "scroll": 844,
+          "body": 844
+        },
+        {
+          "size": {
+            "width": 844,
+            "height": 390
+          },
+          "route": "projects",
+          "width": 844,
+          "scroll": 844,
+          "body": 844
+        },
+        {
+          "size": {
+            "width": 844,
+            "height": 390
+          },
+          "route": "data",
+          "width": 844,
+          "scroll": 844,
+          "body": 844
+        },
+        {
+          "size": {
+            "width": 844,
+            "height": 390
+          },
+          "route": "tasks",
+          "width": 844,
+          "scroll": 844,
+          "body": 844
+        },
+        {
+          "size": {
+            "width": 844,
+            "height": 390
+          },
+          "route": "exports",
+          "width": 844,
+          "scroll": 844,
+          "body": 844
+        },
+        {
+          "size": {
+            "width": 844,
+            "height": 390
+          },
+          "route": "overview",
+          "width": 844,
+          "scroll": 844,
+          "body": 844
+        }
+      ]
+    },
+    {
+      "name": "mobile navigation touch targets and selected close button >=44",
+      "pass": true,
+      "detail": {
+        "boxes": [
+          {
+            "text": "01项目空间",
+            "w": 328,
+            "h": 47
+          },
+          {
+            "text": "02数据资源",
+            "w": 328,
+            "h": 47
+          },
+          {
+            "text": "03空间分析",
+            "w": 328,
+            "h": 47
+          },
+          {
+            "text": "04任务进度",
+            "w": 328,
+            "h": 47
+          },
+          {
+            "text": "05导出交付",
+            "w": 328,
+            "h": 47
+          },
+          {
+            "text": "06平台概览",
+            "w": 328,
+            "h": 47
+          }
+        ],
+        "cancel": {
+          "x": 314.671875,
+          "y": 460,
+          "width": 46.328125,
+          "height": 48
+        }
+      }
+    },
+    {
+      "name": "model failure retains usable navigation and forms",
+      "pass": true,
+      "detail": "blocked GLBs; same-asset fallback with interactive form"
+    },
+    {
+      "name": "data failure and empty snapshot states remain usable",
+      "pass": true,
+      "detail": "snapshot failure does not lock navigation"
+    },
+    {
+      "name": "offline-resource package / no network APIs or write methods",
+      "pass": true,
+      "detail": {
+        "external": [],
+        "requests": 60,
+        "methods": [
+          "GET"
+        ]
+      }
+    },
+    {
+      "name": "measured performance / actual viewports and DPR",
+      "pass": true,
+      "detail": [
+        {
+          "version": "D01-R1",
+          "mode": "home",
+          "feature": null,
+          "ready": true,
+          "canvasCount": 1,
+          "viewport": [
+            1440,
+            900
+          ],
+          "canvasCSS": [
+            1440,
+            900
+          ],
+          "drawingBuffer": [
+            2160,
+            1350
+          ],
+          "dpr": 1.5,
+          "quality": "standard",
+          "reduced": false,
+          "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "drawCalls": 61,
+          "triangles": 115394,
+          "frameSamples": 202,
+          "p50FrameMs": 20.800000000000182,
+          "p95FrameMs": 29.199999999999818,
+          "meanRenderCPUMs": 1.9158415841399739,
+          "faceDotView": null,
+          "sourcePlaneOffset": null,
+          "cubeQuaternion": [
+            0.09660527575150972,
+            0.9671578073067587,
+            -0.06467893231570161,
+            0.22603060009002773
+          ],
+          "cubeScreen": [
+            914.3933148498335,
+            441.43901811107645
+          ],
+          "robotBounds": {
+            "min": [
+              -0.6844248449862291,
+              -4.723563351571869e-8,
+              -0.615204898891577
+            ],
+            "max": [
+              0.7105606643756647,
+              2.159677685476579,
+              0.6892876199204401
+            ]
+          },
+          "camera": {
+            "position": [
+              0.36,
+              2.05,
+              6.28
+            ],
+            "fov": 32
+          },
+          "rendered": 204
+        },
+        {
+          "version": "D01-R1",
+          "mode": "home",
+          "feature": null,
+          "ready": true,
+          "canvasCount": 1,
+          "viewport": [
+            1920,
+            1080
+          ],
+          "canvasCSS": [
+            1920,
+            1080
+          ],
+          "drawingBuffer": [
+            1920,
+            1080
+          ],
+          "dpr": 1,
+          "quality": "standard",
+          "reduced": false,
+          "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "drawCalls": 61,
+          "triangles": 115394,
+          "frameSamples": 240,
+          "p50FrameMs": 16.700000000000273,
+          "p95FrameMs": 25.100000000000136,
+          "meanRenderCPUMs": 1.8720833333985258,
+          "faceDotView": null,
+          "sourcePlaneOffset": null,
+          "cubeQuaternion": [
+            0.09613741191091205,
+            0.9687590577234046,
+            -0.06537233068811286,
+            0.2190660733439529
+          ],
+          "cubeScreen": [
+            1193.2719778198,
+            529.7268217332918
+          ],
+          "robotBounds": {
+            "min": [
+              -0.6844248449862371,
+              -4.723563351571869e-8,
+              -0.6152049194702809
+            ],
+            "max": [
+              0.7105606643756567,
+              2.1597454326376173,
+              0.6892875993417362
+            ]
+          },
+          "camera": {
+            "position": [
+              0.36,
+              2.05,
+              6.28
+            ],
+            "fov": 32
+          },
+          "rendered": 242
+        },
+        {
+          "version": "D01-R1",
+          "mode": "home",
+          "feature": null,
+          "ready": true,
+          "canvasCount": 1,
+          "viewport": [
+            390,
+            844
+          ],
+          "canvasCSS": [
+            390,
+            370
+          ],
+          "drawingBuffer": [
+            390,
+            370
+          ],
+          "dpr": 1,
+          "quality": "standard",
+          "reduced": false,
+          "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "drawCalls": 59,
+          "triangles": 115018,
+          "frameSamples": 360,
+          "p50FrameMs": 8.199999999999818,
+          "p95FrameMs": 16.700000000000273,
+          "meanRenderCPUMs": 1.4569444445065327,
+          "faceDotView": null,
+          "sourcePlaneOffset": null,
+          "cubeQuaternion": [
+            0.0957639412770541,
+            0.9699896855888722,
+            -0.0659182155372038,
+            0.21355108583820084
+          ],
+          "cubeScreen": [
+            313.28726469713524,
+            228.02988333650245
+          ],
+          "robotBounds": {
+            "min": [
+              -0.6844248449862451,
+              -4.723563351571869e-8,
+              -0.6152049402420862
+            ],
+            "max": [
+              0.7105606643756486,
+              2.1595903764902475,
+              0.689287578569931
+            ]
+          },
+          "camera": {
+            "position": [
+              0.26,
+              1.75,
+              3.65
+            ],
+            "fov": 34
+          },
+          "rendered": 465
+        }
+      ]
+    },
+    {
+      "name": "URL restoration refreshes the actual scene layer after global scope",
+      "pass": true,
+      "detail": {
+        "sceneLayer": "76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+        "routeLayer": "76375d7a-74cf-4c2b-b0e0-d724afaec1d9",
+        "mapVisible": true
+      }
+    },
+    {
+      "name": "no unexpected console or page errors",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "performance": [
+    {
+      "version": "D01-R1",
+      "mode": "home",
+      "feature": null,
+      "ready": true,
+      "canvasCount": 1,
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCSS": [
+        1440,
+        900
+      ],
+      "drawingBuffer": [
+        2160,
+        1350
+      ],
+      "dpr": 1.5,
+      "quality": "standard",
+      "reduced": false,
+      "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "drawCalls": 61,
+      "triangles": 115394,
+      "frameSamples": 202,
+      "p50FrameMs": 20.800000000000182,
+      "p95FrameMs": 29.199999999999818,
+      "meanRenderCPUMs": 1.9158415841399739,
+      "faceDotView": null,
+      "sourcePlaneOffset": null,
+      "cubeQuaternion": [
+        0.09660527575150972,
+        0.9671578073067587,
+        -0.06467893231570161,
+        0.22603060009002773
+      ],
+      "cubeScreen": [
+        914.3933148498335,
+        441.43901811107645
+      ],
+      "robotBounds": {
+        "min": [
+          -0.6844248449862291,
+          -4.723563351571869e-8,
+          -0.615204898891577
+        ],
+        "max": [
+          0.7105606643756647,
+          2.159677685476579,
+          0.6892876199204401
+        ]
+      },
+      "camera": {
+        "position": [
+          0.36,
+          2.05,
+          6.28
+        ],
+        "fov": 32
+      },
+      "rendered": 204
+    },
+    {
+      "version": "D01-R1",
+      "mode": "home",
+      "feature": null,
+      "ready": true,
+      "canvasCount": 1,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "canvasCSS": [
+        1920,
+        1080
+      ],
+      "drawingBuffer": [
+        1920,
+        1080
+      ],
+      "dpr": 1,
+      "quality": "standard",
+      "reduced": false,
+      "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "drawCalls": 61,
+      "triangles": 115394,
+      "frameSamples": 240,
+      "p50FrameMs": 16.700000000000273,
+      "p95FrameMs": 25.100000000000136,
+      "meanRenderCPUMs": 1.8720833333985258,
+      "faceDotView": null,
+      "sourcePlaneOffset": null,
+      "cubeQuaternion": [
+        0.09613741191091205,
+        0.9687590577234046,
+        -0.06537233068811286,
+        0.2190660733439529
+      ],
+      "cubeScreen": [
+        1193.2719778198,
+        529.7268217332918
+      ],
+      "robotBounds": {
+        "min": [
+          -0.6844248449862371,
+          -4.723563351571869e-8,
+          -0.6152049194702809
+        ],
+        "max": [
+          0.7105606643756567,
+          2.1597454326376173,
+          0.6892875993417362
+        ]
+      },
+      "camera": {
+        "position": [
+          0.36,
+          2.05,
+          6.28
+        ],
+        "fov": 32
+      },
+      "rendered": 242
+    },
+    {
+      "version": "D01-R1",
+      "mode": "home",
+      "feature": null,
+      "ready": true,
+      "canvasCount": 1,
+      "viewport": [
+        390,
+        844
+      ],
+      "canvasCSS": [
+        390,
+        370
+      ],
+      "drawingBuffer": [
+        390,
+        370
+      ],
+      "dpr": 1,
+      "quality": "standard",
+      "reduced": false,
+      "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00004688) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "drawCalls": 59,
+      "triangles": 115018,
+      "frameSamples": 360,
+      "p50FrameMs": 8.199999999999818,
+      "p95FrameMs": 16.700000000000273,
+      "meanRenderCPUMs": 1.4569444445065327,
+      "faceDotView": null,
+      "sourcePlaneOffset": null,
+      "cubeQuaternion": [
+        0.0957639412770541,
+        0.9699896855888722,
+        -0.0659182155372038,
+        0.21355108583820084
+      ],
+      "cubeScreen": [
+        313.28726469713524,
+        228.02988333650245
+      ],
+      "robotBounds": {
+        "min": [
+          -0.6844248449862451,
+          -4.723563351571869e-8,
+          -0.6152049402420862
+        ],
+        "max": [
+          0.7105606643756486,
+          2.1595903764902475,
+          0.689287578569931
+        ]
+      },
+      "camera": {
+        "position": [
+          0.26,
+          1.75,
+          3.65
+        ],
+        "fov": 34
+      },
+      "rendered": 465
+    }
+  ],
+  "errors": [],
+  "networkSummary": {
+    "requests": 65,
+    "external": [],
+    "methods": [
+      "GET"
+    ]
+  },
+  "scope": "Design prototype only. Read-only snapshot; no production GIS/OL performance claim."
+}

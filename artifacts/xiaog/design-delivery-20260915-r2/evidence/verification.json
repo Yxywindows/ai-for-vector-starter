@@ -1,0 +1,2052 @@
+{
+  "version": "D01-R1",
+  "createdAt": "2026-09-14T15:04:42.501Z",
+  "protectedCodeFiles": 277,
+  "protectedCodeChanges": [],
+  "coordinatorDocumentChanges": [
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/docs/xiaog-game/03-execution-status.md",
+      "match": false,
+      "expected": "c9405feb4efd2805805bb3fc8e1fa0a4f2c5b49688da3b839d33dca978fcdcc1",
+      "current": "9cf71844eacf70613a4b3881294f60d47bc43a4329505c140023a607c89b0c4e",
+      "kind": "coordinator-document"
+    }
+  ],
+  "assetChecks": [
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/robot/exports/OpenGMS_A.glb",
+      "file": "assets/OpenGMS_A.glb",
+      "match": true,
+      "sha256": "6c1c45e83743ae79767613c3ce690130546b95a93beb1ca8e5ca2eac2caa1ac3"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/robot/exports/cube.glb",
+      "file": "assets/cube.glb",
+      "match": true,
+      "sha256": "ffbeee194a53049b1555db8b75d5c58326110d8be9d3e267aa4d7753e521b2c9"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/robot/evidence/avatar.png",
+      "file": "assets/avatar.png",
+      "match": true,
+      "sha256": "3ade06b15e0b93ff986678cd152ec3c272b694bc293fa52910c460fe8447df4c"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/robot/runtime_manifest.json",
+      "file": "assets/runtime_manifest.json",
+      "match": true,
+      "sha256": "95c9371527b780ffc00a6496a2a001985e4a5a0a7bdcb252ae74f8b9b2cedf6c"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/robot/source/LICENSE-source.md",
+      "file": "licenses/LICENSE-source.md",
+      "match": true,
+      "sha256": "14687ac4a51d5e013b0fbc5486dabc743f76c1e37b7ca872af74cfb93115b4b2"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/build/three.module.js",
+      "file": "vendor/three.module.js",
+      "match": true,
+      "sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/build/three.core.js",
+      "file": "vendor/three.core.js",
+      "match": true,
+      "sha256": "eb077d2417f61d3e6d9264c317cabc4ea35769ed6b0ab533067292a550784c20"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/examples/jsm/loaders/GLTFLoader.js",
+      "file": "vendor/loaders/GLTFLoader.js",
+      "match": true,
+      "sha256": "67ac5551fdafa6e349bd80c8f8e5e39c136d6b2fb1ad647db9abb21dc86f9e4a"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/examples/jsm/utils/BufferGeometryUtils.js",
+      "file": "vendor/utils/BufferGeometryUtils.js",
+      "match": true,
+      "sha256": "fda7e946b8e0b5ab39b779206589e7a1079a22eb24efb89d7223e03fdfb1f751"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/examples/jsm/environments/RoomEnvironment.js",
+      "file": "vendor/environments/RoomEnvironment.js",
+      "match": true,
+      "sha256": "c20f0b4677f6128a138d7152b85cbef9091f4f45cdfa05adca04d40c1697c7ae"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/LICENSE",
+      "file": "licenses/THREE-LICENSE.txt",
+      "match": true,
+      "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
+    },
+    {
+      "source": "C:/Users/yxy/.codex/worktrees/7862/AI_FOR_VECTOR/artifacts/xiaog/T02/preview/node_modules/three/package.json",
+      "file": "licenses/three-package.json",
+      "match": true,
+      "sha256": "aa42494664dba4cf76d89c6975ee38321a402f09a048672e190bad6f13beec93"
+    }
+  ],
+  "sourceChecks": [
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/analysis.ts",
+      "match": true,
+      "expected": "6ebf7e4f15b7b812972d95391ad2420eea757939b44d24afda6fb3becf2533fb",
+      "current": "6ebf7e4f15b7b812972d95391ad2420eea757939b44d24afda6fb3becf2533fb",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/catalog.ts",
+      "match": true,
+      "expected": "2ea222e3840a0c7ea7d9d096653fe5eb97b3dc6bcadc108fa11d63211593c9d0",
+      "current": "2ea222e3840a0c7ea7d9d096653fe5eb97b3dc6bcadc108fa11d63211593c9d0",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/client.test.ts",
+      "match": true,
+      "expected": "5b573e74394070715cfffa710c9361d26116f7606432aa90871d24973d31421b",
+      "current": "5b573e74394070715cfffa710c9361d26116f7606432aa90871d24973d31421b",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/client.ts",
+      "match": true,
+      "expected": "8cb4f91e07bd243a02452b3a4aa4d5d81f98240efcc1b11b35bd1a3ae398faa4",
+      "current": "8cb4f91e07bd243a02452b3a4aa4d5d81f98240efcc1b11b35bd1a3ae398faa4",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/exports.ts",
+      "match": true,
+      "expected": "7ab059f3792e28d1fadbc090d4729d7735b610bbc1c92d55fb0f714f10672ffd",
+      "current": "7ab059f3792e28d1fadbc090d4729d7735b610bbc1c92d55fb0f714f10672ffd",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/features.ts",
+      "match": true,
+      "expected": "f689e4867417cb2397d82e5ff3559e04a5805af3edb0c3f02dcb9d8110286694",
+      "current": "f689e4867417cb2397d82e5ff3559e04a5805af3edb0c3f02dcb9d8110286694",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/imports.ts",
+      "match": true,
+      "expected": "c7671bdfd75da72f3081443af225fb4b7d0d4dc7382ca6c8bd4aea671cbc7808",
+      "current": "c7671bdfd75da72f3081443af225fb4b7d0d4dc7382ca6c8bd4aea671cbc7808",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/layers.ts",
+      "match": true,
+      "expected": "42117c1cb133a3362dafddc806fc61054143bb1e54f408bcf4402aa79db05004",
+      "current": "42117c1cb133a3362dafddc806fc61054143bb1e54f408bcf4402aa79db05004",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/system.ts",
+      "match": true,
+      "expected": "046321d935c83141ef82e6e63f72e2e8181d77d6fd6c6cfb7afad2d35525b664",
+      "current": "046321d935c83141ef82e6e63f72e2e8181d77d6fd6c6cfb7afad2d35525b664",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/tasks.ts",
+      "match": true,
+      "expected": "f13ed3872972c8f2649f605a51c6c208d6344c934353ae0a71b1b6d19179a413",
+      "current": "f13ed3872972c8f2649f605a51c6c208d6344c934353ae0a71b1b6d19179a413",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/api/types.ts",
+      "match": true,
+      "expected": "9fcf138e677d1d668f7d3750a0762d026bcae0d384824203a5b0c2b3639f65a5",
+      "current": "9fcf138e677d1d668f7d3750a0762d026bcae0d384824203a5b0c2b3639f65a5",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/AppShell.test.tsx",
+      "match": true,
+      "expected": "2b4fbf011494de07495498109087d986a639ffaf1eeadc8f5b8c75b277aa1631",
+      "current": "2b4fbf011494de07495498109087d986a639ffaf1eeadc8f5b8c75b277aa1631",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/AppShell.tsx",
+      "match": true,
+      "expected": "5464b33c2864b1e92643fcc5bc2c5253958daec98be71ba824c938ec56c6e233",
+      "current": "5464b33c2864b1e92643fcc5bc2c5253958daec98be71ba824c938ec56c6e233",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/BrandMark.tsx",
+      "match": true,
+      "expected": "7cd58e177e24a74891c10532f783e371440ab9fe4339a248b355542f907d077d",
+      "current": "7cd58e177e24a74891c10532f783e371440ab9fe4339a248b355542f907d077d",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/LayoutMenu.test.tsx",
+      "match": true,
+      "expected": "6efbe6a9bbe854dffe25960fa93a74da2ed3f98665950cdef0f95e693686554f",
+      "current": "6efbe6a9bbe854dffe25960fa93a74da2ed3f98665950cdef0f95e693686554f",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/LayoutMenu.tsx",
+      "match": true,
+      "expected": "0790a9fa075a52e569f6ed70e724d673cd542d747e20a24913d793bf3608b582",
+      "current": "0790a9fa075a52e569f6ed70e724d673cd542d747e20a24913d793bf3608b582",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/PlatformShell.tsx",
+      "match": true,
+      "expected": "d2c93c345360da49b64518c12df51f72fad5d2ce1b70c18586471bf4b4f9625d",
+      "current": "d2c93c345360da49b64518c12df51f72fad5d2ce1b70c18586471bf4b4f9625d",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/ProjectSwitcher.tsx",
+      "match": true,
+      "expected": "638b703c01b0061f3d423ccd5601b060081bbef24bd2a23b8966b09865111f99",
+      "current": "638b703c01b0061f3d423ccd5601b060081bbef24bd2a23b8966b09865111f99",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/queryClient.ts",
+      "match": true,
+      "expected": "ff5a7b8f1c0ba7c1984ebedd137910f4aa603338627a9a116f20c1668e16e99e",
+      "current": "ff5a7b8f1c0ba7c1984ebedd137910f4aa603338627a9a116f20c1668e16e99e",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/router.tsx",
+      "match": true,
+      "expected": "808c39faf174dba43bb7188feb3f297334b75238000cec131d74bc29ec5bdd1b",
+      "current": "808c39faf174dba43bb7188feb3f297334b75238000cec131d74bc29ec5bdd1b",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/workspaceLayout.test.ts",
+      "match": true,
+      "expected": "576ad93df6dd8d1cc3568122c5d4208c45e71f9c02d0977f7b5be32dd5db1e7e",
+      "current": "576ad93df6dd8d1cc3568122c5d4208c45e71f9c02d0977f7b5be32dd5db1e7e",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/app/workspaceLayout.ts",
+      "match": true,
+      "expected": "fe9e4f4694c187af667e96298020a6d4c92c97597446fc359de499a7c5fd9d02",
+      "current": "fe9e4f4694c187af667e96298020a6d4c92c97597446fc359de499a7c5fd9d02",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/App.tsx",
+      "match": true,
+      "expected": "cdbbbe786f188019f4daf84671d27c108bcab04baab8bf2b1d4d11df19e71e26",
+      "current": "cdbbbe786f188019f4daf84671d27c108bcab04baab8bf2b1d4d11df19e71e26",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/cache/geoCache.test.ts",
+      "match": true,
+      "expected": "95baa6ea3d2d43f2022afb888f4bbdb0d08cf70f1d169fe5966e0b71a11b8c40",
+      "current": "95baa6ea3d2d43f2022afb888f4bbdb0d08cf70f1d169fe5966e0b71a11b8c40",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/cache/geoCache.ts",
+      "match": true,
+      "expected": "7240fd468380ff3b06384da642de2ee0396611d929887b1e989bb67130cbb583",
+      "current": "7240fd468380ff3b06384da642de2ee0396611d929887b1e989bb67130cbb583",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/cache/idb.test.ts",
+      "match": true,
+      "expected": "53d11cf02872d9aa6d096005ebff2e24abd59b0b5b08b01db2d86e82a1d3ca11",
+      "current": "53d11cf02872d9aa6d096005ebff2e24abd59b0b5b08b01db2d86e82a1d3ca11",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/cache/idb.ts",
+      "match": true,
+      "expected": "dcbd3f34bec54ddaedc8ce645010725b9fd62b9c05c3f1d08f94ecbc64d2201d",
+      "current": "dcbd3f34bec54ddaedc8ce645010725b9fd62b9c05c3f1d08f94ecbc64d2201d",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/cache/keys.ts",
+      "match": true,
+      "expected": "c5222c001843c0a272ec81e303e2148f1c6d142dd148c08cd1f914f077f83814",
+      "current": "c5222c001843c0a272ec81e303e2148f1c6d142dd148c08cd1f914f077f83814",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/experience.css",
+      "match": true,
+      "expected": "e636019200668b26023d66bdee1e952ca54df3539080cea98cd63953fa288d1c",
+      "current": "e636019200668b26023d66bdee1e952ca54df3539080cea98cd63953fa288d1c",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/experienceReducer.test.ts",
+      "match": true,
+      "expected": "2709523592084295f5984d19dfd0ff02b9d3c3f26c6cb4f6b0d557429f63ecbc",
+      "current": "2709523592084295f5984d19dfd0ff02b9d3c3f26c6cb4f6b0d557429f63ecbc",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/experienceReducer.ts",
+      "match": true,
+      "expected": "fb128802b3c95393179539354bdf54681bcc6beb29b7634952e61a18c60cce2b",
+      "current": "fb128802b3c95393179539354bdf54681bcc6beb29b7634952e61a18c60cce2b",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/ExperienceRoot.test.tsx",
+      "match": true,
+      "expected": "b354833cc0b11934fd27b55d2a6569cf0896760558a4a46ce75768bccd2b3e86",
+      "current": "b354833cc0b11934fd27b55d2a6569cf0896760558a4a46ce75768bccd2b3e86",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/ExperienceRoot.tsx",
+      "match": true,
+      "expected": "b226ac3e106acf1f18b758cf5076d5218167ea39d5135c00132d785b330376e9",
+      "current": "b226ac3e106acf1f18b758cf5076d5218167ea39d5135c00132d785b330376e9",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/featureRegistry.ts",
+      "match": true,
+      "expected": "7ad0fc99b490b9a717a180744fe490ebdb51acee3660f8b292536e2d40b970df",
+      "current": "7ad0fc99b490b9a717a180744fe490ebdb51acee3660f8b292536e2d40b970df",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/motionConfig.ts",
+      "match": true,
+      "expected": "d83d1b2ac84a4da6e0e8e3e7994b9002cf5c33da6ce76d7d380395c39b7a65c4",
+      "current": "d83d1b2ac84a4da6e0e8e3e7994b9002cf5c33da6ce76d7d380395c39b7a65c4",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/ui/ExperienceStage.tsx",
+      "match": true,
+      "expected": "2e3092086711a945e88a1505015b70d35efa0f533f821656c5123151d2eb31c4",
+      "current": "2e3092086711a945e88a1505015b70d35efa0f533f821656c5123151d2eb31c4",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/ui/FeatureIcon.tsx",
+      "match": true,
+      "expected": "6b5b229afd14f619bd5ffcc8aa4e7177d9874a08e5f15fe99f41041c54a12a35",
+      "current": "6b5b229afd14f619bd5ffcc8aa4e7177d9874a08e5f15fe99f41041c54a12a35",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/experience/useReducedMotion.ts",
+      "match": true,
+      "expected": "11b794642c2495523092a9b5bc7c6f84173d5eca5483aaa904d682b7c23ce639",
+      "current": "11b794642c2495523092a9b5bc7c6f84173d5eca5483aaa904d682b7c23ce639",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/attributes/AttributeTable.test.tsx",
+      "match": true,
+      "expected": "76ccaa57212e83e5bdb5ac007a698a24e4e368c004e283ae00b8398028c75525",
+      "current": "76ccaa57212e83e5bdb5ac007a698a24e4e368c004e283ae00b8398028c75525",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/attributes/AttributeTable.tsx",
+      "match": true,
+      "expected": "7afe7dd2d3bf9090d4f158afa31c13fa75c85830130f62f547f123d54794507a",
+      "current": "7afe7dd2d3bf9090d4f158afa31c13fa75c85830130f62f547f123d54794507a",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/attributes/coerce.test.ts",
+      "match": true,
+      "expected": "4cd965b2073fa5fb92df9d9910600a27783f3130751296f9e5213a8b8745a1a6",
+      "current": "4cd965b2073fa5fb92df9d9910600a27783f3130751296f9e5213a8b8745a1a6",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/attributes/coerce.ts",
+      "match": true,
+      "expected": "64580c20c7b17a10ac8fb0794a5e9ce739d7365ecd4573442cd31c134c459934",
+      "current": "64580c20c7b17a10ac8fb0794a5e9ce739d7365ecd4573442cd31c134c459934",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/attributes/useAttributes.ts",
+      "match": true,
+      "expected": "5535a454f7e109bd59e0314c739d4159bb9d9bcc6f4755c91a6deb29055e8fca",
+      "current": "5535a454f7e109bd59e0314c739d4159bb9d9bcc6f4755c91a6deb29055e8fca",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/editing/editSession.test.ts",
+      "match": true,
+      "expected": "5ad56b97cef8d460f4f2368da91dde76754895412ce76048a0462cb92266eee7",
+      "current": "5ad56b97cef8d460f4f2368da91dde76754895412ce76048a0462cb92266eee7",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/editing/editSession.ts",
+      "match": true,
+      "expected": "b29a2e62916cbd5650f1072dcb4dd109a774eca6155302557e7025e3e7000af6",
+      "current": "b29a2e62916cbd5650f1072dcb4dd109a774eca6155302557e7025e3e7000af6",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/editing/EditToolbar.test.tsx",
+      "match": true,
+      "expected": "7a6150915f6b9f431180974a59502bc1eb2f4f1b73e4eb15c8e2ce6dd62d292a",
+      "current": "7a6150915f6b9f431180974a59502bc1eb2f4f1b73e4eb15c8e2ce6dd62d292a",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/editing/EditToolbar.tsx",
+      "match": true,
+      "expected": "7d3d1f8a733c555eebd3930680a67db0bb4c533d7d847ac4dd34c5f1eb33d198",
+      "current": "7d3d1f8a733c555eebd3930680a67db0bb4c533d7d847ac4dd34c5f1eb33d198",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/editing/useEditSession.ts",
+      "match": true,
+      "expected": "7ae8541cd1e05bea72d2138015a5423963b891af1d9d2cd1b46db410a392d534",
+      "current": "7ae8541cd1e05bea72d2138015a5423963b891af1d9d2cd1b46db410a392d534",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/DraftGrid.test.tsx",
+      "match": true,
+      "expected": "cd0410f2b3ad03f4b5af65663fa534d83f797ea2db547faaab603760325e0511",
+      "current": "cd0410f2b3ad03f4b5af65663fa534d83f797ea2db547faaab603760325e0511",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/DraftGrid.tsx",
+      "match": true,
+      "expected": "0dd33c4270d90f20a70d03b65e378a03bb7f473c3febb39687dd0f8b5d351185",
+      "current": "0dd33c4270d90f20a70d03b65e378a03bb7f473c3febb39687dd0f8b5d351185",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/ImportPreview.test.tsx",
+      "match": true,
+      "expected": "79eb120493a3680040bebb32fd9e4d1fea88254b7abad2fe020a21c7fbfea5ba",
+      "current": "79eb120493a3680040bebb32fd9e4d1fea88254b7abad2fe020a21c7fbfea5ba",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/ImportPreview.tsx",
+      "match": true,
+      "expected": "61af3690cb20c08247035533bbff0657f36e14babedc668877c1d4a803e38967",
+      "current": "61af3690cb20c08247035533bbff0657f36e14babedc668877c1d4a803e38967",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/parseGeoJson.test.ts",
+      "match": true,
+      "expected": "9346920728a51461df84a64072ed2506e8a2d555d033cf292b5c3c14823b18ff",
+      "current": "9346920728a51461df84a64072ed2506e8a2d555d033cf292b5c3c14823b18ff",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/parseGeoJson.ts",
+      "match": true,
+      "expected": "901ec7af74d6181fd160fc9fa707bdbcbf61c6dcea362e13fbd7fa3a7490440e",
+      "current": "901ec7af74d6181fd160fc9fa707bdbcbf61c6dcea362e13fbd7fa3a7490440e",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/parseWorker.test.ts",
+      "match": true,
+      "expected": "32da3f46da7fdc20e7e374ae4e9732c0ef750f04d5f5a06565ebc0ed17e59402",
+      "current": "32da3f46da7fdc20e7e374ae4e9732c0ef750f04d5f5a06565ebc0ed17e59402",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/parseWorker.ts",
+      "match": true,
+      "expected": "2aa551b96aa04293b52874158797fc9a146b6dd81b3f34cf077484d0f04f44df",
+      "current": "2aa551b96aa04293b52874158797fc9a146b6dd81b3f34cf077484d0f04f44df",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/PreviewMap.test.tsx",
+      "match": true,
+      "expected": "12c7a9d7cef2edb0c89aa2ccb0c62a7c8505a1f432d62f05df3ce0230cff4f37",
+      "current": "12c7a9d7cef2edb0c89aa2ccb0c62a7c8505a1f432d62f05df3ce0230cff4f37",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/PreviewMap.tsx",
+      "match": true,
+      "expected": "685941d547b73dc3246de683ea60dcd588e46d8333f08a081f8cfb9e228a50d5",
+      "current": "685941d547b73dc3246de683ea60dcd588e46d8333f08a081f8cfb9e228a50d5",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/useImportDraft.test.ts",
+      "match": true,
+      "expected": "7d15a59d3d8ac24535b75e884933dd0ec3c4f968b6a5e6d1db6bc1a350b4f7b0",
+      "current": "7d15a59d3d8ac24535b75e884933dd0ec3c4f968b6a5e6d1db6bc1a350b4f7b0",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/useImportDraft.ts",
+      "match": true,
+      "expected": "80b32dd799b38aa3c0be73c181a9ec766bd278810e9f41255adecae42c13df7a",
+      "current": "80b32dd799b38aa3c0be73c181a9ec766bd278810e9f41255adecae42c13df7a",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/useParseWorker.test.ts",
+      "match": true,
+      "expected": "98d850e154bfbbff969fc1320d265adc77e44b8ac8fbca00ee547ffcdb28c294",
+      "current": "98d850e154bfbbff969fc1320d265adc77e44b8ac8fbca00ee547ffcdb28c294",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/useParseWorker.ts",
+      "match": true,
+      "expected": "92cdd85417cef8e5855b75b3e7d2666a3e36a3ffda993f687446bce533dd4b07",
+      "current": "92cdd85417cef8e5855b75b3e7d2666a3e36a3ffda993f687446bce533dd4b07",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/validation.test.ts",
+      "match": true,
+      "expected": "327590b20ceeab247a45543cf838e22d3deac4fe6dcc4e20fde23a679d6e13be",
+      "current": "327590b20ceeab247a45543cf838e22d3deac4fe6dcc4e20fde23a679d6e13be",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/validation.ts",
+      "match": true,
+      "expected": "b7c788a6724da958892a6faf2ec8d30d95fd5485afcc0c0b90de116fddff672f",
+      "current": "b7c788a6724da958892a6faf2ec8d30d95fd5485afcc0c0b90de116fddff672f",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/import/workerTypes.ts",
+      "match": true,
+      "expected": "ce588e4b284373721238df5a2e8c7cb1898da4c9b45875ff4ed01681ddc3a8d1",
+      "current": "ce588e4b284373721238df5a2e8c7cb1898da4c9b45875ff4ed01681ddc3a8d1",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/AddLayerDialog.test.tsx",
+      "match": true,
+      "expected": "98584a8d66ffb8ea5e934049973828137e533dbe8bd80f020aa2d56101264ed5",
+      "current": "98584a8d66ffb8ea5e934049973828137e533dbe8bd80f020aa2d56101264ed5",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/AddLayerDialog.tsx",
+      "match": true,
+      "expected": "afe64b39f94cad28773d437b8921c93a5fe3052aabc2fc6150b815ff07cfa839",
+      "current": "afe64b39f94cad28773d437b8921c93a5fe3052aabc2fc6150b815ff07cfa839",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/LayerPanel.test.tsx",
+      "match": true,
+      "expected": "e321b3fe640266f3619cef9f30a871be00518665393b544194fd57cd7f9481e5",
+      "current": "e321b3fe640266f3619cef9f30a871be00518665393b544194fd57cd7f9481e5",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/LayerPanel.tsx",
+      "match": true,
+      "expected": "e454678ec56a33cfc9a53a5b040f4f7b46f8444c7a5ea89f3b34032b1f851064",
+      "current": "e454678ec56a33cfc9a53a5b040f4f7b46f8444c7a5ea89f3b34032b1f851064",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/reorder.test.ts",
+      "match": true,
+      "expected": "2e18dc22561af4957fffdfed5bea09cd5c5229aa7052726948b77d762c1b45ea",
+      "current": "2e18dc22561af4957fffdfed5bea09cd5c5229aa7052726948b77d762c1b45ea",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/reorder.ts",
+      "match": true,
+      "expected": "048dba8442aeb88a7720bb9c80691ad3d095ff907591bd095c0498d0c9ca8432",
+      "current": "048dba8442aeb88a7720bb9c80691ad3d095ff907591bd095c0498d0c9ca8432",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/layers/useLayerMutations.ts",
+      "match": true,
+      "expected": "35005fc0fbd22d041e6b08f2e4f677c285fdd99e85e2ff76fe9ccb372134c126",
+      "current": "35005fc0fbd22d041e6b08f2e4f677c285fdd99e85e2ff76fe9ccb372134c126",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/memory/MemoryPanel.test.tsx",
+      "match": true,
+      "expected": "0f9ba2c4771d14e1a5855d141cebc07eff5418005247055f264cd77ceb1c7d82",
+      "current": "0f9ba2c4771d14e1a5855d141cebc07eff5418005247055f264cd77ceb1c7d82",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/memory/MemoryPanel.tsx",
+      "match": true,
+      "expected": "2225b1ee090f9f576e5253b35d4a4f71f01d3be096bc1ef5c00b54cee0d1e667",
+      "current": "2225b1ee090f9f576e5253b35d4a4f71f01d3be096bc1ef5c00b54cee0d1e667",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/defaults.test.ts",
+      "match": true,
+      "expected": "449054acc8346d2586d7069a3def8dabdd027fd1a6495b412e4933e6f87c7298",
+      "current": "449054acc8346d2586d7069a3def8dabdd027fd1a6495b412e4933e6f87c7298",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/defaults.ts",
+      "match": true,
+      "expected": "9dd3b17878960826aef5769fd1eece767d9108d38a351bd5502c0f98e003dddf",
+      "current": "9dd3b17878960826aef5769fd1eece767d9108d38a351bd5502c0f98e003dddf",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/ramps.test.ts",
+      "match": true,
+      "expected": "2e6434f2ca3d40b39339902921e0ce1f816b2e8564a7b13224ba1b9001050a17",
+      "current": "2e6434f2ca3d40b39339902921e0ce1f816b2e8564a7b13224ba1b9001050a17",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/ramps.ts",
+      "match": true,
+      "expected": "d8f7aa82847272d543dc2456f71dd6c18231924ee8f46b52fc577116d51fcc63",
+      "current": "d8f7aa82847272d543dc2456f71dd6c18231924ee8f46b52fc577116d51fcc63",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/StyleEditor.test.tsx",
+      "match": true,
+      "expected": "c4e51e6e3cbfc94264d26312c5b7a4b7122ded4a32637b41d6b4e7c15df793fe",
+      "current": "c4e51e6e3cbfc94264d26312c5b7a4b7122ded4a32637b41d6b4e7c15df793fe",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/features/styling/StyleEditor.tsx",
+      "match": true,
+      "expected": "7ced93c5ae1eb370c60b4cfaef02e16b3809fe8b54dd13d0b8765420a02afec0",
+      "current": "7ced93c5ae1eb370c60b4cfaef02e16b3809fe8b54dd13d0b8765420a02afec0",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/index.css",
+      "match": true,
+      "expected": "00bdbf9acba1b31145698684628abf12d569fa428e30a623c7f1c9b070d990a8",
+      "current": "00bdbf9acba1b31145698684628abf12d569fa428e30a623c7f1c9b070d990a8",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/main.tsx",
+      "match": true,
+      "expected": "b96d8550ac37b3955e676269fc7d2c8c55a1e8aacb22f40d70e7e253047313d6",
+      "current": "b96d8550ac37b3955e676269fc7d2c8c55a1e8aacb22f40d70e7e253047313d6",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/BasemapSelector.test.tsx",
+      "match": true,
+      "expected": "663c19e437d65237e44b23da201f602fb3c24b643d2d4f8c7b1141d9d7644556",
+      "current": "663c19e437d65237e44b23da201f602fb3c24b643d2d4f8c7b1141d9d7644556",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/BasemapSelector.tsx",
+      "match": true,
+      "expected": "503c3ce619b2ecf5a12c316b132ada9f6bd87a66ff2892209c70591b4b3b38be",
+      "current": "503c3ce619b2ecf5a12c316b132ada9f6bd87a66ff2892209c70591b4b3b38be",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/mapboxLayer.test.ts",
+      "match": true,
+      "expected": "bab20bd03d861528f23ff00851253e74658915af350b47c9d477242709465c6d",
+      "current": "bab20bd03d861528f23ff00851253e74658915af350b47c9d477242709465c6d",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/mapboxLayer.ts",
+      "match": true,
+      "expected": "7bd0ba57854aaed77099bd89a75e97dc4598a8aea66830f282ccdbd944f20eb1",
+      "current": "7bd0ba57854aaed77099bd89a75e97dc4598a8aea66830f282ccdbd944f20eb1",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/themes.test.ts",
+      "match": true,
+      "expected": "67f0868f243cc5bd6026e4aae5c9ebd8e9cdda30edb8e49d8c4bbd89786665a1",
+      "current": "67f0868f243cc5bd6026e4aae5c9ebd8e9cdda30edb8e49d8c4bbd89786665a1",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/basemaps/themes.ts",
+      "match": true,
+      "expected": "f55312a52f2842e14c6830d4bf400c4d3fbd596d35c0d158416b0266c6d137f7",
+      "current": "f55312a52f2842e14c6830d4bf400c4d3fbd596d35c0d158416b0266c6d137f7",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/featureLoader.test.ts",
+      "match": true,
+      "expected": "11d7c7aeb6cfa56c360ddd2b25bd6fd4a4f76f3189bdd4e2d6343addaf2d5ef4",
+      "current": "11d7c7aeb6cfa56c360ddd2b25bd6fd4a4f76f3189bdd4e2d6343addaf2d5ef4",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/featureLoader.ts",
+      "match": true,
+      "expected": "9fd5dbd2d38f80127f112300fae1d884c0399d9dece2916839b6e33b375d220e",
+      "current": "9fd5dbd2d38f80127f112300fae1d884c0399d9dece2916839b6e33b375d220e",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/IdentifyPopup.tsx",
+      "match": true,
+      "expected": "f65f06488356740d6fb8ee6e81e063908f8800a8c237ec9f57b67e8b9cc6143b",
+      "current": "f65f06488356740d6fb8ee6e81e063908f8800a8c237ec9f57b67e8b9cc6143b",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/layerFactory.test.ts",
+      "match": true,
+      "expected": "1e709da048bae9fbc4b10a4a9346fa430db9430c8d34a3daa74c9b808f758769",
+      "current": "1e709da048bae9fbc4b10a4a9346fa430db9430c8d34a3daa74c9b808f758769",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/layerFactory.ts",
+      "match": true,
+      "expected": "55b42f7ac85a22d52331286cad48ab6bd67dc75eac2719e8d5511c1fe620be21",
+      "current": "55b42f7ac85a22d52331286cad48ab6bd67dc75eac2719e8d5511c1fe620be21",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/loadingTiers.ts",
+      "match": true,
+      "expected": "3c7bb5c0ba89a346486521a913c975b9f257e29cae00bd14ff2a5a2ec955a74e",
+      "current": "3c7bb5c0ba89a346486521a913c975b9f257e29cae00bd14ff2a5a2ec955a74e",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/MapCanvas.tsx",
+      "match": true,
+      "expected": "2f2694b87388d1284653eaa6bb911eaaf228baae1fddb7054ae08506fa7d68c8",
+      "current": "2f2694b87388d1284653eaa6bb911eaaf228baae1fddb7054ae08506fa7d68c8",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/MapPreview.tsx",
+      "match": true,
+      "expected": "891554a3c6fd58415d2de7554eab9de375aac0ce001c79bd985d55439ff0351b",
+      "current": "891554a3c6fd58415d2de7554eab9de375aac0ce001c79bd985d55439ff0351b",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/MapProvider.tsx",
+      "match": true,
+      "expected": "f05c5a47af922ad59c9ac2d5afa3d101f296a9cd7c845fb16220e1e4b56b9eb5",
+      "current": "f05c5a47af922ad59c9ac2d5afa3d101f296a9cd7c845fb16220e1e4b56b9eb5",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/memory/instrumentation.ts",
+      "match": true,
+      "expected": "fb0a59cc1a1d00c275943799755d2c421b5eaae6fa7a0eef358c5bf040e4af54",
+      "current": "fb0a59cc1a1d00c275943799755d2c421b5eaae6fa7a0eef358c5bf040e4af54",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/memory/LayerMemoryManager.test.ts",
+      "match": true,
+      "expected": "811418e493daf0edb85b9a6bf7f709d7d7448f6f17f65033688c2734ee0ff297",
+      "current": "811418e493daf0edb85b9a6bf7f709d7d7448f6f17f65033688c2734ee0ff297",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/memory/LayerMemoryManager.ts",
+      "match": true,
+      "expected": "9db8356572fd4faccd6962fc856d9b8de964333807cbc18206c55a4631ce6865",
+      "current": "9db8356572fd4faccd6962fc856d9b8de964333807cbc18206c55a4631ce6865",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/memory/useLayerMemory.ts",
+      "match": true,
+      "expected": "1c403c406854391e678edf7cc95705be86bbd9d61351bf08a73d6397e8beac82",
+      "current": "1c403c406854391e678edf7cc95705be86bbd9d61351bf08a73d6397e8beac82",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/selection.ts",
+      "match": true,
+      "expected": "d078eeed694fa7073873885ae329dfbf780543016e8c211ebfc3d9f881a1d8c5",
+      "current": "d078eeed694fa7073873885ae329dfbf780543016e8c211ebfc3d9f881a1d8c5",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/StatusBar.tsx",
+      "match": true,
+      "expected": "451f3cd2f50f083e6384ec29a36ebb3363a8ae99dcc8f32eb5ae63523a36e278",
+      "current": "451f3cd2f50f083e6384ec29a36ebb3363a8ae99dcc8f32eb5ae63523a36e278",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/styleCompiler.test.ts",
+      "match": true,
+      "expected": "f33f26f0a3df00a4f64c2ad9b4a43c2b01d3ace8cb00b75d068e824aa117e9e5",
+      "current": "f33f26f0a3df00a4f64c2ad9b4a43c2b01d3ace8cb00b75d068e824aa117e9e5",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/styleCompiler.ts",
+      "match": true,
+      "expected": "9ed50b12a3eb19eef4f1d101b55cef52e58adfeb8bd9c2b601b3c6830d40214c",
+      "current": "9ed50b12a3eb19eef4f1d101b55cef52e58adfeb8bd9c2b601b3c6830d40214c",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/syncLayers.test.ts",
+      "match": true,
+      "expected": "dd2753c0a4b1226deef44c2b6232e680717c8fc6ddb52c9e2a408ed2d6c13046",
+      "current": "dd2753c0a4b1226deef44c2b6232e680717c8fc6ddb52c9e2a408ed2d6c13046",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/syncLayers.ts",
+      "match": true,
+      "expected": "4fb23f2e041b89041d6b1f7fb7cdf23f89c2ea27e69458eff3aa32c41dd4c5a5",
+      "current": "4fb23f2e041b89041d6b1f7fb7cdf23f89c2ea27e69458eff3aa32c41dd4c5a5",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/WorkspaceSync.test.ts",
+      "match": true,
+      "expected": "db48e328185767cb1b9f13dbda8b2317602231692a06e172e5caa11e1ec89dec",
+      "current": "db48e328185767cb1b9f13dbda8b2317602231692a06e172e5caa11e1ec89dec",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/map/WorkspaceSync.tsx",
+      "match": true,
+      "expected": "092261ee8b06ef4fa468d5afa06e0ed4a62b215ead47f71b4a388d9d2f537949",
+      "current": "092261ee8b06ef4fa468d5afa06e0ed4a62b215ead47f71b4a388d9d2f537949",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/AnalysisPage.test.tsx",
+      "match": true,
+      "expected": "b37c545b7959cb376a71cbd869fde0f3e2c5982bb933d9fd786b216e3ef8aee2",
+      "current": "b37c545b7959cb376a71cbd869fde0f3e2c5982bb933d9fd786b216e3ef8aee2",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/AnalysisPage.tsx",
+      "match": true,
+      "expected": "6bb4b806a48207de70c2fbb3524ed642409cecaebd521e72b59aeb03c730111b",
+      "current": "6bb4b806a48207de70c2fbb3524ed642409cecaebd521e72b59aeb03c730111b",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/DashboardPage.test.tsx",
+      "match": true,
+      "expected": "4af9c0ab9bd5ec09c31a3bb75a6d75c6d3810a41008a331919c7b0c94953ab9a",
+      "current": "4af9c0ab9bd5ec09c31a3bb75a6d75c6d3810a41008a331919c7b0c94953ab9a",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/DashboardPage.tsx",
+      "match": true,
+      "expected": "0d12301cf67811a21aac5bc77b6fa5bd6cd3f2a25cbe2a9b7fddda35d51d72f3",
+      "current": "0d12301cf67811a21aac5bc77b6fa5bd6cd3f2a25cbe2a9b7fddda35d51d72f3",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/DataCatalogPage.test.tsx",
+      "match": true,
+      "expected": "081d6f12cbf6c59668c20e70941e3e00167b13011c554f4ca9ad8c6d1fe19735",
+      "current": "081d6f12cbf6c59668c20e70941e3e00167b13011c554f4ca9ad8c6d1fe19735",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/DataCatalogPage.tsx",
+      "match": true,
+      "expected": "77bdad52e010be552f7dab4d854b7527eb5949215257ed86f7b2fbc5ad2250d1",
+      "current": "77bdad52e010be552f7dab4d854b7527eb5949215257ed86f7b2fbc5ad2250d1",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/DatasetDetailsPage.tsx",
+      "match": true,
+      "expected": "58cb62484662e98db9ea2a901be70572a84ed1170fe52bd36fb7db6ef2586d65",
+      "current": "58cb62484662e98db9ea2a901be70572a84ed1170fe52bd36fb7db6ef2586d65",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/ExportsPage.test.tsx",
+      "match": true,
+      "expected": "184d06d6eef1c98164216ec1a58c88645a3d14bca568a3b66968ba7e5a0eb47c",
+      "current": "184d06d6eef1c98164216ec1a58c88645a3d14bca568a3b66968ba7e5a0eb47c",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/ExportsPage.tsx",
+      "match": true,
+      "expected": "a1d0e41e6a1e3b48a993b1b6a3bf7c3635bd921aa161a2e4528e48e966cdef41",
+      "current": "a1d0e41e6a1e3b48a993b1b6a3bf7c3635bd921aa161a2e4528e48e966cdef41",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/ExtentSketch.tsx",
+      "match": true,
+      "expected": "37874be6ff7b2d98dfd9123226dedf00fcf69bf20ed0ba34c841eb006c1a9175",
+      "current": "37874be6ff7b2d98dfd9123226dedf00fcf69bf20ed0ba34c841eb006c1a9175",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/ProjectOverviewPage.tsx",
+      "match": true,
+      "expected": "cf0d2d1ba20585dba4ce0dc6781ff8c10131b475c381e406de33eb4a732ff454",
+      "current": "cf0d2d1ba20585dba4ce0dc6781ff8c10131b475c381e406de33eb4a732ff454",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/ProjectsPage.tsx",
+      "match": true,
+      "expected": "e637027e6de992acc2afb159240c1881a6dc37c12e28b4ff04614ba0a97e94b1",
+      "current": "e637027e6de992acc2afb159240c1881a6dc37c12e28b4ff04614ba0a97e94b1",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/TasksPage.test.tsx",
+      "match": true,
+      "expected": "2e2eefc20e9dfec28b7825db071f4968ed013c89cb650266ffc8e30be51be8c9",
+      "current": "2e2eefc20e9dfec28b7825db071f4968ed013c89cb650266ffc8e30be51be8c9",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/pages/TasksPage.tsx",
+      "match": true,
+      "expected": "405e95eaef1aea2c96539abe86e3a64e87ab7bb47602bc41761869ea5e0cfa8d",
+      "current": "405e95eaef1aea2c96539abe86e3a64e87ab7bb47602bc41761869ea5e0cfa8d",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/state/layerStore.test.ts",
+      "match": true,
+      "expected": "53bfdfee5f0cbf9227ccc84b11505823007b219cf7e637aeebd5a1793b440b22",
+      "current": "53bfdfee5f0cbf9227ccc84b11505823007b219cf7e637aeebd5a1793b440b22",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/src/state/layerStore.ts",
+      "match": true,
+      "expected": "7fb97cf3d3d22aca4d5c75ddbf8d1cd04c8ab969c5b797505eb76cde7aebfcd1",
+      "current": "7fb97cf3d3d22aca4d5c75ddbf8d1cd04c8ab969c5b797505eb76cde7aebfcd1",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/router.py",
+      "match": true,
+      "expected": "223d495ddba1cfc5fcf11b619221d0b8417f4a2a218b7ed3bc03ed717a2db69e",
+      "current": "223d495ddba1cfc5fcf11b619221d0b8417f4a2a218b7ed3bc03ed717a2db69e",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/analysis.py",
+      "match": true,
+      "expected": "285adf23d9e0133a64d0bd6e027cfcd123e4410f5915259801950d38ad023c67",
+      "current": "285adf23d9e0133a64d0bd6e027cfcd123e4410f5915259801950d38ad023c67",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/catalog.py",
+      "match": true,
+      "expected": "295581e9ab5132b3bd87e1b401019be5f0a3f41bd920dd2b02ab2634fdba41c9",
+      "current": "295581e9ab5132b3bd87e1b401019be5f0a3f41bd920dd2b02ab2634fdba41c9",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/exports.py",
+      "match": true,
+      "expected": "a004f4fda03704036cfa7a799dbb3230b4506c3cea5d80683b3b5d10ea8ae3de",
+      "current": "a004f4fda03704036cfa7a799dbb3230b4506c3cea5d80683b3b5d10ea8ae3de",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/features.py",
+      "match": true,
+      "expected": "ef8071f95a8fbf72ea20d094705d006528b4cb48dbc8ae71f72e9e4ed3175ab3",
+      "current": "ef8071f95a8fbf72ea20d094705d006528b4cb48dbc8ae71f72e9e4ed3175ab3",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/health.py",
+      "match": true,
+      "expected": "a0bf45f8a4931dc8b4183c36e1b774baf7a159b478bedb8c32696052c11561e7",
+      "current": "a0bf45f8a4931dc8b4183c36e1b774baf7a159b478bedb8c32696052c11561e7",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/imports.py",
+      "match": true,
+      "expected": "977311c0572808862db3c7b2ef6aa75bccd6b743f14228c4e77c266124599300",
+      "current": "977311c0572808862db3c7b2ef6aa75bccd6b743f14228c4e77c266124599300",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/layers.py",
+      "match": true,
+      "expected": "80337adec3e29b4b76c055b70a2295afcdd2959f7e59e7c8a5c07e126dba8c1c",
+      "current": "80337adec3e29b4b76c055b70a2295afcdd2959f7e59e7c8a5c07e126dba8c1c",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/projects.py",
+      "match": true,
+      "expected": "29903239bf9883c7fb0a7fc7c3991623a409ad212ad4102b008b504e27df6eb8",
+      "current": "29903239bf9883c7fb0a7fc7c3991623a409ad212ad4102b008b504e27df6eb8",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/system.py",
+      "match": true,
+      "expected": "0258694d50b13ecbd1a349f75f29d5d89eb2eacb3a44fcc64b15df92cc5c1f38",
+      "current": "0258694d50b13ecbd1a349f75f29d5d89eb2eacb3a44fcc64b15df92cc5c1f38",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/tasks.py",
+      "match": true,
+      "expected": "920422a7926736185be7ae4beecec0d4a1272c98a13d630b1501fe237e827e81",
+      "current": "920422a7926736185be7ae4beecec0d4a1272c98a13d630b1501fe237e827e81",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/tiles.py",
+      "match": true,
+      "expected": "3a5ec6294ee09a5840e1d20a610f5b24c26fc50b34ed52bad10d2e2b3e42e4f5",
+      "current": "3a5ec6294ee09a5840e1d20a610f5b24c26fc50b34ed52bad10d2e2b3e42e4f5",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__init__.py",
+      "match": true,
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/analysis.cpython-312.pyc",
+      "match": true,
+      "expected": "6fc568c9015298eab627e05af673d569f761adb1dbd80af4af4651a5685b7ddb",
+      "current": "6fc568c9015298eab627e05af673d569f761adb1dbd80af4af4651a5685b7ddb",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/catalog.cpython-312.pyc",
+      "match": true,
+      "expected": "c5fefc44ca4c13098bda0f4d33b9496ba9786759331bd275080349e00f8ea370",
+      "current": "c5fefc44ca4c13098bda0f4d33b9496ba9786759331bd275080349e00f8ea370",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/exports.cpython-312.pyc",
+      "match": true,
+      "expected": "23cf3dd678966aa7664a5ec2dfbab74a5e2e335d670c9867bbae22cc550bef9f",
+      "current": "23cf3dd678966aa7664a5ec2dfbab74a5e2e335d670c9867bbae22cc550bef9f",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/features.cpython-312.pyc",
+      "match": true,
+      "expected": "06df1b1f6caa49b314c454733fe9994b4a14be53ceb0186b9083ffa7d630cad9",
+      "current": "06df1b1f6caa49b314c454733fe9994b4a14be53ceb0186b9083ffa7d630cad9",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/health.cpython-312.pyc",
+      "match": true,
+      "expected": "2a6d71f3360d449137fdf830764bc60ef5bb0225921ace5b2f8b0ac13b00e219",
+      "current": "2a6d71f3360d449137fdf830764bc60ef5bb0225921ace5b2f8b0ac13b00e219",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/imports.cpython-312.pyc",
+      "match": true,
+      "expected": "64cd5f386295bed7554d24f425d69d7073fb3e3ff682e0395d8fb4adaa350c17",
+      "current": "64cd5f386295bed7554d24f425d69d7073fb3e3ff682e0395d8fb4adaa350c17",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/layers.cpython-312.pyc",
+      "match": true,
+      "expected": "7967e5fa1be4b0794295f7c7ceb2cd129f976d7f87c4c85344e5c53b7cc83219",
+      "current": "7967e5fa1be4b0794295f7c7ceb2cd129f976d7f87c4c85344e5c53b7cc83219",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/projects.cpython-312.pyc",
+      "match": true,
+      "expected": "ae6fc9e4f467cdebd59986e6e6c3cbac86aee5c5c334182b446ad7fad5b2919e",
+      "current": "ae6fc9e4f467cdebd59986e6e6c3cbac86aee5c5c334182b446ad7fad5b2919e",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/system.cpython-312.pyc",
+      "match": true,
+      "expected": "337c11e0dc11f749e059bdbece7567b573c17083a189107a94f3bd70286cbb2f",
+      "current": "337c11e0dc11f749e059bdbece7567b573c17083a189107a94f3bd70286cbb2f",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/tasks.cpython-312.pyc",
+      "match": true,
+      "expected": "1e21cfec0a8d05366e7fe883be9b4fa9db8ca31eb5032b1b634f3c4cb0829164",
+      "current": "1e21cfec0a8d05366e7fe883be9b4fa9db8ca31eb5032b1b634f3c4cb0829164",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/tiles.cpython-312.pyc",
+      "match": true,
+      "expected": "c84839f57f6e28de7ac855396d05c0006c781ebd23ba9a02477414e41764e388",
+      "current": "c84839f57f6e28de7ac855396d05c0006c781ebd23ba9a02477414e41764e388",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/routes/__pycache__/__init__.cpython-312.pyc",
+      "match": true,
+      "expected": "dfbc4ae3f8266d6bb27b8669273da417fcd55d15d9faa7bfbe6f48c4259a1326",
+      "current": "dfbc4ae3f8266d6bb27b8669273da417fcd55d15d9faa7bfbe6f48c4259a1326",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/__init__.py",
+      "match": true,
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/__pycache__/router.cpython-312.pyc",
+      "match": true,
+      "expected": "10a40d44c8c7174ebd682d201d89a7be106c5248d12dc5fbd08701961f5ecafb",
+      "current": "10a40d44c8c7174ebd682d201d89a7be106c5248d12dc5fbd08701961f5ecafb",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/v1/__pycache__/__init__.cpython-312.pyc",
+      "match": true,
+      "expected": "69bd1e7640ed91a6d9a69d855d14c5d937ee46095b7e842dd20adb0aa710f9b8",
+      "current": "69bd1e7640ed91a6d9a69d855d14c5d937ee46095b7e842dd20adb0aa710f9b8",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/__init__.py",
+      "match": true,
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/api/__pycache__/__init__.cpython-312.pyc",
+      "match": true,
+      "expected": "3b9687425ff16b6eb363d9f0e304985795a116cc2add697b8b282aac7c0ecbb0",
+      "current": "3b9687425ff16b6eb363d9f0e304985795a116cc2add697b8b282aac7c0ecbb0",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/config.py",
+      "match": true,
+      "expected": "d2e7fb6d813613bfe5b5518a2188928be91ccf4b3069762fe62e2011d8c663d9",
+      "current": "d2e7fb6d813613bfe5b5518a2188928be91ccf4b3069762fe62e2011d8c663d9",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/errors.py",
+      "match": true,
+      "expected": "53deb5f87aa74afe059afa231b277cda1a78c22c38a5758f6c0c2c4478e8a442",
+      "current": "53deb5f87aa74afe059afa231b277cda1a78c22c38a5758f6c0c2c4478e8a442",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/geo_env.py",
+      "match": true,
+      "expected": "cf53602fa4ba4efcef8656c2e675c125148f2606697d1178600577d2d9f0e02a",
+      "current": "cf53602fa4ba4efcef8656c2e675c125148f2606697d1178600577d2d9f0e02a",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/logging.py",
+      "match": true,
+      "expected": "4142a2b8ff5ebd6922b731644a5f78684fd2afb0fdd2db224ef399c6e74c61a3",
+      "current": "4142a2b8ff5ebd6922b731644a5f78684fd2afb0fdd2db224ef399c6e74c61a3",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__init__.py",
+      "match": true,
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__pycache__/config.cpython-312.pyc",
+      "match": true,
+      "expected": "c468eb6178683ddc3feafee02e5dd92637cd68241d3ea9839b76f11e592e5613",
+      "current": "c468eb6178683ddc3feafee02e5dd92637cd68241d3ea9839b76f11e592e5613",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__pycache__/errors.cpython-312.pyc",
+      "match": true,
+      "expected": "f8077529f4110a58e36665c5cd0579f38e229c98c83240965d2fbf55622b649e",
+      "current": "f8077529f4110a58e36665c5cd0579f38e229c98c83240965d2fbf55622b649e",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__pycache__/geo_env.cpython-312.pyc",
+      "match": true,
+      "expected": "d5b25a079d4c55d751ffefe55326b4c7d7ca3afcfc09289289890e0910f0c2f9",
+      "current": "d5b25a079d4c55d751ffefe55326b4c7d7ca3afcfc09289289890e0910f0c2f9",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__pycache__/logging.cpython-312.pyc",
+      "match": true,
+      "expected": "27489241ab107c23367bf028eb20e810b4aac1a7d0e4c45bb7f63df58e263276",
+      "current": "27489241ab107c23367bf028eb20e810b4aac1a7d0e4c45bb7f63df58e263276",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/core/__pycache__/__init__.cpython-312.pyc",
+      "match": true,
+      "expected": "409408581b7206c69959bad402dcd9e06a73b5bf2f877209f4274f8168637dbe",
+      "current": "409408581b7206c69959bad402dcd9e06a73b5bf2f877209f4274f8168637dbe",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/base.py",
+      "match": true,
+      "expected": "cd4887ff4827c4224b60a66b939ed9ca9ca5abbb7380893b59052e8025363ce8",
+      "current": "cd4887ff4827c4224b60a66b939ed9ca9ca5abbb7380893b59052e8025363ce8",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/identifiers.py",
+      "match": true,
+      "expected": "88098edfceebd08c7f9b538f8ababed41fe66d9cf334ec4e32b1b844da67e053",
+      "current": "88098edfceebd08c7f9b538f8ababed41fe66d9cf334ec4e32b1b844da67e053",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/session.py",
+      "match": true,
+      "expected": "66d360e5a59aefee41455737008af23ad59301cc19afbcc8acb60b32c5365a92",
+      "current": "66d360e5a59aefee41455737008af23ad59301cc19afbcc8acb60b32c5365a92",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/sync_engine.py",
+      "match": true,
+      "expected": "84c5a4f7204d1075c8ae5ec2c023a3e4cd1fee38b6d7c4e0aeba6638f45bfa7f",
+      "current": "84c5a4f7204d1075c8ae5ec2c023a3e4cd1fee38b6d7c4e0aeba6638f45bfa7f",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__init__.py",
+      "match": true,
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__pycache__/base.cpython-312.pyc",
+      "match": true,
+      "expected": "31c44dbb694d4104edb652cc2763d96ccc1682d60251fe9f8931eedfc1503e7a",
+      "current": "31c44dbb694d4104edb652cc2763d96ccc1682d60251fe9f8931eedfc1503e7a",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__pycache__/identifiers.cpython-312.pyc",
+      "match": true,
+      "expected": "d96306e3c3dbd719a52544a8f4b13ab50726c4fb86395404d22cef04f311507c",
+      "current": "d96306e3c3dbd719a52544a8f4b13ab50726c4fb86395404d22cef04f311507c",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__pycache__/session.cpython-312.pyc",
+      "match": true,
+      "expected": "127f14e6107721db59650bf975fa72ed1ff740452698b454ff10bf4a0f235c61",
+      "current": "127f14e6107721db59650bf975fa72ed1ff740452698b454ff10bf4a0f235c61",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__pycache__/sync_engine.cpython-312.pyc",
+      "match": true,
+      "expected": "1fe823170ced9346b89767b286c53477a2f9fa1c2b1d9305d360ad7705376d6c",
+      "current": "1fe823170ced9346b89767b286c53477a2f9fa1c2b1d9305d360ad7705376d6c",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/db/__pycache__/__init__.cpython-312.pyc",
+      "match": true,
+      "expected": "eb1d85736dbbaf70817276b7b5b94cee752830dd2d8c4fbec527a133d9b976f3",
+      "current": "eb1d85736dbbaf70817276b7b5b94cee752830dd2d8c4fbec527a133d9b976f3",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/main.py",
+      "match": true,
+      "expected": "18f923f860b229f6f3f00c409aa64d413a63f97bd661562dafd57b85ac623e2b",
+      "current": "18f923f860b229f6f3f00c409aa64d413a63f97bd661562dafd57b85ac623e2b",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/layer.py",
+      "match": true,
+      "expected": "9ccf3907aa63d6787fdb6232d6d90362b134c625ad66b4ac7615a30a10387811",
+      "current": "9ccf3907aa63d6787fdb6232d6d90362b134c625ad66b4ac7615a30a10387811",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/project.py",
+      "match": true,
+      "expected": "53d2e9781c8ebed9bbbe65766b31c285c4d0bff935d67379d6e69a573b8200ec",
+      "current": "53d2e9781c8ebed9bbbe65766b31c285c4d0bff935d67379d6e69a573b8200ec",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/task.py",
+      "match": true,
+      "expected": "376b22b57ec72b40f9e8c876e037ab18d6e3b6f6f4ab6b4f1665f82324106cf1",
+      "current": "376b22b57ec72b40f9e8c876e037ab18d6e3b6f6f4ab6b4f1665f82324106cf1",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/__init__.py",
+      "match": true,
+      "expected": "50953e77b102daf78812f39bdfde7a1860183ebb679113a7e3850bede105c12c",
+      "current": "50953e77b102daf78812f39bdfde7a1860183ebb679113a7e3850bede105c12c",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/__pycache__/layer.cpython-312.pyc",
+      "match": true,
+      "expected": "afc28378f59aaa842f577b6ede2bb931c1b88e8902955e26465cd0044e4a3298",
+      "current": "afc28378f59aaa842f577b6ede2bb931c1b88e8902955e26465cd0044e4a3298",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/__pycache__/project.cpython-312.pyc",
+      "match": true,
+      "expected": "a624882a21118d95ffad62ed76f90ce99ac11d86050e9601ad49de8ef5167393",
+      "current": "a624882a21118d95ffad62ed76f90ce99ac11d86050e9601ad49de8ef5167393",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/__pycache__/task.cpython-312.pyc",
+      "match": true,
+      "expected": "23666940847fe9d70eb719168ceacb6cf822d2e159de0ec14ca7700089874b98",
+      "current": "23666940847fe9d70eb719168ceacb6cf822d2e159de0ec14ca7700089874b98",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/models/__pycache__/__init__.cpython-312.pyc",
+      "match": true,
+      "expected": "38127ba51a69cef44fdef73633fd848b7d94581740cb6d85247e2a1f8263739c",
+      "current": "38127ba51a69cef44fdef73633fd848b7d94581740cb6d85247e2a1f8263739c",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/catalog_repository.py",
+      "match": true,
+      "expected": "b6a0391a82823f7dfa0eaa9cdf169377d9dca749b0c6406c8a1e64c74a7ba755",
+      "current": "b6a0391a82823f7dfa0eaa9cdf169377d9dca749b0c6406c8a1e64c74a7ba755",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/feature_repository.py",
+      "match": true,
+      "expected": "ee276c5e11b557ba5810b3054b0808016bf068c84228147453b37576e58d018b",
+      "current": "ee276c5e11b557ba5810b3054b0808016bf068c84228147453b37576e58d018b",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/layer_repository.py",
+      "match": true,
+      "expected": "0544586d25135629072a766d9ecf401382f9716d5d3eeba114188d335361a482",
+      "current": "0544586d25135629072a766d9ecf401382f9716d5d3eeba114188d335361a482",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/project_repository.py",
+      "match": true,
+      "expected": "f033b0b1190b49be5a1888aafb9ee717a36887da6f2dcb87dee45ff1f0d4d439",
+      "current": "f033b0b1190b49be5a1888aafb9ee717a36887da6f2dcb87dee45ff1f0d4d439",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/tile_repository.py",
+      "match": true,
+      "expected": "9bb7572f5b614e71e1e43478e5ef45fa9f6c117d71e170f2a4b86ab6877c1a19",
+      "current": "9bb7572f5b614e71e1e43478e5ef45fa9f6c117d71e170f2a4b86ab6877c1a19",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__init__.py",
+      "match": true,
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/catalog_repository.cpython-312.pyc",
+      "match": true,
+      "expected": "bb1f7be1714ffc166664352aa1ca547229d7a96c75d3e53d6ab29123f771971b",
+      "current": "bb1f7be1714ffc166664352aa1ca547229d7a96c75d3e53d6ab29123f771971b",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/feature_repository.cpython-312.pyc",
+      "match": true,
+      "expected": "151ffabd4b5b2c552238093e463c9969059323be1583196728b964fd348f3c4d",
+      "current": "151ffabd4b5b2c552238093e463c9969059323be1583196728b964fd348f3c4d",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/layer_repository.cpython-312.pyc",
+      "match": true,
+      "expected": "3924bb9fbb5e3782c68892068bdd21de65422e9d844c5d5f390fb61b6a511e09",
+      "current": "3924bb9fbb5e3782c68892068bdd21de65422e9d844c5d5f390fb61b6a511e09",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/project_repository.cpython-312.pyc",
+      "match": true,
+      "expected": "e12d2a6e613a9cbc8579d8ce87ac97499ed4efed87e3a0b78573430dd48cee88",
+      "current": "e12d2a6e613a9cbc8579d8ce87ac97499ed4efed87e3a0b78573430dd48cee88",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/tile_repository.cpython-312.pyc",
+      "match": true,
+      "expected": "ea8b4ff9fddc14cf427269e617fb69bd5ec407f956c2a71babe89e9940c17108",
+      "current": "ea8b4ff9fddc14cf427269e617fb69bd5ec407f956c2a71babe89e9940c17108",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/repositories/__pycache__/__init__.cpython-312.pyc",
+      "match": true,
+      "expected": "849aeb42bffb6ce55a4924e2af50ea113ab3d3b34c93c3ec4dc05e017aa47d9d",
+      "current": "849aeb42bffb6ce55a4924e2af50ea113ab3d3b34c93c3ec4dc05e017aa47d9d",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/resources/dataset_pool.py",
+      "match": true,
+      "expected": "7f4e4816e64ef8f2dd35c05547ba980ab35c103baa1ddbcd881ca01232805198",
+      "current": "7f4e4816e64ef8f2dd35c05547ba980ab35c103baa1ddbcd881ca01232805198",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/resources/__init__.py",
+      "match": true,
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/resources/__pycache__/dataset_pool.cpython-312.pyc",
+      "match": true,
+      "expected": "0c68643cad6bcd487030381a38491a183655d20baf170b9a5a4db750b65bce32",
+      "current": "0c68643cad6bcd487030381a38491a183655d20baf170b9a5a4db750b65bce32",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/resources/__pycache__/__init__.cpython-312.pyc",
+      "match": true,
+      "expected": "20b5e7f428cc26bebccbb6730d552ce50e5e8b1acadd462ecfd6f50293b6f162",
+      "current": "20b5e7f428cc26bebccbb6730d552ce50e5e8b1acadd462ecfd6f50293b6f162",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/analysis.py",
+      "match": true,
+      "expected": "5190a9143ad1ce95ed1aaeaec58063b32b4967735f84213f10fe74c65752e463",
+      "current": "5190a9143ad1ce95ed1aaeaec58063b32b4967735f84213f10fe74c65752e463",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/attribute.py",
+      "match": true,
+      "expected": "36f437bfa19aae8f9082eb7b060debddb3ec56b39a943ad0b6320a7f41cf39b2",
+      "current": "36f437bfa19aae8f9082eb7b060debddb3ec56b39a943ad0b6320a7f41cf39b2",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/base.py",
+      "match": true,
+      "expected": "55d5121f50afc055915d6566203c2c7b20ff540ac734ae8f83e2e12cb2303619",
+      "current": "55d5121f50afc055915d6566203c2c7b20ff540ac734ae8f83e2e12cb2303619",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/catalog.py",
+      "match": true,
+      "expected": "79ee14a56985a100ff632d367368131a6d9e6666a5e351e7fa0bb7d280bcb47b",
+      "current": "79ee14a56985a100ff632d367368131a6d9e6666a5e351e7fa0bb7d280bcb47b",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/export.py",
+      "match": true,
+      "expected": "22c83c126919250e4bfbb19694327d4261435b5a56fc504995b438bb24487c59",
+      "current": "22c83c126919250e4bfbb19694327d4261435b5a56fc504995b438bb24487c59",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/feature.py",
+      "match": true,
+      "expected": "f0910d3915a341b1c94dfae8b8a2032673f9a620dbcfcc4c179df6cb9a79f59f",
+      "current": "f0910d3915a341b1c94dfae8b8a2032673f9a620dbcfcc4c179df6cb9a79f59f",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/import_draft.py",
+      "match": true,
+      "expected": "8a0161583349e8fbdb6500a27f51f5d653f36f47e776175e6a9dd00c7713e1d5",
+      "current": "8a0161583349e8fbdb6500a27f51f5d653f36f47e776175e6a9dd00c7713e1d5",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/layer.py",
+      "match": true,
+      "expected": "995b984b8e36e16627f3231fd47bb75a031d527d9da6376f71d789400b088a61",
+      "current": "995b984b8e36e16627f3231fd47bb75a031d527d9da6376f71d789400b088a61",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/project.py",
+      "match": true,
+      "expected": "45c19dbbfb932c246946a41f3ca355733f76eb166f05da4271c44c71edc134db",
+      "current": "45c19dbbfb932c246946a41f3ca355733f76eb166f05da4271c44c71edc134db",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/source.py",
+      "match": true,
+      "expected": "f7e131cebfdd1dfed5b7d7ee65a23671c2e1ff7f7a45e09a93a4b3011bdb38f1",
+      "current": "f7e131cebfdd1dfed5b7d7ee65a23671c2e1ff7f7a45e09a93a4b3011bdb38f1",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/style.py",
+      "match": true,
+      "expected": "a1a53cc019eb71ba92017126d15a521de78cb75143fde7a6ffa2f7baf89f8df6",
+      "current": "a1a53cc019eb71ba92017126d15a521de78cb75143fde7a6ffa2f7baf89f8df6",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/system.py",
+      "match": true,
+      "expected": "620e60274c115533f8f94b8f0d279a0cd7295fe5d764b038d946d2a4bc8ea2d8",
+      "current": "620e60274c115533f8f94b8f0d279a0cd7295fe5d764b038d946d2a4bc8ea2d8",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/task.py",
+      "match": true,
+      "expected": "52d66dd9e6b63ce4b816405ed847522f7f6cdae3c61bc811b3da6092a377fc8e",
+      "current": "52d66dd9e6b63ce4b816405ed847522f7f6cdae3c61bc811b3da6092a377fc8e",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__init__.py",
+      "match": true,
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/analysis.cpython-312.pyc",
+      "match": true,
+      "expected": "590769750e587c337e6801147cef722dd7e3a066031dbdc819149d38e13eceae",
+      "current": "590769750e587c337e6801147cef722dd7e3a066031dbdc819149d38e13eceae",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/attribute.cpython-312.pyc",
+      "match": true,
+      "expected": "d56795c11516f4d708e8420f15c14f1d6722a57130a7f12647bae6b0d09109e9",
+      "current": "d56795c11516f4d708e8420f15c14f1d6722a57130a7f12647bae6b0d09109e9",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/base.cpython-312.pyc",
+      "match": true,
+      "expected": "c56b495fdabf7bd067b5854cf59a1bc763c8045ba5d2c6427dab4fabb66f92ab",
+      "current": "c56b495fdabf7bd067b5854cf59a1bc763c8045ba5d2c6427dab4fabb66f92ab",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/catalog.cpython-312.pyc",
+      "match": true,
+      "expected": "b6b7d1a79148806f7d0c3424aaf42ee8a5c21cddb0f83c08aa138f1ec2957155",
+      "current": "b6b7d1a79148806f7d0c3424aaf42ee8a5c21cddb0f83c08aa138f1ec2957155",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/export.cpython-312.pyc",
+      "match": true,
+      "expected": "dd42e67fdcc324ca6d9cb81c4190e691c4a1f872114c10e133f93570f9cbe9fe",
+      "current": "dd42e67fdcc324ca6d9cb81c4190e691c4a1f872114c10e133f93570f9cbe9fe",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/feature.cpython-312.pyc",
+      "match": true,
+      "expected": "8b7dd921a2b79cd9c3568b16c0a2fb9b3d45a8e81b651d48f5783f992147afa6",
+      "current": "8b7dd921a2b79cd9c3568b16c0a2fb9b3d45a8e81b651d48f5783f992147afa6",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/import_draft.cpython-312.pyc",
+      "match": true,
+      "expected": "8a0dd39dfb90c3dd8c96ba05ae340783a984f296a26ee5ad2baa8d70010a5343",
+      "current": "8a0dd39dfb90c3dd8c96ba05ae340783a984f296a26ee5ad2baa8d70010a5343",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/layer.cpython-312.pyc",
+      "match": true,
+      "expected": "d78399b6d638b6e25c914c25565e93a933e04165fb134879353ac82a3016b3a8",
+      "current": "d78399b6d638b6e25c914c25565e93a933e04165fb134879353ac82a3016b3a8",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/project.cpython-312.pyc",
+      "match": true,
+      "expected": "d0a31c1ba52b825e19fdc341c8996981c01ea72d5d1af2f2822628b043b87b92",
+      "current": "d0a31c1ba52b825e19fdc341c8996981c01ea72d5d1af2f2822628b043b87b92",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/source.cpython-312.pyc",
+      "match": true,
+      "expected": "e3c7b7e0d421d59eaf3d0c6f4a77af73a893bb937798f088ddb09f1e4a3692f0",
+      "current": "e3c7b7e0d421d59eaf3d0c6f4a77af73a893bb937798f088ddb09f1e4a3692f0",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/style.cpython-312.pyc",
+      "match": true,
+      "expected": "e4a6a10ad73e2ebc451525e42a14b1c1fd5dd1e302258f1cf69d1bc1d4cdcd0c",
+      "current": "e4a6a10ad73e2ebc451525e42a14b1c1fd5dd1e302258f1cf69d1bc1d4cdcd0c",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/system.cpython-312.pyc",
+      "match": true,
+      "expected": "28bf851dd5ccbb02ad2f24c1cfa819ce6feb502eb2b19139ad9c932661215e4a",
+      "current": "28bf851dd5ccbb02ad2f24c1cfa819ce6feb502eb2b19139ad9c932661215e4a",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/task.cpython-312.pyc",
+      "match": true,
+      "expected": "79edbc12ab6cc27095b54ab866cd5e403510ae7440dddffb835cf9a2d82d4cdd",
+      "current": "79edbc12ab6cc27095b54ab866cd5e403510ae7440dddffb835cf9a2d82d4cdd",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/schemas/__pycache__/__init__.cpython-312.pyc",
+      "match": true,
+      "expected": "eceefe30db010ed2cd688ed48f76e5c5aafd3f909040ccb51d0272866fede19a",
+      "current": "eceefe30db010ed2cd688ed48f76e5c5aafd3f909040ccb51d0272866fede19a",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/analysis_service.py",
+      "match": true,
+      "expected": "161914f2ad3b74f5fe883a037b09920f279d74746c55b7e0f387d420636a6052",
+      "current": "161914f2ad3b74f5fe883a037b09920f279d74746c55b7e0f387d420636a6052",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/attribute_service.py",
+      "match": true,
+      "expected": "7481be43ed3e350f404d91f30df163a4e8acf5cf4c21ce23b214bc3697d05e02",
+      "current": "7481be43ed3e350f404d91f30df163a4e8acf5cf4c21ce23b214bc3697d05e02",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/catalog_service.py",
+      "match": true,
+      "expected": "5755997514c4f2ce748656a085c14fd7bf98f1e0fa0a02b7a7f3088b3cbcb774",
+      "current": "5755997514c4f2ce748656a085c14fd7bf98f1e0fa0a02b7a7f3088b3cbcb774",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/draft_import_service.py",
+      "match": true,
+      "expected": "9fc90abf48957a8fb48351e016f4155ea76a1dca3d2b7d6b7fe24ecba0ca25ea",
+      "current": "9fc90abf48957a8fb48351e016f4155ea76a1dca3d2b7d6b7fe24ecba0ca25ea",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/edit_service.py",
+      "match": true,
+      "expected": "2a3097c82e7a26a778abe0705382b62dae7bff98cab2bdc223457010fcc4037f",
+      "current": "2a3097c82e7a26a778abe0705382b62dae7bff98cab2bdc223457010fcc4037f",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/export_service.py",
+      "match": true,
+      "expected": "fec837f7abeabdfdf625fd6231b3b386e466386009880440f596bc04adf5604d",
+      "current": "fec837f7abeabdfdf625fd6231b3b386e466386009880440f596bc04adf5604d",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/feature_service.py",
+      "match": true,
+      "expected": "7949a2b2adfac60e760eca1717f35d3a6734a634323f83191927793587488337",
+      "current": "7949a2b2adfac60e760eca1717f35d3a6734a634323f83191927793587488337",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/geojson_validation.py",
+      "match": true,
+      "expected": "82c4248d62675b8207b69276287b9682048c7a6a6ed0ecc27318de8c74d858c7",
+      "current": "82c4248d62675b8207b69276287b9682048c7a6a6ed0ecc27318de8c74d858c7",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/layer_service.py",
+      "match": true,
+      "expected": "0fc209854e07ab2b182881577a94dda841a2f4a7a5fb42bf540fd61a07b896b9",
+      "current": "0fc209854e07ab2b182881577a94dda841a2f4a7a5fb42bf540fd61a07b896b9",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/project_service.py",
+      "match": true,
+      "expected": "b34e3520633512d38545480bc3b0d468a0a6af9cac6e3735f01f0ab3c6311054",
+      "current": "b34e3520633512d38545480bc3b0d468a0a6af9cac6e3735f01f0ab3c6311054",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/raster_import_service.py",
+      "match": true,
+      "expected": "7f9fbd625b0a852ea9e1c97e3d6f591ff9e7b7b7180eefbcc25a23812af19520",
+      "current": "7f9fbd625b0a852ea9e1c97e3d6f591ff9e7b7b7180eefbcc25a23812af19520",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/raster_tile_service.py",
+      "match": true,
+      "expected": "00508f5fa592373f40b9cbd6192b4db5de9cede21c3962d39ea1cf913c25bf41",
+      "current": "00508f5fa592373f40b9cbd6192b4db5de9cede21c3962d39ea1cf913c25bf41",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/source_snapshot.py",
+      "match": true,
+      "expected": "398fa83c0dcf590198e39a5b918a381b2b5740c0efda938b8328d01db9c5177d",
+      "current": "398fa83c0dcf590198e39a5b918a381b2b5740c0efda938b8328d01db9c5177d",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/system_service.py",
+      "match": true,
+      "expected": "d3d73dd3cb287eb1262d177bd005de6179652189fb636a133feb00c74c47bb73",
+      "current": "d3d73dd3cb287eb1262d177bd005de6179652189fb636a133feb00c74c47bb73",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/task_handlers.py",
+      "match": true,
+      "expected": "b3d03193bad05a9c22fb5d97987f777afa444e29be48c8cd52657fb1245df483",
+      "current": "b3d03193bad05a9c22fb5d97987f777afa444e29be48c8cd52657fb1245df483",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/task_lifecycle.py",
+      "match": true,
+      "expected": "9c69bccc303222d0a2f9974fd9bbaad544743b8336e05a3832e721b41bae0041",
+      "current": "9c69bccc303222d0a2f9974fd9bbaad544743b8336e05a3832e721b41bae0041",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/task_service.py",
+      "match": true,
+      "expected": "a45e686bffe2630039db49419490e8a990dee8af9f744c7c8d74955a5df49325",
+      "current": "a45e686bffe2630039db49419490e8a990dee8af9f744c7c8d74955a5df49325",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/task_worker.py",
+      "match": true,
+      "expected": "c79aac0d9d9dfab29b420240b8b01cdd66427bd7e8b2fde1cdef2eb2efe6ac43",
+      "current": "c79aac0d9d9dfab29b420240b8b01cdd66427bd7e8b2fde1cdef2eb2efe6ac43",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/tile_service.py",
+      "match": true,
+      "expected": "ff537a81ab7b503b2a18cc68597ccbe7048c91428bb3b0a9c3399434f4f1303a",
+      "current": "ff537a81ab7b503b2a18cc68597ccbe7048c91428bb3b0a9c3399434f4f1303a",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/upload_service.py",
+      "match": true,
+      "expected": "b1b78b099626d72bd25dd489e835f93901daf9ba79e2b6c90dcdb173abe37f2d",
+      "current": "b1b78b099626d72bd25dd489e835f93901daf9ba79e2b6c90dcdb173abe37f2d",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/vector_import_service.py",
+      "match": true,
+      "expected": "560e9f184f680a02753d4540766037d66f08ab73c04503028cbf447b409e56b6",
+      "current": "560e9f184f680a02753d4540766037d66f08ab73c04503028cbf447b409e56b6",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__init__.py",
+      "match": true,
+      "expected": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "current": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/analysis_service.cpython-312.pyc",
+      "match": true,
+      "expected": "9e189218f3176757955404c45ddfb5e6962aef57c6d3a6f9baf99300c3d2f3bc",
+      "current": "9e189218f3176757955404c45ddfb5e6962aef57c6d3a6f9baf99300c3d2f3bc",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/attribute_service.cpython-312.pyc",
+      "match": true,
+      "expected": "cb788be9784be5d2001fc2028c125c2f3d744d5e514d51e123fc65da6ed1805b",
+      "current": "cb788be9784be5d2001fc2028c125c2f3d744d5e514d51e123fc65da6ed1805b",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/catalog_service.cpython-312.pyc",
+      "match": true,
+      "expected": "4add9a6cfe1159842cb2918e0a794d7e38aae3ace202bd294b00d6752207a488",
+      "current": "4add9a6cfe1159842cb2918e0a794d7e38aae3ace202bd294b00d6752207a488",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/draft_import_service.cpython-312.pyc",
+      "match": true,
+      "expected": "fc55dabe9a3b60a28d17b4584cccb6e9611dc9d3c4b6ce993c66f2737122a7fa",
+      "current": "fc55dabe9a3b60a28d17b4584cccb6e9611dc9d3c4b6ce993c66f2737122a7fa",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/edit_service.cpython-312.pyc",
+      "match": true,
+      "expected": "9b73407193afe02d896c3dab82cee7bd884ae798d80372b4abe4063175d776b5",
+      "current": "9b73407193afe02d896c3dab82cee7bd884ae798d80372b4abe4063175d776b5",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/export_service.cpython-312.pyc",
+      "match": true,
+      "expected": "6f1dfb8418e72d237dec7e01eb61280dd56ceef13db461bdc8a30d0b5c4d0141",
+      "current": "6f1dfb8418e72d237dec7e01eb61280dd56ceef13db461bdc8a30d0b5c4d0141",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/feature_service.cpython-312.pyc",
+      "match": true,
+      "expected": "f50694572fb3f9c7793da0426e63177e70ecc98034fcf68cea8e13e170c0d367",
+      "current": "f50694572fb3f9c7793da0426e63177e70ecc98034fcf68cea8e13e170c0d367",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/geojson_validation.cpython-312.pyc",
+      "match": true,
+      "expected": "7e1fa1e651fc9093de30ea7b7188d0b832602db64c03664123ea3efd71a7712c",
+      "current": "7e1fa1e651fc9093de30ea7b7188d0b832602db64c03664123ea3efd71a7712c",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/layer_service.cpython-312.pyc",
+      "match": true,
+      "expected": "feb8a132f907809e0d28b61b04c88403e188437c70720f03625872afd7a83e22",
+      "current": "feb8a132f907809e0d28b61b04c88403e188437c70720f03625872afd7a83e22",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/project_service.cpython-312.pyc",
+      "match": true,
+      "expected": "8130ec92988d88b25b68e2eaeddcc6de4a7f5be725a075fd6b6661f29cd000a8",
+      "current": "8130ec92988d88b25b68e2eaeddcc6de4a7f5be725a075fd6b6661f29cd000a8",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/raster_import_service.cpython-312.pyc",
+      "match": true,
+      "expected": "b1d9e581d01fa14851faa84f3b60de6e756b2326a006fcd4c5d8cf1cf6d497f8",
+      "current": "b1d9e581d01fa14851faa84f3b60de6e756b2326a006fcd4c5d8cf1cf6d497f8",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/raster_tile_service.cpython-312.pyc",
+      "match": true,
+      "expected": "957b8121d27b79e590748b2a97a6bf835d4d95e58efbc3e6811762ee37035089",
+      "current": "957b8121d27b79e590748b2a97a6bf835d4d95e58efbc3e6811762ee37035089",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/source_snapshot.cpython-312.pyc",
+      "match": true,
+      "expected": "82239216848f74d9d2a977b995929b97aa9561e04a1624ef2556d6236d3594d1",
+      "current": "82239216848f74d9d2a977b995929b97aa9561e04a1624ef2556d6236d3594d1",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/system_service.cpython-312.pyc",
+      "match": true,
+      "expected": "7e3126c551b6671fff3e71bad0659936a9347d22cf26337bd96fa98464c80244",
+      "current": "7e3126c551b6671fff3e71bad0659936a9347d22cf26337bd96fa98464c80244",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/task_handlers.cpython-312.pyc",
+      "match": true,
+      "expected": "05c4ec9b75923cc38077b18edd32b1b1296ed5994b725d8bda3ed14a5aaab02d",
+      "current": "05c4ec9b75923cc38077b18edd32b1b1296ed5994b725d8bda3ed14a5aaab02d",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/task_lifecycle.cpython-312.pyc",
+      "match": true,
+      "expected": "f194d4de9d7e4fe7c32c1c07eab61a794684d15f19972003480b46f4b97652da",
+      "current": "f194d4de9d7e4fe7c32c1c07eab61a794684d15f19972003480b46f4b97652da",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/task_service.cpython-312.pyc",
+      "match": true,
+      "expected": "61c9cc5ad80b37a7afbe700a11b6604392cc3a20f0d55f1b11ea6a9002ca282e",
+      "current": "61c9cc5ad80b37a7afbe700a11b6604392cc3a20f0d55f1b11ea6a9002ca282e",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/task_worker.cpython-312.pyc",
+      "match": true,
+      "expected": "c2c9f5f97d052a812b7094515a16f7b719d572f467f8dc782ab964376154023e",
+      "current": "c2c9f5f97d052a812b7094515a16f7b719d572f467f8dc782ab964376154023e",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/tile_service.cpython-312.pyc",
+      "match": true,
+      "expected": "c32333021d60f5c66d62bbfb2e585cf856707bfee440e79228481e7736f1c5a4",
+      "current": "c32333021d60f5c66d62bbfb2e585cf856707bfee440e79228481e7736f1c5a4",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/upload_service.cpython-312.pyc",
+      "match": true,
+      "expected": "87a58f8884d47ba7a8bc582ccdbe26889ef637e9f763fb9e2b442532688faabd",
+      "current": "87a58f8884d47ba7a8bc582ccdbe26889ef637e9f763fb9e2b442532688faabd",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/vector_import_service.cpython-312.pyc",
+      "match": true,
+      "expected": "b38eba1e2ead8deb92a54af68b0288e22095c70636a0616c2a01367443194729",
+      "current": "b38eba1e2ead8deb92a54af68b0288e22095c70636a0616c2a01367443194729",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/services/__pycache__/__init__.cpython-312.pyc",
+      "match": true,
+      "expected": "d4055102a5a178053486408ed0a41c5c810122f2b83bc446e17d6854cb9090b2",
+      "current": "d4055102a5a178053486408ed0a41c5c810122f2b83bc446e17d6854cb9090b2",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/__init__.py",
+      "match": true,
+      "expected": "d634d7bbd271053c683d9b4f7aa1dc5c7f5aceb00fe36e492744b201c5e3004a",
+      "current": "d634d7bbd271053c683d9b4f7aa1dc5c7f5aceb00fe36e492744b201c5e3004a",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/__pycache__/main.cpython-312.pyc",
+      "match": true,
+      "expected": "e14ebfcc8da5ffe3e6d8e01a9c2348dc4e335dbe86fda4ee7a61c71bb7a12415",
+      "current": "e14ebfcc8da5ffe3e6d8e01a9c2348dc4e335dbe86fda4ee7a61c71bb7a12415",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/backend/app/__pycache__/__init__.cpython-312.pyc",
+      "match": true,
+      "expected": "0fa23d52526436e08169c129505b06b45a1eecc1c4f23ae68c0f31194bdc2feb",
+      "current": "0fa23d52526436e08169c129505b06b45a1eecc1c4f23ae68c0f31194bdc2feb",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/package.json",
+      "match": true,
+      "expected": "a295789dc61c36c711f98fd6e96053e19571b67aefd29d27c5a47f6b298b5e38",
+      "current": "a295789dc61c36c711f98fd6e96053e19571b67aefd29d27c5a47f6b298b5e38",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/web/package-lock.json",
+      "match": true,
+      "expected": "1c6bda238dc11e873881b8eefb666d89fb70430aa1c7f0d8c6d7d3e973269579",
+      "current": "1c6bda238dc11e873881b8eefb666d89fb70430aa1c7f0d8c6d7d3e973269579",
+      "kind": "protected-code"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/docs/xiaog-game/04-design-direction-review.md",
+      "match": true,
+      "expected": "92dc409ef2131b223d25c70fcfb3591278400356b988386b0f42d888adeaa2a7",
+      "current": "92dc409ef2131b223d25c70fcfb3591278400356b988386b0f42d888adeaa2a7",
+      "kind": "coordinator-document"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/docs/xiaog-game/03-execution-status.md",
+      "match": false,
+      "expected": "c9405feb4efd2805805bb3fc8e1fa0a4f2c5b49688da3b839d33dca978fcdcc1",
+      "current": "9cf71844eacf70613a4b3881294f60d47bc43a4329505c140023a607c89b0c4e",
+      "kind": "coordinator-document"
+    },
+    {
+      "path": "C:/Users/yxy/Desktop/work/AI_FOR_VECTOR/artifacts/xiaog/T02-coordinator-review/coordinator-review.md",
+      "match": true,
+      "expected": "ba263aa8398b164c5add5ea4fdb027fbf0b983027444fa4de0fa84fa20539996",
+      "current": "ba263aa8398b164c5add5ea4fdb027fbf0b983027444fa4de0fa84fa20539996",
+      "kind": "coordinator-document"
+    }
+  ],
+  "scope": "Own changes are restricted to artifacts/xiaog/D01. Coordinator documents are versioned inputs, owned by coordinator; their external edits are reported separately."
+}

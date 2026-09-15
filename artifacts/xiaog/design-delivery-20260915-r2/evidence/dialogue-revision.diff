@@ -1,0 +1,75 @@
+diff --git "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260914\\app.mjs" "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915\\app.mjs"
+index 1d54349..17c53b3 100644
+--- "a/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260914\\app.mjs"
++++ "b/C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260915\\app.mjs"
+@@ -19,7 +19,7 @@ export const FEATURES = [
+     title: "空间分析",
+     normal: [0, 0, -1],
+     copy: "让图层之间的关系清楚起来。从输入、方法和一个明确的参数开始。",
+-    dialogue: "先选输入图层，再设置缓冲距离。",
++    dialogue: "先选一种分析方法，再确认它需要的图层和参数。",
+   },
+   {
+     id: "tasks",
+@@ -44,13 +44,13 @@ export const FEATURES = [
+   },
+ ];
+ const TOOLS = [
+-  ["buffer", "缓冲区", "按米设置边界向外扩展的距离。"],
+-  ["clip", "裁剪", "保留输入图层位于掩膜内的部分。"],
+-  ["intersection", "相交", "计算两层数据的空间重叠。"],
+-  ["dissolve", "融合", "按字段合并几何，留空则融合全部。"],
+-  ["spatial-join", "空间连接", "按空间关系连接另一层的属性。"],
+-  ["validate-repair", "几何修复", "检查并修复无效几何。"],
+-  ["point-in-polygon", "面内点计数", "统计每个面内的点数量。"],
++  ["buffer", "缓冲区", "按米设置边界向外扩展的距离。", "先选输入图层，再设置缓冲距离（米），看看周边的影响范围。"],
++  ["clip", "裁剪", "保留输入图层位于掩膜内的部分。", "选好输入图层和掩膜图层，保留掩膜范围内的部分。"],
++  ["intersection", "相交", "计算两层数据的空间重叠。", "选择两层数据，看看它们在空间上重叠的部分。"],
++  ["dissolve", "融合", "按字段合并几何，留空则融合全部。", "按共同字段融合要素；选择“融合全部”，就不再按字段分组。"],
++  ["spatial-join", "空间连接", "按空间关系连接另一层的属性。", "先选目标图层和关联图层，再用相交、包含或位于内部来匹配属性。"],
++  ["validate-repair", "几何修复", "检查并修复无效几何。", "选好输入图层，我们来检查并修复无效几何。"],
++  ["point-in-polygon", "面内点计数", "统计每个面内的点数量。", "先选点图层和多边形图层，统计每个面内有多少个点。"],
+ ];
+ const $ = (s) => document.querySelector(s);
+ const $$ = (s) => [...document.querySelectorAll(s)];
+@@ -310,6 +310,13 @@ function refreshFallback() {
+         : "./assets/static-scene-desktop.png";
+ }
+ addEventListener("resize", refreshFallback);
++function renderDialogue() {
++  const method = state.feature === "analysis"
++    ? TOOLS.find((tool) => tool[0] === state.tool)
++    : null;
++  $("#dialogue-text").textContent =
++    method?.[3] ?? feature()?.dialogue ?? "你好。选一个方向，我们一起开始。";
++}
+ function renderAll() {
+   refreshFallback();
+   document.body.dataset.mode = state.mode === "work" ? "work" : "home";
+@@ -342,8 +349,7 @@ function renderAll() {
+     ? "visible"
+     : "hidden";
+   $("#dialogue").style.display = "";
+-  $("#dialogue-text").textContent =
+-    feature()?.dialogue ?? "你好。选一个方向，我们一起开始。";
++  renderDialogue();
+   $("#motion").setAttribute("aria-pressed", String(state.reduced));
+   $("#motion").textContent = state.reduced ? "恢复动态" : "减少动态";
+   if (feature()) {
+@@ -644,6 +650,7 @@ document.addEventListener("click", (e) => {
+   } else if (button.dataset.tool) {
+     state.tool = button.dataset.tool;
+     renderPage();
++    renderDialogue();
+   } else if (button.dataset.task) {
+     state.taskId = button.dataset.task;
+     writeRoute(true);
+@@ -767,7 +774,7 @@ addEventListener("hashchange", () => {
+ });
+ restore();
+ window.D01 = {
+-  version: "D01-R1",
++  version: "D01-R1.1",
+   state,
+   snapshot,
+   ready: false,

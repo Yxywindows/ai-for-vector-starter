@@ -1,0 +1,1 @@
+{"name":"xiaog-spatial-observatory-d01","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node server.mjs","verify":"node scripts/verify.mjs"},"description":"Offline-resource design prototype. No npm install is required to run."}

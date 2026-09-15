@@ -1,0 +1,52 @@
+{
+  "method": "Local Playwright-bundled FFmpeg independently decoded the actual WebM; not browser poster screenshots",
+  "videoSha256": "476092fa91ef0004ce93b9718636095e566a4d9f206445d35b68ad0c8f55c103",
+  "durationSeconds": 16.24,
+  "dimensions": [
+    1440,
+    900
+  ],
+  "codec": "VP8",
+  "encodedFps": 25,
+  "performanceClaim": false,
+  "samples": [
+    {
+      "second": 1,
+      "file": "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\D01-coordinator-review\\video-1s.png",
+      "sha256": "9ebbaa7ce0cee7ddff542772aba07862a4ced86b02f12d188c3943287f43106e"
+    },
+    {
+      "second": 4,
+      "file": "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\D01-coordinator-review\\video-4s.png",
+      "sha256": "07f5b2945284d0480f4699bdfeabfae866fe7ae74db19c0407cdce0ecc0785f7"
+    },
+    {
+      "second": 6,
+      "file": "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\D01-coordinator-review\\video-6s.png",
+      "sha256": "f718621a4139d52d92129271c39b4045bf3c2225fb56d3431c3de179ec41d848"
+    },
+    {
+      "second": 9,
+      "file": "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\D01-coordinator-review\\video-9s.png",
+      "sha256": "9bf68b01b67a0930ae31ac53f114de9cccfb7f7b88a341bfc5d94b209d33fbc5"
+    },
+    {
+      "second": 11,
+      "file": "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\D01-coordinator-review\\video-11s.png",
+      "sha256": "17daac57fed7863b440e9cf41adce7e47471dc8a40ff090d880da96f6ece77b7"
+    },
+    {
+      "second": 14.5,
+      "file": "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\D01-coordinator-review\\video-14.5s.png",
+      "sha256": "5bb2a4308935c28fb478cc136086facfc73182bde43e0eaeda3690edbaa51805"
+    }
+  ],
+  "observed": [
+    "loading/idle",
+    "stable face projection",
+    "reading hold",
+    "analysis destination",
+    "data destination",
+    "return with same project and layer"
+  ]
+}

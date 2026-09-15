@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#11191f" />
+    <link rel="icon" href="data:," />
+    <title>小G · 空间观测室</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three.module.js",
+          "three/addons/": "./vendor/"
+        }
+      }
+    </script>
+  </head>
+  <body class="loading-scene" data-mode="home">
+    <a class="skip" href="#content">跳到工作内容</a>
+    <div id="stage" aria-hidden="true">
+      <img
+        id="fallback"
+        class="scene-still"
+        src="assets/static-scene-desktop.png"
+        alt=""
+      />
+    </div>
+    <header class="topbar">
+      <a class="brand" href="#/home" aria-label="小G 空间观测室首页"
+        ><span class="brand-mark">G<span>·</span></span
+        ><span>空间观测室<small>OpenGMS</small></span></a
+      >
+      <div class="top-context">
+        <span class="status-dot"></span
+        ><span id="context-name">选择观察项目</span>
+      </div>
+      <div class="top-actions">
+        <button id="motion" class="quiet" aria-pressed="false">减少动态</button
+        ><button
+          id="menu-toggle"
+          aria-expanded="false"
+          aria-controls="navigation"
+        >
+          导航</button
+        ><a class="package-link" href="index.html">设计入口 ↗</a>
+      </div>
+    </header>
+    <nav id="navigation" aria-label="功能导航"></nav>
+    <main id="content" tabindex="-1">
+      <section id="home">
+        <div class="home-intro">
+          <p class="eyebrow">小G · 空间探索</p>
+          <h1>从这里，读懂空间。</h1>
+          <p>一起看看数据里的联系。</p>
+        </div>
+        <div class="home-context">
+          <span class="eyebrow">正在观察</span
+          ><label
+            ><span class="sr-only">当前项目</span
+            ><select id="home-project"></select></label
+          ><label class="home-layer-label"
+            >观察图层<select id="home-layer"></select></label
+          ><span id="scope-label" class="mono"></span>
+        </div>
+        <div id="slice-caption">
+          <span class="dot-blue"></span>城市边界 · 局部观察窗<span class="mono"
+            >116–123° E / 29–34° N</span
+          >
+        </div>
+      </section>
+      <section id="projection" aria-labelledby="preview-title" hidden>
+        <div class="projection-inner">
+          <div class="preview-kicker">
+            <span id="preview-source"></span
+            ><button id="cancel-preview" class="quiet" aria-label="收起预览">
+              ×
+            </button>
+          </div>
+          <p class="eyebrow" id="preview-step"></p>
+          <h2 id="preview-title"></h2>
+          <p id="preview-copy"></p>
+          <div id="preview-context"></div>
+          <div id="preview-map"></div>
+          <button class="primary" id="expand">展开工作台 <span>↗</span></button>
+          <p class="preview-foot">停在这里看看，也可以随时换个方向。</p>
+        </div>
+      </section>
+      <section id="workspace" hidden>
+        <div class="workspace-head">
+          <div>
+            <p id="workspace-crumb" class="eyebrow"></p>
+            <h1 id="workspace-title" tabindex="-1"></h1>
+          </div>
+          <div class="workspace-controls">
+            <label
+              ><span>工作项目</span
+              ><select id="work-project"></select></label
+            ><button id="return-home" class="quiet">返回观测室 ↗</button>
+          </div>
+        </div>
+        <div id="workspace-body"></div>
+        <footer class="workspace-footer">
+          <span id="source-stamp"></span><a href="design-spec.md">设计说明 ↗</a>
+        </footer>
+      </section>
+    </main>
+    <div id="dialogue">
+      <span class="speaker">小G</span>
+      <p id="dialogue-text">你好。选一个方向，我们一起开始。</p>
+    </div>
+    <div id="notice" role="status" aria-live="polite"></div>
+    <div id="model-state" role="status">正在准备观测室…</div>
+    <noscript
+      ><div class="noscript">
+        启用 JavaScript 可体验交互；<a href="index.html"
+          >也可以直接查看完整设计画面</a
+        >。
+      </div></noscript
+    >
+    <script type="module" src="app.mjs"></script>
+  </body>
+</html>

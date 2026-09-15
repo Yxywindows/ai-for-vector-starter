@@ -1,0 +1,21 @@
+{
+  "sealedAt": "2026-09-14T15:07:20.675634+00:00",
+  "source": "C:\\Users\\yxy\\.codex\\worktrees\\69f6\\AI_FOR_VECTOR\\artifacts\\xiaog\\D01",
+  "output": "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260914",
+  "sourceFileCount": 85,
+  "packagedFileCount": 101,
+  "declaredFileCount": 83,
+  "shaListChecked": 84,
+  "editableBlenderSourceCopies": {
+    "OpenGMS_A_editable.blend": "68d58c249506963c4fc4b9fc518d5c302c54780bbb29690b627ade6a2e85f771",
+    "cube_editable.blend": "c7cbb7292343a353fcdbce3642e5c80f123fce46a868c9375dbd72427139981f"
+  },
+  "sourceUnchangedDuringCopy": true,
+  "applicationBaselineFileCount": 128,
+  "applicationChanged": [],
+  "archive": "C:\\Users\\yxy\\Desktop\\work\\AI_FOR_VECTOR\\artifacts\\xiaog\\design-delivery-20260914.zip",
+  "archiveBytes": 22826328,
+  "archiveSha256": "7ce7d209e8f845045e5f130dbb93c50bdf2618355c419a217054f056efb5f28c",
+  "zipCrcPass": true,
+  "zipContentSha256Pass": true
+}

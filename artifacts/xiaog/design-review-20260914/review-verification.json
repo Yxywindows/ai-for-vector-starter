@@ -1,0 +1,535 @@
+{
+  "date": "2026-09-14",
+  "scope": "Design review only. No frontend implementation.",
+  "review": "docs/xiaog-game/04-design-direction-review.md",
+  "sourceComparison": {
+    "fileCount": 128,
+    "changed": [],
+    "missing": []
+  },
+  "sourceHashes": [
+    {
+      "path": "web/src\\state\\layerStore.ts",
+      "sha256": "7FB97CF3D3D22ACA4D5C75DDBF8D1CD04C8AB969C5B797505EB76CDE7AEBFCD1"
+    },
+    {
+      "path": "web/src\\state\\layerStore.test.ts",
+      "sha256": "53BFDFEE5F0CBF9227CCC84B11505823007B219CF7E637AEEBD5A1793B440B22"
+    },
+    {
+      "path": "web/src\\App.tsx",
+      "sha256": "CDBBBE786F188019F4DAF84671D27C108BCAB04BAAB8BF2B1D4D11DF19E71E26"
+    },
+    {
+      "path": "web/src\\main.tsx",
+      "sha256": "B96D8550AC37B3955E676269FC7D2C8C55A1E8AACB22F40D70E7E253047313D6"
+    },
+    {
+      "path": "web/src\\index.css",
+      "sha256": "00BDBF9ACBA1B31145698684628ABF12D569FA428E30A623C7F1C9B070D990A8"
+    },
+    {
+      "path": "web/src\\pages\\TasksPage.tsx",
+      "sha256": "405E95EAEF1AEA2C96539ABE86E3A64E87AB7BB47602BC41761869EA5E0CFA8D"
+    },
+    {
+      "path": "web/src\\pages\\TasksPage.test.tsx",
+      "sha256": "2E2EEFC20E9DFEC28B7825DB071F4968ED013C89CB650266FFC8E30BE51BE8C9"
+    },
+    {
+      "path": "web/src\\pages\\ProjectsPage.tsx",
+      "sha256": "E637027E6DE992ACC2AFB159240C1881A6DC37C12E28B4FF04614BA0A97E94B1"
+    },
+    {
+      "path": "web/src\\pages\\ProjectOverviewPage.tsx",
+      "sha256": "CF0D2D1BA20585DBA4CE0DC6781FF8C10131B475C381E406DE33EB4A732FF454"
+    },
+    {
+      "path": "web/src\\pages\\ExtentSketch.tsx",
+      "sha256": "37874BE6FF7B2D98DFD9123226DEDF00FCF69BF20ED0BA34C841EB006C1A9175"
+    },
+    {
+      "path": "web/src\\pages\\ExportsPage.tsx",
+      "sha256": "A1D0E41E6A1E3B48A993B1B6A3BF7C3635BD921AA161A2E4528E48E966CDEF41"
+    },
+    {
+      "path": "web/src\\pages\\ExportsPage.test.tsx",
+      "sha256": "184D06D6EEF1C98164216EC1A58C88645A3D14BCA568A3B66968BA7E5A0EB47C"
+    },
+    {
+      "path": "web/src\\pages\\DatasetDetailsPage.tsx",
+      "sha256": "58CB62484662E98DB9EA2A901BE70572A84ED1170FE52BD36FB7DB6EF2586D65"
+    },
+    {
+      "path": "web/src\\pages\\DataCatalogPage.tsx",
+      "sha256": "77BDAD52E010BE552F7DAB4D854B7527EB5949215257ED86F7B2FBC5AD2250D1"
+    },
+    {
+      "path": "web/src\\pages\\DataCatalogPage.test.tsx",
+      "sha256": "081D6F12CBF6C59668C20E70941E3E00167B13011C554F4CA9AD8C6D1FE19735"
+    },
+    {
+      "path": "web/src\\pages\\DashboardPage.tsx",
+      "sha256": "0D12301CF67811A21AAC5BC77B6FA5BD6CD3F2A25CBE2A9B7FDDDA35D51D72F3"
+    },
+    {
+      "path": "web/src\\pages\\DashboardPage.test.tsx",
+      "sha256": "4AF9C0AB9BD5EC09C31A3BB75A6D75C6D3810A41008A331919C7B0C94953AB9A"
+    },
+    {
+      "path": "web/src\\pages\\AnalysisPage.tsx",
+      "sha256": "6BB4B806A48207DE70C2FBB3524ED642409CECAEBD521E72B59AEB03C730111B"
+    },
+    {
+      "path": "web/src\\pages\\AnalysisPage.test.tsx",
+      "sha256": "B37C545B7959CB376A71CBD869FDE0F3E2C5982BB933D9FD786B216E3EF8AEE2"
+    },
+    {
+      "path": "web/src\\features\\styling\\defaults.test.ts",
+      "sha256": "449054ACC8346D2586D7069A3DEF8DABDD027FD1A6495B412E4933E6F87C7298"
+    },
+    {
+      "path": "web/src\\map\\IdentifyPopup.tsx",
+      "sha256": "F65F06488356740D6FB8EE6E81E063908F8800A8C237EC9F57B67E8B9CC6143B"
+    },
+    {
+      "path": "web/src\\map\\featureLoader.ts",
+      "sha256": "9FD5DBD2D38F80127F112300FAE1D884C0399D9DECE2916839B6E33B375D220E"
+    },
+    {
+      "path": "web/src\\map\\featureLoader.test.ts",
+      "sha256": "11D7C7AEB6CFA56C360DDD2B25BD6FD4A4F76F3189BDD4E2D6343ADDAF2D5EF4"
+    },
+    {
+      "path": "web/src\\features\\memory\\MemoryPanel.tsx",
+      "sha256": "2225B1EE090F9F576E5253B35D4A4F71F01D3BE096BC1EF5C00B54CEE0D1E667"
+    },
+    {
+      "path": "web/src\\features\\memory\\MemoryPanel.test.tsx",
+      "sha256": "0F9BA2C4771D14E1A5855D141CEBC07EFF5418005247055F264CD77CEB1C7D82"
+    },
+    {
+      "path": "web/src\\map\\layerFactory.ts",
+      "sha256": "55B42F7AC85A22D52331286CAD48AB6BD67DC75EAC2719E8D5511C1FE620BE21"
+    },
+    {
+      "path": "web/src\\map\\layerFactory.test.ts",
+      "sha256": "1E709DA048BAE9FBC4B10A4A9346FA430DB9430C8D34A3DAA74C9B808F758769"
+    },
+    {
+      "path": "web/src\\map\\loadingTiers.ts",
+      "sha256": "3C7BB5C0BA89A346486521A913C975B9F257E29CAE00BD14FF2A5A2EC955A74E"
+    },
+    {
+      "path": "web/src\\map\\MapCanvas.tsx",
+      "sha256": "2F2694B87388D1284653EAA6BB911EAAF228BAAE1FDDB7054AE08506FA7D68C8"
+    },
+    {
+      "path": "web/src\\features\\attributes\\AttributeTable.test.tsx",
+      "sha256": "76CCAA57212E83E5BDB5AC007A698A24E4E368C004E283AE00B8398028C75525"
+    },
+    {
+      "path": "web/src\\experience\\ExperienceRoot.test.tsx",
+      "sha256": "B354833CC0B11934FD27B55D2A6569CF0896760558A4A46CE75768BCCD2B3E86"
+    },
+    {
+      "path": "web/src\\experience\\experienceReducer.ts",
+      "sha256": "FB128802B3C95393179539354BDF54681BCC6BEB29B7634952E61A18C60CCE2B"
+    },
+    {
+      "path": "web/src\\experience\\experienceReducer.test.ts",
+      "sha256": "2709523592084295F5984D19DFD0FF02B9D3C3F26C6CB4F6B0D557429F63ECBC"
+    },
+    {
+      "path": "web/src\\experience\\experience.css",
+      "sha256": "E636019200668B26023D66BDEE1E952CA54DF3539080CEA98CD63953FA288D1C"
+    },
+    {
+      "path": "web/src\\experience\\useReducedMotion.ts",
+      "sha256": "11B794642C2495523092A9B5BC7C6F84173D5ECA5483AAA904D682B7C23CE639"
+    },
+    {
+      "path": "web/src\\experience\\featureRegistry.ts",
+      "sha256": "7AD0FC99B490B9A717A180744FE490EBDB51ACEE3660F8B292536E2D40B970DF"
+    },
+    {
+      "path": "web/src\\experience\\ExperienceRoot.tsx",
+      "sha256": "B226AC3E106ACF1F18B758CF5076D5218167EA39D5135C00132D785B330376E9"
+    },
+    {
+      "path": "web/src\\experience\\motionConfig.ts",
+      "sha256": "D83D1B2AC84A4DA6E0E8E3E7994B9002CF5C33DA6CE76D7D380395C39B7A65C4"
+    },
+    {
+      "path": "web/src\\features\\layers\\useLayerMutations.ts",
+      "sha256": "35005FC0FBD22D041E6B08F2E4F677C285FDD99E85E2FF76FE9CCB372134C126"
+    },
+    {
+      "path": "web/src\\features\\layers\\reorder.ts",
+      "sha256": "048DBA8442AEB88A7720BB9C80691AD3D095FF907591BD095C0498D0C9CA8432"
+    },
+    {
+      "path": "web/src\\features\\layers\\reorder.test.ts",
+      "sha256": "2E18DC22561AF4957FFFDFED5BEA09CD5C5229AA7052726948B77D762C1B45EA"
+    },
+    {
+      "path": "web/src\\features\\layers\\LayerPanel.tsx",
+      "sha256": "E454678EC56A33CFC9A53A5B040F4F7B46F8444C7A5EA89F3B34032B1F851064"
+    },
+    {
+      "path": "web/src\\features\\layers\\LayerPanel.test.tsx",
+      "sha256": "E321B3FE640266F3619CEF9F30A871BE00518665393B544194FD57CD7F9481E5"
+    },
+    {
+      "path": "web/src\\features\\layers\\AddLayerDialog.tsx",
+      "sha256": "AFE64B39F94CAD28773D437B8921C93A5FE3052AABC2FC6150B815FF07CFA839"
+    },
+    {
+      "path": "web/src\\features\\layers\\AddLayerDialog.test.tsx",
+      "sha256": "98584A8D66FFB8EA5E934049973828137E533DBE8BD80F020AA2D56101264ED5"
+    },
+    {
+      "path": "web/src\\features\\attributes\\coerce.test.ts",
+      "sha256": "4CD965B2073FA5FB92DF9D9910600A27783F3130751296F9E5213A8B8745A1A6"
+    },
+    {
+      "path": "web/src\\features\\attributes\\AttributeTable.tsx",
+      "sha256": "7AFE7DD2D3BF9090D4F158AFA31C13FA75C85830130F62F547F123D54794507A"
+    },
+    {
+      "path": "web/src\\features\\attributes\\coerce.ts",
+      "sha256": "64580C20C7B17A10AC8FB0794A5E9CE739D7365ECD4573442CD31C134C459934"
+    },
+    {
+      "path": "web/src\\features\\import\\DraftGrid.test.tsx",
+      "sha256": "CD0410F2B3AD03F4B5AF65663FA534D83F797EA2DB547FAAAB603760325E0511"
+    },
+    {
+      "path": "web/src\\api\\analysis.ts",
+      "sha256": "6EBF7E4F15B7B812972D95391AD2420EEA757939B44D24AFDA6FB3BECF2533FB"
+    },
+    {
+      "path": "web/src\\features\\import\\DraftGrid.tsx",
+      "sha256": "0DD33C4270D90F20A70D03B65E378A03BB7F473C3FEBB39687DD0F8B5D351185"
+    },
+    {
+      "path": "web/src\\features\\attributes\\useAttributes.ts",
+      "sha256": "5535A454F7E109BD59E0314C739D4159BB9D9BCC6F4755C91A6DEB29055E8FCA"
+    },
+    {
+      "path": "web/src\\features\\import\\ImportPreview.test.tsx",
+      "sha256": "79EB120493A3680040BEBB32FD9E4D1FEA88254B7ABAD2FE020A21C7FBFEA5BA"
+    },
+    {
+      "path": "web/src\\features\\import\\ImportPreview.tsx",
+      "sha256": "61AF3690CB20C08247035533BBFF0657F36E14BABEDC668877C1D4A803E38967"
+    },
+    {
+      "path": "web/src\\map\\basemaps\\BasemapSelector.test.tsx",
+      "sha256": "663C19E437D65237E44B23DA201F602FB3C24B643D2D4F8C7B1141D9D7644556"
+    },
+    {
+      "path": "web/src\\api\\catalog.ts",
+      "sha256": "2EA222E3840A0C7EA7D9D096653FE5EB97B3DC6BCADC108FA11D63211593C9D0"
+    },
+    {
+      "path": "web/src\\map\\basemaps\\themes.ts",
+      "sha256": "F55312A52F2842E14C6830D4BF400C4D3FBD596D35C0D158416B0266C6D137F7"
+    },
+    {
+      "path": "web/src\\map\\basemaps\\themes.test.ts",
+      "sha256": "67F0868F243CC5BD6026E4AAE5C9EBD8E9CDDA30EDB8E49D8C4BBD89786665A1"
+    },
+    {
+      "path": "web/src\\map\\basemaps\\mapboxLayer.ts",
+      "sha256": "7BD0BA57854AAED77099BD89A75E97DC4598A8AEA66830F282CCDBD944F20EB1"
+    },
+    {
+      "path": "web/src\\map\\basemaps\\mapboxLayer.test.ts",
+      "sha256": "BAB20BD03D861528F23FF00851253E74658915AF350B47C9D477242709465C6D"
+    },
+    {
+      "path": "web/src\\map\\basemaps\\BasemapSelector.tsx",
+      "sha256": "503C3CE619B2ECF5A12C316B132ADA9F6BD87A66FF2892209C70591B4B3B38BE"
+    },
+    {
+      "path": "web/src\\features\\styling\\defaults.ts",
+      "sha256": "9DD3B17878960826AEF5769FD1EECE767D9108D38A351BD5502C0F98E003DDDF"
+    },
+    {
+      "path": "web/src\\features\\styling\\ramps.ts",
+      "sha256": "D8F7AA82847272D543DC2456F71DD6C18231924EE8F46B52FC577116D51FCC63"
+    },
+    {
+      "path": "web/src\\features\\styling\\ramps.test.ts",
+      "sha256": "2E6434F2CA3D40B39339902921E0CE1F816B2E8564A7B13224BA1B9001050A17"
+    },
+    {
+      "path": "web/src\\features\\styling\\StyleEditor.test.tsx",
+      "sha256": "C4E51E6E3CBFC94264D26312C5B7A4B7122DED4A32637B41D6B4E7C15DF793FE"
+    },
+    {
+      "path": "web/src\\features\\styling\\StyleEditor.tsx",
+      "sha256": "7CED93C5AE1EB370C60B4CFAEF02E16B3809FE8B54DD13D0B8765420A02AFEC0"
+    },
+    {
+      "path": "web/src\\map\\MapProvider.tsx",
+      "sha256": "F05C5A47AF922AD59C9AC2D5AFA3D101F296A9CD7C845FB16220E1E4B56B9EB5"
+    },
+    {
+      "path": "web/src\\map\\MapPreview.tsx",
+      "sha256": "891554A3C6FD58415D2DE7554EAB9DE375AAC0CE001C79BD985D55439FF0351B"
+    },
+    {
+      "path": "web/src\\map\\StatusBar.tsx",
+      "sha256": "451F3CD2F50F083E6384EC29A36EBB3363A8AE99DCC8F32EB5AE63523A36E278"
+    },
+    {
+      "path": "web/src\\map\\selection.ts",
+      "sha256": "D078EEED694FA7073873885AE329DFBF780543016E8C211EBFC3D9F881A1D8C5"
+    },
+    {
+      "path": "web/src\\map\\styleCompiler.test.ts",
+      "sha256": "F33F26F0A3DF00A4F64C2AD9B4A43C2B01D3ACE8CB00B75D068E824AA117E9E5"
+    },
+    {
+      "path": "web/src\\map\\styleCompiler.ts",
+      "sha256": "9ED50B12A3EB19EEF4F1D101B55CEF52E58ADFEB8BD9C2B601B3C6830D40214C"
+    },
+    {
+      "path": "web/src\\api\\client.ts",
+      "sha256": "8CB4F91E07BD243A02452B3A4AA4D5D81F98240EFCC1B11B35BD1A3AE398FAA4"
+    },
+    {
+      "path": "web/src\\api\\client.test.ts",
+      "sha256": "5B573E74394070715CFFFA710C9361D26116F7606432AA90871D24973D31421B"
+    },
+    {
+      "path": "web/src\\api\\exports.ts",
+      "sha256": "7AB059F3792E28D1FADBC090D4729D7735B610BBC1C92D55FB0F714F10672FFD"
+    },
+    {
+      "path": "web/src\\features\\import\\parseWorker.ts",
+      "sha256": "2AA551B96AA04293B52874158797FC9A146B6DD81B3F34CF077484D0F04F44DF"
+    },
+    {
+      "path": "web/src\\features\\import\\parseWorker.test.ts",
+      "sha256": "32DA3F46DA7FDC20E7E374AE4E9732C0EF750F04D5F5A06565EBC0ED17E59402"
+    },
+    {
+      "path": "web/src\\features\\import\\parseGeoJson.ts",
+      "sha256": "901EC7AF74D6181FD160FC9FA707BDBCBF61C6DCEA362E13FBD7FA3A7490440E"
+    },
+    {
+      "path": "web/src\\features\\import\\parseGeoJson.test.ts",
+      "sha256": "9346920728A51461DF84A64072ED2506E8A2D555D033CF292B5C3C14823B18FF"
+    },
+    {
+      "path": "web/src\\features\\import\\PreviewMap.tsx",
+      "sha256": "685941D547B73DC3246DE683EA60DCD588E46D8333F08A081F8CFB9E228A50D5"
+    },
+    {
+      "path": "web/src\\features\\import\\PreviewMap.test.tsx",
+      "sha256": "12C7A9D7CEF2EDB0C89AA2CCB0C62A7C8505A1F432D62F05DF3CE0230CFF4F37"
+    },
+    {
+      "path": "web/src\\features\\import\\useImportDraft.test.ts",
+      "sha256": "7D15A59D3D8AC24535B75E884933DD0EC3C4F968B6A5E6D1DB6BC1A350B4F7B0"
+    },
+    {
+      "path": "web/src\\features\\import\\useImportDraft.ts",
+      "sha256": "80B32DD799B38AA3C0BE73C181A9EC766BD278810E9F41255ADECAE42C13DF7A"
+    },
+    {
+      "path": "web/src\\features\\editing\\useEditSession.ts",
+      "sha256": "7AE8541CD1E05BEA72D2138015A5423963B891AF1D9D2CD1B46DB410A392D534"
+    },
+    {
+      "path": "web/src\\features\\editing\\EditToolbar.tsx",
+      "sha256": "7D3D1F8A733C555EEBD3930680A67DB0BB4C533D7D847AC4DD34C5F1EB33D198"
+    },
+    {
+      "path": "web/src\\features\\editing\\EditToolbar.test.tsx",
+      "sha256": "7A6150915F6B9F431180974A59502BC1EB2F4F1B73E4EB15C8E2CE6DD62D292A"
+    },
+    {
+      "path": "web/src\\features\\editing\\editSession.ts",
+      "sha256": "B29A2E62916CBD5650F1072DCB4DD109A774ECA6155302557E7025E3E7000AF6"
+    },
+    {
+      "path": "web/src\\features\\editing\\editSession.test.ts",
+      "sha256": "5AD56B97CEF8D460F4F2368DA91DDE76754895412CE76048A0462CB92266EEE7"
+    },
+    {
+      "path": "web/src\\map\\syncLayers.ts",
+      "sha256": "4FB23F2E041B89041D6B1F7FB7CDF23F89C2EA27E69458EFF3AA32C41DD4C5A5"
+    },
+    {
+      "path": "web/src\\map\\syncLayers.test.ts",
+      "sha256": "DD2753C0A4B1226DEEF44C2B6232E680717C8FC6DDB52C9E2A408ED2D6C13046"
+    },
+    {
+      "path": "web/src\\map\\WorkspaceSync.test.ts",
+      "sha256": "DB48E328185767CB1B9F13DBDA8B2317602231692A06E172E5CAA11E1EC89DEC"
+    },
+    {
+      "path": "web/src\\map\\WorkspaceSync.tsx",
+      "sha256": "092261EE8B06EF4FA468D5AFA06E0ED4A62B215EAD47F71B4A388D9D2F537949"
+    },
+    {
+      "path": "web/src\\api\\types.ts",
+      "sha256": "9FCF138E677D1D668F7D3750A0762D026BCAE0D384824203A5B0C2B3639F65A5"
+    },
+    {
+      "path": "web/src\\api\\tasks.ts",
+      "sha256": "F13ED3872972C8F2649F605A51C6C208D6344C934353AE0A71B1B6D19179A413"
+    },
+    {
+      "path": "web/src\\api\\system.ts",
+      "sha256": "046321D935C83141EF82E6E63F72E2E8181D77D6FD6C6CFB7AFAD2D35525B664"
+    },
+    {
+      "path": "web/src\\features\\import\\validation.test.ts",
+      "sha256": "327590B20CEEAB247A45543CF838E22D3DEAC4FE6DCC4E20FDE23A679D6E13BE"
+    },
+    {
+      "path": "web/src\\features\\import\\useParseWorker.ts",
+      "sha256": "92CDD85417CEF8E5855B75B3E7D2666A3E36A3FFDA993F687446BCE533DD4B07"
+    },
+    {
+      "path": "web/src\\features\\import\\useParseWorker.test.ts",
+      "sha256": "98D850E154BFBBFF969FC1320D265ADC77E44B8AC8FBCA00EE547FFCDB28C294"
+    },
+    {
+      "path": "web/src\\features\\import\\validation.ts",
+      "sha256": "B7C788A6724DA958892A6FAF2EC8D30D95FD5485AFCC0C0B90DE116FDDFF672F"
+    },
+    {
+      "path": "web/src\\features\\import\\workerTypes.ts",
+      "sha256": "CE588E4B284373721238DF5A2E8C7CB1898DA4C9B45875FF4ED01681DDC3A8D1"
+    },
+    {
+      "path": "web/src\\api\\imports.ts",
+      "sha256": "C7671BDFD75DA72F3081443AF225FB4B7D0D4DC7382CA6C8BD4AEA671CBC7808"
+    },
+    {
+      "path": "web/src\\api\\layers.ts",
+      "sha256": "42117C1CB133A3362DAFDDC806FC61054143BB1E54F408BCF4402AA79DB05004"
+    },
+    {
+      "path": "web/src\\map\\memory\\useLayerMemory.ts",
+      "sha256": "1C403C406854391E678EDF7CC95705BE86BBD9D61351BF08A73D6397E8BEAC82"
+    },
+    {
+      "path": "web/src\\map\\memory\\LayerMemoryManager.ts",
+      "sha256": "9DB8356572FD4FACCD6962FC856D9B8DE964333807CBC18206C55A4631CE6865"
+    },
+    {
+      "path": "web/src\\map\\memory\\LayerMemoryManager.test.ts",
+      "sha256": "811418E493DAF0EDB85B9A6BF7F709D7D7448F6F17F65033688C2734EE0FF297"
+    },
+    {
+      "path": "web/src\\map\\memory\\instrumentation.ts",
+      "sha256": "FB0A59CC1A1D00C275943799755D2C421B5EAAE6FA7A0EEF358C5BF040E4AF54"
+    },
+    {
+      "path": "web/src\\app\\AppShell.test.tsx",
+      "sha256": "2B4FBF011494DE07495498109087D986A639FFAF1EEADC8F5B8C75B277AA1631"
+    },
+    {
+      "path": "web/src\\api\\features.ts",
+      "sha256": "F689E4867417CB2397D82E5FF3559E04A5805AF3EDB0C3F02DCB9D8110286694"
+    },
+    {
+      "path": "web/src\\cache\\keys.ts",
+      "sha256": "C5222C001843C0A272EC81E303E2148F1C6D142DD148C08CD1F914F077F83814"
+    },
+    {
+      "path": "web/src\\cache\\idb.ts",
+      "sha256": "DCBD3F34BEC54DDAEDC8CE645010725B9FD62B9C05C3F1D08F94ECBC64D2201D"
+    },
+    {
+      "path": "web/src\\cache\\idb.test.ts",
+      "sha256": "53D11CF02872D9AA6D096005EBFF2E24ABD59B0B5B08B01DB2D86E82A1D3CA11"
+    },
+    {
+      "path": "web/src\\cache\\geoCache.ts",
+      "sha256": "7240FD468380FF3B06384DA642DE2EE0396611D929887B1E989BB67130CBB583"
+    },
+    {
+      "path": "web/src\\cache\\geoCache.test.ts",
+      "sha256": "95BAA6EA3D2D43F2022AFB888F4BBDB0D08CF70F1D169FE5966E0B71A11B8C40"
+    },
+    {
+      "path": "web/src\\app\\LayoutMenu.test.tsx",
+      "sha256": "6EFBE6A9BBE854DFFE25960FA93A74DA2ED3F98665950CDEF0F95E693686554F"
+    },
+    {
+      "path": "web/src\\app\\BrandMark.tsx",
+      "sha256": "7CD58E177E24A74891C10532F783E371440AB9FE4339A248B355542F907D077D"
+    },
+    {
+      "path": "web/src\\app\\AppShell.tsx",
+      "sha256": "5464B33C2864B1E92643FCC5BC2C5253958DAEC98BE71BA824C938EC56C6E233"
+    },
+    {
+      "path": "web/src\\experience\\ui\\ExperienceStage.tsx",
+      "sha256": "2E3092086711A945E88A1505015B70D35EFA0F533F821656C5123151D2EB31C4"
+    },
+    {
+      "path": "web/src\\experience\\ui\\FeatureIcon.tsx",
+      "sha256": "6B5B229AFD14F619BD5FFCC8AA4E7177D9874A08E5F15FE99F41041C54A12A35"
+    },
+    {
+      "path": "web/src\\app\\LayoutMenu.tsx",
+      "sha256": "0790A9FA075A52E569F6ED70E724D673CD542D747E20A24913D793BF3608B582"
+    },
+    {
+      "path": "web/src\\app\\workspaceLayout.ts",
+      "sha256": "FE9E4F4694C187AF667E96298020A6D4C92C97597446FC359DE499A7C5FD9D02"
+    },
+    {
+      "path": "web/src\\app\\workspaceLayout.test.ts",
+      "sha256": "576AD93DF6DD8D1CC3568122C5D4208C45E71F9C02D0977F7B5BE32DD5DB1E7E"
+    },
+    {
+      "path": "web/src\\app\\router.tsx",
+      "sha256": "808C39FAF174DBA43BB7188FEB3F297334B75238000CEC131D74BC29EC5BDD1B"
+    },
+    {
+      "path": "web/src\\app\\queryClient.ts",
+      "sha256": "FF5A7B8F1C0BA7C1984EBEDD137910F4AA603338627A9A116F20C1668E16E99E"
+    },
+    {
+      "path": "web/src\\app\\ProjectSwitcher.tsx",
+      "sha256": "638B703C01B0061F3D423CCD5601B060081BBEF24BD2A23B8966B09865111F99"
+    },
+    {
+      "path": "web/src\\app\\PlatformShell.tsx",
+      "sha256": "D2C93C345360DA49B64518C12DF51F72FAD5D2CE1B70C18586471BF4B4F9625D"
+    },
+    {
+      "path": "web/package.json",
+      "sha256": "A295789DC61C36C711F98FD6E96053E19571B67AEFD29D27C5A47F6B298B5E38"
+    },
+    {
+      "path": "web/package-lock.json",
+      "sha256": "1C6BDA238DC11E873881B8EEFB666D89FB70430AA1C7F0D8C6D7D3E973269579"
+    },
+    {
+      "path": "backend/app/db/base.py",
+      "sha256": "CD4887FF4827C4224B60A66B939ED9CA9CA5ABBB7380893B59052E8025363CE8"
+    }
+  ],
+  "localLinkCheck": {
+    "checked": 22,
+    "broken": 0
+  },
+  "liveInspection": [
+    "http://127.0.0.1:18403/",
+    "http://127.0.0.1:18403/analysis"
+  ],
+  "referenceInteraction": "NASA Eyes: Visible Earth to Air Temperature; Apple: hero to closer look via scrolling; Salk: architecture pages. Other references researched through documentation/author accounts as distinguished in the review.",
+  "verificationLimits": "No new application implementation, performance benchmark, GIS mutation tests, or robot acceptance performed in this review.",
+  "nextFrontendImplementation": "Paused per latest user request; no new task created."
+}

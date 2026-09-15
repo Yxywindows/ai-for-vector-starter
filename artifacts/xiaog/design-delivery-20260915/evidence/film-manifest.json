@@ -1,0 +1,216 @@
+{
+  "version": "D01-R1",
+  "createdAt": "2026-09-14T14:43:16.387Z",
+  "file": "observatory-film.webm",
+  "method": "Playwright recordVideo of actual running browser. No synthetic frames, no speed conversion.",
+  "viewport": [
+    1440,
+    900
+  ],
+  "dpr": 1,
+  "events": [
+    {
+      "elapsedMs": 2418,
+      "label": "连续镜头 · 实际浏览器录屏"
+    },
+    {
+      "elapsedMs": 2510,
+      "label": "用户选择 · 空间分析"
+    },
+    {
+      "elapsedMs": 5509,
+      "label": "预览已稳定 · 留给阅读"
+    },
+    {
+      "elapsedMs": 6715,
+      "label": "用户点击 · 展开工作台"
+    },
+    {
+      "elapsedMs": 10312,
+      "label": "页内快切 · 数据资源"
+    },
+    {
+      "elapsedMs": 13202,
+      "label": "用户返回 · 保留同一项目和图层"
+    },
+    {
+      "elapsedMs": 16005,
+      "label": "recording closed"
+    }
+  ],
+  "clock": "Event elapsed milliseconds relative to creation of recording page. Browser capture can start slightly later; visible captions identify exact interaction on the video.",
+  "performanceScope": "This recording demonstrates continuity; frame-time metrics come separately from qa-report.json.",
+  "decoded": {
+    "method": "FFmpeg decodes actual VP8 stream at seven requested output seek times. PNGs visually reviewed against expected workflow; no player controls/poster or spinner.",
+    "browserSeek": {
+      "requested": 9,
+      "currentTime": 9,
+      "readyState": 4,
+      "buffered": "true"
+    },
+    "browser": "152.0.7977.83",
+    "metadata": {
+      "duration": 16.24,
+      "width": 1440,
+      "height": 900,
+      "readyState": 4
+    },
+    "frames": [
+      {
+        "time": 1,
+        "decoder": "FFmpeg output seek and PNG decode",
+        "command": [
+          "-hide_banner",
+          "-y",
+          "-i",
+          "evidence/observatory-film.webm",
+          "-ss",
+          "1",
+          "-frames:v",
+          "1",
+          "-update",
+          "1",
+          "evidence/film-frame-1.png"
+        ],
+        "decoderExit": 0,
+        "width": 1440,
+        "height": 900,
+        "sha256": "9ebbaa7ce0cee7ddff542772aba07862a4ced86b02f12d188c3943287f43106e",
+        "bytes": 420223
+      },
+      {
+        "time": 3,
+        "decoder": "FFmpeg output seek and PNG decode",
+        "command": [
+          "-hide_banner",
+          "-y",
+          "-i",
+          "evidence/observatory-film.webm",
+          "-ss",
+          "3",
+          "-frames:v",
+          "1",
+          "-update",
+          "1",
+          "evidence/film-frame-3.png"
+        ],
+        "decoderExit": 0,
+        "width": 1440,
+        "height": 900,
+        "sha256": "f483cc4f0881716aa786a74dfb608af15c752b2eeeeffdb7626b82cea1351960",
+        "bytes": 658555
+      },
+      {
+        "time": 6,
+        "decoder": "FFmpeg output seek and PNG decode",
+        "command": [
+          "-hide_banner",
+          "-y",
+          "-i",
+          "evidence/observatory-film.webm",
+          "-ss",
+          "6",
+          "-frames:v",
+          "1",
+          "-update",
+          "1",
+          "evidence/film-frame-6.png"
+        ],
+        "decoderExit": 0,
+        "width": 1440,
+        "height": 900,
+        "sha256": "f718621a4139d52d92129271c39b4045bf3c2225fb56d3431c3de179ec41d848",
+        "bytes": 581665
+      },
+      {
+        "time": 7.5,
+        "decoder": "FFmpeg output seek and PNG decode",
+        "command": [
+          "-hide_banner",
+          "-y",
+          "-i",
+          "evidence/observatory-film.webm",
+          "-ss",
+          "7.5",
+          "-frames:v",
+          "1",
+          "-update",
+          "1",
+          "evidence/film-frame-7-5.png"
+        ],
+        "decoderExit": 0,
+        "width": 1440,
+        "height": 900,
+        "sha256": "6a35a93b8560972cae92af7f410a1e1fd13c83dad15710b7aae1f118664848ae",
+        "bytes": 316053
+      },
+      {
+        "time": 9,
+        "decoder": "FFmpeg output seek and PNG decode",
+        "command": [
+          "-hide_banner",
+          "-y",
+          "-i",
+          "evidence/observatory-film.webm",
+          "-ss",
+          "9",
+          "-frames:v",
+          "1",
+          "-update",
+          "1",
+          "evidence/film-frame-9.png"
+        ],
+        "decoderExit": 0,
+        "width": 1440,
+        "height": 900,
+        "sha256": "9bf68b01b67a0930ae31ac53f114de9cccfb7f7b88a341bfc5d94b209d33fbc5",
+        "bytes": 320029
+      },
+      {
+        "time": 11,
+        "decoder": "FFmpeg output seek and PNG decode",
+        "command": [
+          "-hide_banner",
+          "-y",
+          "-i",
+          "evidence/observatory-film.webm",
+          "-ss",
+          "11",
+          "-frames:v",
+          "1",
+          "-update",
+          "1",
+          "evidence/film-frame-11.png"
+        ],
+        "decoderExit": 0,
+        "width": 1440,
+        "height": 900,
+        "sha256": "17daac57fed7863b440e9cf41adce7e47471dc8a40ff090d880da96f6ece77b7",
+        "bytes": 369157
+      },
+      {
+        "time": 14.5,
+        "decoder": "FFmpeg output seek and PNG decode",
+        "command": [
+          "-hide_banner",
+          "-y",
+          "-i",
+          "evidence/observatory-film.webm",
+          "-ss",
+          "14.5",
+          "-frames:v",
+          "1",
+          "-update",
+          "1",
+          "evidence/film-frame-14-5.png"
+        ],
+        "decoderExit": 0,
+        "width": 1440,
+        "height": 900,
+        "sha256": "5bb2a4308935c28fb478cc136086facfc73182bde43e0eaeda3690edbaa51805",
+        "bytes": 520125
+      }
+    ],
+    "uniqueFrames": 7
+  }
+}

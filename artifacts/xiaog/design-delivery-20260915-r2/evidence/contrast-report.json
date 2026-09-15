@@ -1,0 +1,47 @@
+{
+  "method": "WCAG relative luminance; final solid color tokens. Transparent edges are excluded from text background.",
+  "pairs": [
+    {
+      "name": "primary on surface",
+      "fg": "#ECE8DF",
+      "bg": "#202B32",
+      "ratio": 11.820013067302312,
+      "normalTextAA": true
+    },
+    {
+      "name": "secondary on surface",
+      "fg": "#ABB7BC",
+      "bg": "#202B32",
+      "ratio": 7.0412800255211465,
+      "normalTextAA": true
+    },
+    {
+      "name": "accent on surface",
+      "fg": "#78B6BC",
+      "bg": "#202B32",
+      "ratio": 6.342608393233685,
+      "normalTextAA": true
+    },
+    {
+      "name": "button text",
+      "fg": "#101E24",
+      "bg": "#8DC2C5",
+      "ratio": 8.640417755430317,
+      "normalTextAA": true
+    },
+    {
+      "name": "error text",
+      "fg": "#F0A68F",
+      "bg": "#202B32",
+      "ratio": 7.264969640362797,
+      "normalTextAA": true
+    },
+    {
+      "name": "map annotation",
+      "fg": "#263F4D",
+      "bg": "#DCE1DB",
+      "ratio": 8.33224661174451,
+      "normalTextAA": true
+    }
+  ]
+}

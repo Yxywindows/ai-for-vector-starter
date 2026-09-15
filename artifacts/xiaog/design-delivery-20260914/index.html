@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>D01 · 空间观测室设计交付</title>
+    <style>
+      :root {
+        font:
+          16px/1.8 "Microsoft YaHei",
+          system-ui,
+          sans-serif;
+        color: #ece8df;
+        background: #11191f;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        max-width: 1344px;
+        margin: auto;
+        padding: 40px;
+      }
+      a {
+        color: #a7d2d3;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      h1 {
+        font-size: 32px;
+        font-weight: 500;
+        margin: 8px 0 12px;
+      }
+      h2 {
+        font-size: 22px;
+        font-weight: 500;
+        margin: 36px 0 18px;
+      }
+      p {
+        color: #abb7bc;
+        max-width: 850px;
+      }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 0.16em;
+      }
+      nav {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin: 26px 0;
+      }
+      nav a,
+      .cta {
+        display: inline-block;
+        padding: 11px 18px;
+        border: 1px solid #607b84;
+        border-radius: 4px;
+      }
+      .cta {
+        background: #98c7ca;
+        color: #11191f;
+        font-weight: 600;
+      }
+      img {
+        width: 100%;
+        display: block;
+        border-radius: 4px;
+      }
+      figure {
+        margin: 0;
+      }
+      figcaption {
+        padding: 10px 0;
+        color: #a7b8c0;
+        font-size: 12px;
+      }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+      .gallery a {
+        display: block;
+      }
+      .wide {
+        grid-column: 1 / -1;
+      }
+      video {
+        width: 100%;
+        max-height: 700px;
+        background: #1b282f;
+      }
+      .links {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: #3a515b;
+        border: 1px solid #3a515b;
+      }
+      .links a {
+        padding: 20px;
+        background: #19272e;
+      }
+      .links small {
+        display: block;
+        color: #abb7bc;
+      }
+      .notes {
+        padding: 22px 0;
+        border-top: 1px solid #455a64;
+        font-size: 14px;
+      }
+      footer {
+        border-top: 1px solid #455a64;
+        margin-top: 45px;
+        padding-top: 20px;
+        color: #9eafb8;
+        font-size: 12px;
+      }
+      @media (max-width: 700px) {
+        body {
+          padding: 24px 18px;
+        }
+        h1 {
+          font-size: 27px;
+        }
+        .gallery,
+        .links {
+          grid-template-columns: 1fr;
+        }
+        .wide {
+          grid-column: auto;
+        }
+        nav {
+          gap: 8px;
+        }
+        nav a {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <p class="eyebrow">D01 / 设计原型 · R1 / 2026.09.14</p>
+    <h1>小G · 空间观测室</h1>
+    <p>
+      一个安静的空间，六个观察方向。真实小G与魔方、同一片城市边界，从首次相遇到进入工作台。
+    </p>
+    <nav>
+      <a
+        class="cta"
+        href="prototype.html#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9"
+        >打开完整交互原型 ↗</a
+      ><a href="#frames">看关键帧</a><a href="#pages">六个目的页</a
+      ><a href="#film">连续镜头</a><a href="design-spec.md">设计规格 ↗</a>
+    </nav>
+    <figure>
+      <a href="evidence/desktop-idle.png"
+        ><img
+          src="evidence/desktop-idle.png"
+          alt="空间观测室桌面首屏，真实小G站在魔方与地图切片旁"
+      /></a>
+      <figcaption>
+        1440 × 900 · 同版实际 GLB 原型画面 · 角色 A-body-refinement-20260914
+      </figcaption>
+    </figure>
+    <p class="notes">
+      这是独立设计原型。项目、图层与任务来自已注明时间的只读快照；表单提供选择与校验，不提交分析、不生成导出文件。请使用文字导航选择方向，预览可以无限停留，点击“展开工作台”才进入目的页。
+    </p>
+    <h2 id="pages">六个目的页</h2>
+    <div class="links" id="page-links"></div>
+    <h2 id="frames">关键帧与构图</h2>
+    <p>
+      Frame 0 是选择“空间分析”的瞬间；Frame 90 / 180 分别是 1.5 / 3
+      秒观察点。展开有独立时间轴。
+    </p>
+    <div class="gallery" id="gallery"></div>
+    <h2 id="film">连续镜头 / 16 秒</h2>
+    <video controls preload="metadata" poster="evidence/desktop-idle.png">
+      <source src="evidence/observatory-film.webm" type="video/webm" />
+    </video>
+    <p class="hint">
+      实际浏览器录屏。约 2 秒选择空间分析，约 6 秒由用户点击展开。具体时间以
+      film-manifest.json 的事件记录为准；录屏不能替代实时性能测试。
+    </p>
+    <h2>地图工作区与未保存编辑</h2>
+    <p>同一项目、原色边界与真实属性；查看图层、地图、属性表和离开分支的完整设计。</p>
+    <nav><a class="cta" href="map-design.html?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&amp;layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9">打开地图工作区设计 ↗</a><a href="evidence/map-unsaved-dialog.png">未保存更改分支</a><a href="evidence/map-save-failure.png">保存失败分支</a></nav>
+    <figure><a href="evidence/map-workspace.png"><img src="evidence/map-workspace.png" alt="地图工作区设计，含图层、真实边界、属性表与小G安全区" loading="lazy"></a><figcaption>1440 × 900 · 地图工作区设计页；本地草稿，不调用业务写 API。</figcaption></figure>
+    <h2>复核与交接</h2>
+    <nav>
+      <a href="evidence/contact-sheet.png">全部画面联系表 ↗</a
+      ><a href="evidence/qa-report.json">交互与性能记录 ↗</a
+      ><a href="evidence/film-manifest.json">样片时序与编码记录 ↗</a
+      ><a href="stage_manifest.json">交付清单 ↗</a
+      ><a href="README.md">运行说明 ↗</a
+      ><a
+        href="prototype.html?static=1#/home?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9"
+        >静态降级路径 ↗</a
+      >
+    </nav>
+    <footer>
+      本包只拥有 artifacts/xiaog/D01。原项目业务代码与 T02
+      模型输入保持原样。原型通过之后，正式 GIS 接入仍需独立实施与验收。
+    </footer>
+    <script>
+      const names = {
+        projects: "项目空间",
+        data: "数据资源",
+        analysis: "空间分析",
+        tasks: "任务进度",
+        exports: "导出交付",
+        overview: "平台概览",
+      };
+      document.querySelector("#page-links").innerHTML = Object.entries(names)
+        .map(
+          ([id, title], i) =>
+            `<a href="prototype.html#/${id}?projectId=18cb3488-119b-4d8d-958f-e20a0a70d0ae&layerId=76375d7a-74cf-4c2b-b0e0-d724afaec1d9">0${i + 1} ${title} ↗<small>直接打开，可继续页内切换</small></a>`,
+        )
+        .join("");
+      const frames = [
+        ["desktop-f0", "Frame 0 · 0 ms"],
+        ["desktop-f30", "Frame 30 · 500 ms"],
+        ["desktop-f90", "Frame 90 · 1500 ms"],
+        ["desktop-f180", "Frame 180 · 3000 ms"],
+        ["desktop-expanding", "用户点击后 · 280 ms"],
+        ["page-analysis", "目的地 · 空间分析"],
+        ["page-projects", "项目空间"],
+        ["page-data", "数据资源"],
+        ["page-tasks", "任务进度"],
+        ["page-exports", "导出交付"],
+        ["page-overview", "平台概览"],
+        ["desktop-1920", "1920 × 1080 首屏"],
+        ["mobile-idle", "390 × 844 首屏"],
+        ["mobile-preview", "手机预览 · 正常文档流"],
+        ["mobile-destination", "手机分析页"],
+        ["landscape-idle", "窄横屏 · 844 × 390"],
+        ["landscape-preview", "窄横屏预览"],
+        ["landscape-destination", "窄横屏目的页"],
+      ];
+      document.querySelector("#gallery").innerHTML = frames
+        .map(
+          ([id, title]) =>
+            `<figure><a href="evidence/${id}.png"><img src="evidence/${id}.png" alt="${title}" loading="lazy"></a><figcaption>${title} · 原图 PNG</figcaption></figure>`,
+        )
+        .join("");
+    </script>
+    <script type="module" src="media.mjs"></script>
+  </body>
+</html>

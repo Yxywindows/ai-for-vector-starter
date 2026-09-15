@@ -1,0 +1,52 @@
+{
+  "version": "D01-R1.1",
+  "method": "jsdom DOM integration using actual app.mjs and map.mjs; static/reduced-motion path; not a real browser or WebGL test",
+  "passed": 9,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "buffer",
+      "pass": true,
+      "dialogue": "先选输入图层，再设置缓冲距离（米），看看周边的影响范围。"
+    },
+    {
+      "name": "clip",
+      "pass": true,
+      "dialogue": "选好输入图层和掩膜图层，保留掩膜范围内的部分。"
+    },
+    {
+      "name": "intersection",
+      "pass": true,
+      "dialogue": "选择两层数据，看看它们在空间上重叠的部分。"
+    },
+    {
+      "name": "dissolve",
+      "pass": true,
+      "dialogue": "按共同字段融合要素；选择“融合全部”，就不再按字段分组。"
+    },
+    {
+      "name": "spatial-join",
+      "pass": true,
+      "dialogue": "先选目标图层和关联图层，再用相交、包含或位于内部来匹配属性。"
+    },
+    {
+      "name": "validate-repair",
+      "pass": true,
+      "dialogue": "选好输入图层，我们来检查并修复无效几何。"
+    },
+    {
+      "name": "point-in-polygon",
+      "pass": true,
+      "dialogue": "先选点图层和多边形图层，统计每个面内有多少个点。"
+    },
+    {
+      "name": "return-preview-expand-keeps-current-method",
+      "pass": true
+    },
+    {
+      "name": "other-feature-dialogue-and-return",
+      "pass": true
+    }
+  ],
+  "createdAt": "2026-09-15T01:43:51.471Z"
+}
